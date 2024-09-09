@@ -14,7 +14,7 @@ import {
 import { MIST_PER_SUI } from "@mysten/sui/utils";
 
 function App() {
-  const { currentWallet, connectionStatus } = useCurrentWallet();
+  const { connectionStatus } = useCurrentWallet();
   const account = useCurrentAccount();
 
   const [filteredNft, setFilteredNft] = useState<any>(null); // Storing only a single filtered NFT
