@@ -27,8 +27,8 @@ const Upgrade = ({
     useState<string>("Upgrade available");
   const [isProcessing, setIsProcessing] = useState(false);
   const account = useCurrentAccount();
-
   const suiClient = useSuiClient();
+
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
     execute: async ({ bytes, signature }) =>
       suiClient.executeTransactionBlock({
@@ -102,6 +102,46 @@ const Upgrade = ({
     [buildingType, gameData]
   );
 
+  // Function to check user's balance before initiating transaction
+  const checkUserBalance = useCallback(
+    async (costs: { sui: number; sity: number }) => {
+      try {
+        // Fetch SUI balance
+        const suiBalanceResponse = await suiClient.getBalance({
+          owner: String(account?.address),
+        });
+        const suiBalance =
+          parseInt(suiBalanceResponse.totalBalance) / Number(MIST_PER_SUI);
+
+        // Fetch SITY balance
+        const sityBalanceResponse = await suiClient.getBalance({
+          owner: String(account?.address),
+          coinType: `${ADDRESSES.TOKEN_TYPE}`,
+        });
+        const sityBalance = parseInt(sityBalanceResponse.totalBalance) / 1000;
+
+        if (costs.sui > 0 && suiBalance < costs.sui) {
+          setUpgradeMessage("Insufficient SUI balance.");
+          setIsProcessing(false); // Ensure processing is reset if insufficient balance
+          return false;
+        }
+        if (costs.sity > 0 && sityBalance < costs.sity) {
+          setUpgradeMessage("Insufficient SITY balance.");
+          setIsProcessing(false); // Ensure processing is reset if insufficient balance
+          return false;
+        }
+
+        return true;
+      } catch (error) {
+        console.error("Error checking user balance:", error);
+        setUpgradeMessage("Error checking balance.");
+        setIsProcessing(false); // Reset processing on error
+        return false;
+      }
+    },
+    [account?.address, suiClient]
+  );
+
   // Upgrade logic
   const upgrade = useCallback(async () => {
     try {
@@ -116,8 +156,16 @@ const Upgrade = ({
       }
 
       const costs = getUpgradeCosts(currentLevel);
-      const transactionBlock = new Transaction();
 
+      // Check if the user has sufficient balance before proceeding
+      const hasEnoughBalance = await checkUserBalance(costs);
+      if (!hasEnoughBalance) {
+        console.log("Insufficient balance for upgrade");
+        setIsProcessing(false); // Reset transaction state on insufficient balance
+        return;
+      }
+
+      const transactionBlock = new Transaction();
       transactionBlock.setSender(String(account?.address));
 
       // Handle SUI-based upgrades
@@ -144,10 +192,12 @@ const Upgrade = ({
               console.log("Upgrade successful with SUI");
               setUpgradeMessage("Upgrade successful! SUI used.");
               onUpgradeSuccess();
+              setIsProcessing(false); // Reset processing state after success
             },
             onError: (error) => {
               console.error("Upgrade error with SUI", error);
               setUpgradeMessage("Error: Unable to process SUI transaction.");
+              setIsProcessing(false); // Reset processing state on error
               onError();
             },
           }
@@ -155,7 +205,7 @@ const Upgrade = ({
       }
       // Handle SITY-based upgrades
       else if (costs.sity > 0) {
-        transactionBlock.setGasBudgetIfNotSet(50000000);
+        transactionBlock.setGasBudgetIfNotSet(10000000);
 
         transactionBlock.moveCall({
           target: `${ADDRESSES.PACKAGE}::nft::upgrade_building_with_sity`,
@@ -178,10 +228,12 @@ const Upgrade = ({
               console.log("Upgrade successful with SITY");
               setUpgradeMessage("Upgrade successful! SITY used.");
               onUpgradeSuccess();
+              setIsProcessing(false); // Reset processing state after success
             },
             onError: (error) => {
               console.error("Upgrade error with SITY", error);
               setUpgradeMessage("Error: Unable to process SITY transaction.");
+              setIsProcessing(false); // Reset processing state on error
               onError();
             },
           }
@@ -190,9 +242,8 @@ const Upgrade = ({
     } catch (error) {
       console.error("Upgrade Error:", error);
       setUpgradeMessage("Error occurred during the upgrade.");
+      setIsProcessing(false); // Reset processing state on general error
       onError();
-    } finally {
-      setIsProcessing(false); // Reset processing state
     }
   }, [
     nft,
@@ -202,6 +253,7 @@ const Upgrade = ({
     signAndExecute,
     onUpgradeSuccess,
     onError,
+    checkUserBalance, // Include the balance check logic in the dependencies
   ]);
 
   // Update the message with current upgrade costs on each change

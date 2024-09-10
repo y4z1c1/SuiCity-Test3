@@ -149,6 +149,28 @@ function App() {
     isTransactionInProgress,
   ]);
 
+  const handleUpgradeSuccess = () => {
+    setTimeout(() => {
+      console.log("UPGRADE SUCCESSFUL, awaiting new data...");
+      setIsAwaitingBlockchain(true);
+      refreshNft();
+      fetchBalances();
+      setTransactionInProgress(false);
+    }, 2000); // 2000 milliseconds = 2 seconds
+  };
+
+  const handleClaimSuccess = () => {
+    setTimeout(() => {
+      console.log("CLAIM SUCCESSFUL, awaiting new data...");
+      refreshNft();
+      setIsAwaitingBlockchain(true);
+
+      fetchBalances();
+      setTransactionInProgress(false);
+    }, 2000); // 2000 milliseconds = 2 seconds
+    console.log("OUT");
+  };
+
   // Helper to refresh NFTs
   const refreshNft = useCallback(async () => {
     console.log("Refreshing NFTs...");
@@ -202,27 +224,11 @@ function App() {
     }
   }, [account?.address, refreshNft, fetchGameData, fetchBalances]);
 
-  const handleUpgradeSuccess = () => {
-    console.log("Upgrade successful, awaiting new data...");
-    setIsAwaitingBlockchain(true); // Set to true before fetching updated NFT data
-    refreshNft();
-    fetchBalances();
-    setTransactionInProgress(false);
-  };
-
-  const handleClaimSuccess = () => {
-    console.log("Claim successful, awaiting new data...");
-    setIsAwaitingBlockchain(true); // Set to true before fetching updated NFT data
-    refreshNft();
-    fetchBalances();
-    setTransactionInProgress(false);
-  };
-
   const calculateAccumulatedSity = useCallback(
     (nft: any) => {
       if (!nft || !gameData) return 0;
 
-      const lastClaimedTimestamp = nft.content.fields?.last_claimed;
+      const lastClaimedTimestamp = nft.content.fields?.last_accumulated;
       const residentialOfficeLevel = nft.content.fields?.residental_office || 0;
       const houseLevel = nft.content.fields?.house || 0;
       const entertainmentComplexLevel =
@@ -292,6 +298,11 @@ function App() {
     console.log("loading  status:: ", isLoading);
   }, [isAwaitingBlockchain, isLoading]);
 
+  useEffect(() => {
+    refreshNft();
+    fetchGameData();
+  }, [account]);
+
   return (
     <div className="container">
       <div className="upperDiv">
@@ -334,13 +345,16 @@ function App() {
                   }`}</p>
 
                   {/* Hide buttons while loading */}
-                  {!isLoading && !isAwaitingBlockchain && (
+                  {!isLoading && (
                     <>
                       <Claim
                         nft={filteredNft}
                         onClaimSuccess={handleClaimSuccess}
                         onClick={() => setTransactionInProgress(true)}
-                        onError={() => setTransactionInProgress(false)}
+                        onError={() => {
+                          setTransactionInProgress(false);
+                          refreshNft();
+                        }}
                       />
 
                       <div className="building-grid">
@@ -352,9 +366,12 @@ function App() {
                           <Upgrade
                             nft={filteredNft}
                             buildingType={0}
-                            onUpgradeSuccess={handleUpgradeSuccess}
+                            onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
                             onClick={() => setTransactionInProgress(true)}
-                            onError={() => setTransactionInProgress(false)}
+                            onError={() => {
+                              setTransactionInProgress(false);
+                              refreshNft();
+                            }}
                             gameData={gameData}
                           />
                         </div>
@@ -366,9 +383,12 @@ function App() {
                           <Upgrade
                             nft={filteredNft}
                             buildingType={1}
-                            onUpgradeSuccess={handleUpgradeSuccess}
+                            onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
                             onClick={() => setTransactionInProgress(true)}
-                            onError={() => setTransactionInProgress(false)}
+                            onError={() => {
+                              setTransactionInProgress(false);
+                              refreshNft();
+                            }}
                             gameData={gameData}
                           />
                           <div className="flex flex-row gap-4 justify-center">
@@ -382,7 +402,10 @@ function App() {
                                 nft={filteredNft}
                                 onClaimSuccess={handleClaimSuccess}
                                 onClick={() => setTransactionInProgress(true)}
-                                onError={() => setTransactionInProgress(false)}
+                                onError={() => {
+                                  setTransactionInProgress(false);
+                                  refreshNft();
+                                }}
                               />
                             )}
                           </div>
@@ -395,9 +418,12 @@ function App() {
                           <Upgrade
                             nft={filteredNft}
                             buildingType={2}
-                            onUpgradeSuccess={handleUpgradeSuccess}
+                            onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
                             onClick={() => setTransactionInProgress(true)}
-                            onError={() => setTransactionInProgress(false)}
+                            onError={() => {
+                              setTransactionInProgress(false);
+                              refreshNft();
+                            }}
                             gameData={gameData}
                           />
                         </div>
@@ -410,9 +436,12 @@ function App() {
                           <Upgrade
                             nft={filteredNft}
                             buildingType={3}
-                            onUpgradeSuccess={handleUpgradeSuccess}
+                            onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
                             onClick={() => setTransactionInProgress(true)}
-                            onError={() => setTransactionInProgress(false)}
+                            onError={() => {
+                              setTransactionInProgress(false);
+                              refreshNft();
+                            }}
                             gameData={gameData}
                           />
                         </div>
@@ -423,7 +452,13 @@ function App() {
               </div>
             </div>
           ) : (
-            <Mint />
+            <Mint
+              onMintSuccessful={() => {
+                console.log("Minting was successful! Refreshing data...");
+                refreshNft(); // Refresh NFTs after mint
+                fetchBalances(); // Fetch updated balances
+              }}
+            />
           )}
         </div>
       ) : (

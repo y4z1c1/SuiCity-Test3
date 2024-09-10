@@ -3,7 +3,11 @@ import { ADDRESSES } from "../../addresses";
 import { Transaction } from "@mysten/sui/transactions";
 import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 
-const Mint = () => {
+const Mint = ({
+  onMintSuccessful, // Add onMintSuccessful prop
+}: {
+  onMintSuccessful: () => void;
+}) => {
   const suiClient = useSuiClient();
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
     execute: async ({ bytes, signature }) =>
@@ -17,6 +21,7 @@ const Mint = () => {
         },
       }),
   });
+
   const mint = useCallback(async () => {
     try {
       const transactionBlock = new Transaction();
@@ -34,14 +39,18 @@ const Mint = () => {
         },
         {
           onSuccess: (result) => {
-            console.log("mint succssful ", result);
+            console.log("Mint successful ", result);
+            onMintSuccessful(); // Trigger the success callback
+          },
+          onError: (error) => {
+            console.error("Mint error:", error);
           },
         }
       );
     } catch (error) {
       console.error("Mint Error:", error);
     }
-  }, [signAndExecute]);
+  }, [signAndExecute, onMintSuccessful]);
 
   const reset = useCallback(() => {}, []);
 
@@ -55,7 +64,7 @@ const Mint = () => {
         className="mx-auto px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
         onClick={mint}
       >
-        build your SuiCity
+        Build your SuiCity
       </button>
     </div>
   );
