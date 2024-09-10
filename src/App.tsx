@@ -153,6 +153,7 @@ function App() {
     setTimeout(() => {
       console.log("UPGRADE SUCCESSFUL, awaiting new data...");
       setIsAwaitingBlockchain(true);
+      0xb888509b625953463e775103797a9c764da531484e680f27e2c02c8e9b136da8;
       refreshNft();
       fetchBalances();
       setTransactionInProgress(false);
@@ -454,9 +455,11 @@ function App() {
           ) : (
             <Mint
               onMintSuccessful={() => {
-                console.log("Minting was successful! Refreshing data...");
-                refreshNft(); // Refresh NFTs after mint
-                fetchBalances(); // Fetch updated balances
+                setTimeout(() => {
+                  console.log("Minting was successful! Refreshing data...");
+                  refreshNft(); // Refresh NFTs after mint
+                  fetchBalances(); // Fetch updated balances
+                }, 2000);
               }}
             />
           )}
