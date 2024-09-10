@@ -125,7 +125,11 @@ const Upgrade = ({
         transactionBlock.moveCall({
           target: `${ADDRESSES.PACKAGE}::nft::upgrade_building_with_sui`,
           arguments: [
-            transactionBlock.object(nft.objectId),
+            transactionBlock.objectRef({
+              objectId: nft.objectId,
+              digest: nft.digest,
+              version: nft.version,
+            }),
             transactionBlock.object(ADDRESSES.GAME),
             transactionBlock.object(String(buildingType)),
             coinWithBalance({ balance: costs.sui * Number(MIST_PER_SUI) }),

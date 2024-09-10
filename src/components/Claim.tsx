@@ -18,7 +18,6 @@ const Claim = ({
     "claim your accumulated tokens"
   );
   const [isLoading, setIsLoading] = useState(false); // State for loading indication
-
   const suiClient = useSuiClient();
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
     execute: async ({ bytes, signature }) =>
@@ -28,6 +27,7 @@ const Claim = ({
         options: {
           showRawEffects: true,
           showEffects: true,
+          showObjectChanges: true,
         },
       }),
   });
@@ -45,7 +45,11 @@ const Claim = ({
       transactionBlock.moveCall({
         target: `${ADDRESSES.PACKAGE}::nft::claim_sity`,
         arguments: [
-          transactionBlock.object(nft.objectId),
+          transactionBlock.objectRef({
+            objectId: nft.objectId,
+            digest: nft.digest,
+            version: nft.version,
+          }),
           transactionBlock.object(ADDRESSES.GAME),
           transactionBlock.object(ADDRESSES.CLOCK),
         ],

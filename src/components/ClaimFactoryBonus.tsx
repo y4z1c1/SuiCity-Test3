@@ -39,7 +39,11 @@ const ClaimFactoryBonus = ({
       transactionBlock.moveCall({
         target: `${ADDRESSES.PACKAGE}::nft::claim_factory_bonus`,
         arguments: [
-          transactionBlock.object(nft.objectId),
+          transactionBlock.objectRef({
+            objectId: nft.objectId,
+            digest: nft.digest,
+            version: nft.version,
+          }),
           transactionBlock.object(`${ADDRESSES.GAME}`),
           transactionBlock.object(`${ADDRESSES.CLOCK}`),
         ],

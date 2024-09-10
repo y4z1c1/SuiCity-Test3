@@ -28,7 +28,8 @@ function App() {
     number | null
   >(null);
   const [isLoading, setIsLoading] = useState<boolean>(true); // Add loading state
-
+  const [isAwaitingBlockchain, setIsAwaitingBlockchain] =
+    useState<boolean>(false);
   const accumulationIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -38,6 +39,7 @@ function App() {
 
   // Helper to fetch balances
   const fetchBalances = useCallback(async () => {
+    console.log("Fetching balances...");
     try {
       const [sityResponse, suiResponse] = await Promise.all([
         provider.getBalance({
@@ -46,6 +48,9 @@ function App() {
         }),
         provider.getBalance({ owner: String(account?.address) }),
       ]);
+
+      console.log("SITY balance fetched:", sityResponse.totalBalance);
+      console.log("SUI balance fetched:", suiResponse.totalBalance);
 
       setSityBalance(parseInt(sityResponse.totalBalance) / 1000);
       setSuiBalance(parseInt(suiResponse.totalBalance) / Number(MIST_PER_SUI));
@@ -56,6 +61,7 @@ function App() {
 
   // Helper to fetch game data
   const fetchGameData = useCallback(async () => {
+    console.log("Fetching game data...");
     try {
       const gameDataResponse = await provider.getObject({
         id: ADDRESSES.GAME,
@@ -66,6 +72,7 @@ function App() {
       const content = gameDataResponse?.data?.content;
 
       if (content && "fields" in content) {
+        console.log("Game data fetched successfully:", content.fields);
         setGameData(content.fields); // This is safe now
       } else {
         console.warn("No fields found in the game data response.");
@@ -103,6 +110,7 @@ function App() {
   };
 
   const startCountdownInterval = (nft: any) => {
+    console.log("Starting countdown interval...");
     if (countdownIntervalRef.current)
       clearInterval(countdownIntervalRef.current);
 
@@ -110,19 +118,22 @@ function App() {
       const newCountdown = calculateCountdown(nft);
       const newFactoryBonusCountdown = calculateFactoryBonusCountdown(nft);
 
+      console.log("Updated countdown:", newCountdown);
+      console.log("Updated factory bonus countdown:", newFactoryBonusCountdown);
+
       setCountdown(newCountdown);
       setFactoryBonusCountdown(newFactoryBonusCountdown);
     }, 1000); // Update every second
   };
 
-  // Prevent countdown from starting before NFT is loaded
   useEffect(() => {
-    if (filteredNft && gameData && !isLoading) {
+    console.log("Checking if countdown and accumulation can start...");
+    if (filteredNft && gameData && !isLoading && !isAwaitingBlockchain) {
+      console.log("Starting accumulation and countdown...");
       const nft = filteredNft;
       startAccumulation(nft);
       startCountdownInterval(nft);
 
-      // Clear existing intervals when component unmounts or dependencies change
       return () => {
         if (accumulationIntervalRef.current)
           clearInterval(accumulationIntervalRef.current);
@@ -130,10 +141,17 @@ function App() {
           clearInterval(countdownIntervalRef.current);
       };
     }
-  }, [filteredNft, gameData, isLoading, isTransactionInProgress]);
+  }, [
+    filteredNft,
+    gameData,
+    isLoading,
+    isAwaitingBlockchain,
+    isTransactionInProgress,
+  ]);
 
   // Helper to refresh NFTs
   const refreshNft = useCallback(async () => {
+    console.log("Refreshing NFTs...");
     try {
       const allObjects: any[] = [];
       let lastObject = null;
@@ -160,17 +178,22 @@ function App() {
       const nft = allObjects.find(
         (nft) => String(nft.data?.type) === `${ADDRESSES.NFT_TYPE}`
       );
+      console.log("Filtered NFT found:", nft?.data);
+
       setFilteredNft(nft?.data || null);
       setIsLoading(false); // Mark loading as complete once NFT is fetched
+      setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
     } catch (error) {
       console.error("Error refreshing NFTs:", error);
       setIsLoading(false); // Stop loading if error occurs
+      setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
     }
   }, [account?.address]);
 
   // Re-fetch NFTs and balances when account changes
   useEffect(() => {
     if (account?.address) {
+      console.log("Account changed, resetting state and fetching data...");
       setFilteredNft(null); // Reset NFT state
       setIsLoading(true); // Start loading when account changes
       refreshNft();
@@ -180,12 +203,16 @@ function App() {
   }, [account?.address, refreshNft, fetchGameData, fetchBalances]);
 
   const handleUpgradeSuccess = () => {
+    console.log("Upgrade successful, awaiting new data...");
+    setIsAwaitingBlockchain(true); // Set to true before fetching updated NFT data
     refreshNft();
     fetchBalances();
     setTransactionInProgress(false);
   };
 
   const handleClaimSuccess = () => {
+    console.log("Claim successful, awaiting new data...");
+    setIsAwaitingBlockchain(true); // Set to true before fetching updated NFT data
     refreshNft();
     fetchBalances();
     setTransactionInProgress(false);
@@ -213,6 +240,7 @@ function App() {
       const accumulatedSity =
         (effectiveElapsedTime / (3600 * 1000)) * accumulationPerHour;
 
+      console.log("Accumulated SITY:", accumulatedSity);
       return accumulatedSity / 100;
     },
     [gameData]
@@ -245,6 +273,8 @@ function App() {
   const startAccumulation = (nft: any) => {
     if (!nft || isTransactionInProgress) return;
 
+    console.log("Starting accumulation...");
+
     // Clear the previous accumulation interval if it exists
     if (accumulationIntervalRef.current)
       clearInterval(accumulationIntervalRef.current);
@@ -252,9 +282,15 @@ function App() {
     // Start a new accumulation interval
     accumulationIntervalRef.current = setInterval(() => {
       const newlyAccumulatedSity = calculateAccumulatedSity(nft);
+      console.log("Updated accumulated SITY:", newlyAccumulatedSity);
       setAccumulatedSity(newlyAccumulatedSity);
     }, 100); // Update every second
   };
+
+  useEffect(() => {
+    console.log("blochhain wait status:: ", isAwaitingBlockchain);
+    console.log("loading  status:: ", isLoading);
+  }, [isAwaitingBlockchain, isLoading]);
 
   return (
     <div className="container">
@@ -298,7 +334,7 @@ function App() {
                   }`}</p>
 
                   {/* Hide buttons while loading */}
-                  {!isLoading && (
+                  {!isLoading && !isAwaitingBlockchain && (
                     <>
                       <Claim
                         nft={filteredNft}
