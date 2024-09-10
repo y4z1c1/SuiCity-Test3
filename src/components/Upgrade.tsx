@@ -121,22 +121,22 @@ const Upgrade = ({
         const sityBalance = parseInt(sityBalanceResponse.totalBalance) / 1000;
 
         if (costs.sui > 0 && suiBalance < costs.sui) {
-          setUpgradeMessage("Insufficient SUI balance.");
-          setIsProcessing(false); // Ensure processing is reset if insufficient balance
-          return false;
+          throw new Error("Insufficient SUI balance.");
         }
         if (costs.sity > 0 && sityBalance < costs.sity) {
-          setUpgradeMessage("Insufficient SITY balance.");
-          setIsProcessing(false); // Ensure processing is reset if insufficient balance
-          return false;
+          throw new Error("Insufficient SITY balance.");
         }
 
         return true;
       } catch (error) {
         console.error("Error checking user balance:", error);
-        setUpgradeMessage("Error checking balance.");
+        if (error instanceof Error) {
+          setUpgradeMessage(error.message || "Error checking balance.");
+        } else {
+          setUpgradeMessage("Error checking balance.");
+        }
         setIsProcessing(false); // Reset processing on error
-        return false;
+        throw error; // Re-throw the error to be caught in the upgrade function
       }
     },
     [account?.address, suiClient]
@@ -158,12 +158,7 @@ const Upgrade = ({
       const costs = getUpgradeCosts(currentLevel);
 
       // Check if the user has sufficient balance before proceeding
-      const hasEnoughBalance = await checkUserBalance(costs);
-      if (!hasEnoughBalance) {
-        console.log("Insufficient balance for upgrade");
-        setIsProcessing(false); // Reset transaction state on insufficient balance
-        return;
-      }
+      await checkUserBalance(costs); // Throws error if balance is insufficient
 
       const transactionBlock = new Transaction();
       transactionBlock.setSender(String(account?.address));
@@ -241,7 +236,7 @@ const Upgrade = ({
       }
     } catch (error) {
       console.error("Upgrade Error:", error);
-      setUpgradeMessage("Error occurred during the upgrade.");
+      setUpgradeMessage(error.message || "Error occurred during the upgrade.");
       setIsProcessing(false); // Reset processing state on general error
       onError();
     }
