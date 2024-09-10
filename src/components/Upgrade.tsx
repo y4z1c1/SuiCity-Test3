@@ -236,7 +236,13 @@ const Upgrade = ({
       }
     } catch (error) {
       console.error("Upgrade Error:", error);
-      setUpgradeMessage(error.message || "Error occurred during the upgrade.");
+      if (error instanceof Error) {
+        setUpgradeMessage(
+          error.message || "Error occurred during the upgrade."
+        );
+      } else {
+        setUpgradeMessage("Error occurred during the upgrade.");
+      }
       setIsProcessing(false); // Reset processing state on general error
       onError();
     }
