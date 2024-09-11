@@ -276,18 +276,15 @@ function App() {
   // Function to calculate the maximum accumulation period
   const calculateMaxAccumulation = useCallback(
     (houseLevel: number, entertainmentLevel: number): number => {
-      const houseLevelInt = parseInt(String(houseLevel), 10);
-      const entertainmentLevelInt = parseInt(String(entertainmentLevel), 10);
-      const totalLevel = houseLevelInt + entertainmentLevelInt;
+      const totalLevel = houseLevel + entertainmentLevel;
 
       // Base accumulation period is 3 hours
       if (totalLevel === 0) {
-        return (3 * 3600 * 1000) / gameData.speed; // 3 hours in milliseconds
-      }
-      // Adds 1 hour per level if total level is <= 7
-      else if (totalLevel <= 7) {
+        return (3 * 3600 * 1000) / gameData.speed;
+      } else if (totalLevel <= 7) {
         return ((3 + totalLevel) * 3600 * 1000) / gameData.speed;
       }
+
       // Adds 2 hours per level after level 7
       return ((10 + 2 * (totalLevel - 7)) * 3600 * 1000) / gameData.speed;
     },
