@@ -10,7 +10,7 @@ const Header: React.FC = () => {
   const location = useLocation();
 
   // Check if the current path is '/faq' to hide the logo
-  const isFaqPage = location.pathname === "/faq";
+  // const isFaqPage = location.pathname === "/faq";
 
   // Function to scroll to the footer
   const scrollToFooter = () => {
