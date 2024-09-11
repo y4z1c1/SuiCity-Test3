@@ -38,14 +38,26 @@ const Game: React.FC = () => {
     {
       type: "Office",
       field: "residental_office",
-      imageBaseUrl: "office_ai",
+      imageBaseUrl:
+        "https://bafybeihoqp3ggex3biy2e5ycmlvfj7sjts5trepil6qep76hzpovfkfpqi.ipfs.w3s.link/",
     },
-    { type: "Factory", field: "factory", imageBaseUrl: "factory_ai" },
-    { type: "House", field: "house", imageBaseUrl: "house_ai" },
+    {
+      type: "Factory",
+      field: "factory",
+      imageBaseUrl:
+        "https://bafybeierlhq6fk3obc7cmst3noeut4ikny6drjftkow3cnagdxhlohfjoa.ipfs.w3s.link/",
+    },
+    {
+      type: "House",
+      field: "house",
+      imageBaseUrl:
+        "https://bafybeihuckfc4uowxoohxrcu2dnliettxzgudzobgj77epo6bah66eag7u.ipfs.w3s.link/",
+    },
     {
       type: "Entertainment Complex",
       field: "entertainment_complex",
-      imageBaseUrl: "enter_ai",
+      imageBaseUrl:
+        "https://bafybeif2nwekmeq6hac763772y72abadfvrklaqhydmcsh27e5qyodhika.ipfs.w3s.link/",
     },
   ];
 
@@ -480,7 +492,7 @@ const Game: React.FC = () => {
           filteredNft?.content?.fields &&
           !isLoading &&
           filteredNft !== null
-            ? `url(../../public/images/${currentBuilding.imageBaseUrl}/${
+            ? `url(${currentBuilding.imageBaseUrl}/${
                 filteredNft.content.fields[currentBuilding.field]
               }.webp)`
             : "none", // Fallback to none if filteredNft is not loaded, minting, or if loading
