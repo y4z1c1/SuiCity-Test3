@@ -95,8 +95,13 @@ const Upgrade = ({
 
       const costMultiplier = gameData?.cost_multiplier || 100;
       return {
-        sui: Math.round(baseCosts.sui * (costMultiplier / 100) * 100) / 100,
-        sity: Math.round(baseCosts.sity * (costMultiplier / 100) * 100) / 100,
+        sui:
+          Math.round(
+            baseCosts.sui * Number(MIST_PER_SUI) * (costMultiplier / 100) * 100
+          ) / 100,
+        sity:
+          Math.round(baseCosts.sity * 1000 * (costMultiplier / 100) * 100) /
+          100,
       };
     },
     [buildingType, gameData]
@@ -110,15 +115,14 @@ const Upgrade = ({
         const suiBalanceResponse = await suiClient.getBalance({
           owner: String(account?.address),
         });
-        const suiBalance =
-          parseInt(suiBalanceResponse.totalBalance) / Number(MIST_PER_SUI);
+        const suiBalance = parseInt(suiBalanceResponse.totalBalance);
 
         // Fetch SITY balance
         const sityBalanceResponse = await suiClient.getBalance({
           owner: String(account?.address),
           coinType: `${ADDRESSES.TOKEN_TYPE}`,
         });
-        const sityBalance = parseInt(sityBalanceResponse.totalBalance) / 1000;
+        const sityBalance = parseInt(sityBalanceResponse.totalBalance);
 
         if (costs.sui > 0 && suiBalance < costs.sui) {
           throw new Error("Insufficient SUI balance.");
@@ -162,6 +166,7 @@ const Upgrade = ({
 
       const transactionBlock = new Transaction();
       transactionBlock.setSender(String(account?.address));
+      console.log("Upgrade with SITY:", costs.sity * Number(MIST_PER_SUI));
 
       // Handle SUI-based upgrades
       if (costs.sui > 0) {
@@ -175,7 +180,7 @@ const Upgrade = ({
             }),
             transactionBlock.object(ADDRESSES.GAME),
             transactionBlock.object(String(buildingType)),
-            coinWithBalance({ balance: costs.sui * Number(MIST_PER_SUI) }),
+            coinWithBalance({ balance: costs.sui }),
             transactionBlock.object(ADDRESSES.CLOCK),
           ],
         });
@@ -201,7 +206,7 @@ const Upgrade = ({
       // Handle SITY-based upgrades
       else if (costs.sity > 0) {
         transactionBlock.setGasBudgetIfNotSet(10000000);
-
+        console.log("Upgrade with SITY:", costs.sity * 1000);
         transactionBlock.moveCall({
           target: `${ADDRESSES.PACKAGE}::nft::upgrade_building_with_sity`,
           arguments: [
@@ -209,7 +214,7 @@ const Upgrade = ({
             transactionBlock.object(ADDRESSES.GAME),
             transactionBlock.object(String(buildingType)),
             coinWithBalance({
-              balance: costs.sity * 1000,
+              balance: costs.sity,
               type: `${ADDRESSES.TOKEN_TYPE}`,
             }),
             transactionBlock.object(ADDRESSES.CLOCK),
@@ -261,9 +266,11 @@ const Upgrade = ({
   useEffect(() => {
     const costs = getUpgradeCosts(currentLevel);
     if (costs.sui > 0) {
-      setUpgradeMessage(`Upgrade for ${costs.sui.toFixed(2)} SUI`);
+      setUpgradeMessage(
+        `Upgrade for ${(costs.sui / Number(MIST_PER_SUI)).toFixed(2)} SUI`
+      );
     } else if (costs.sity > 0) {
-      setUpgradeMessage(`Upgrade for ${costs.sity.toFixed(2)} SITY`);
+      setUpgradeMessage(`Upgrade for ${(costs.sity / 1000).toFixed(2)} SITY`);
     } else {
       setUpgradeMessage("No upgrades available");
     }

@@ -23,6 +23,7 @@ function App() {
   const [sityBalance, setSityBalance] = useState<number>(0);
   const [suiBalance, setSuiBalance] = useState<number>(0);
   const [isTransactionInProgress, setTransactionInProgress] = useState(false);
+  const [transactionType, setTransactionType] = useState<string | null>(null); // Tracks current transaction type
   const [countdown, setCountdown] = useState<number | null>(null);
   const [factoryBonusCountdown, setFactoryBonusCountdown] = useState<
     number | null
@@ -36,6 +37,15 @@ function App() {
   const provider = new SuiClient({
     url: getFullnodeUrl("testnet"),
   });
+
+  // Helper to cancel any ongoing transaction
+  const cancelCurrentTransaction = () => {
+    if (transactionType) {
+      console.log(`Cancelling ${transactionType} transaction...`);
+      setTransactionType(null);
+      setTransactionInProgress(false);
+    }
+  };
 
   // Helper to fetch balances
   const fetchBalances = useCallback(async () => {
@@ -150,9 +160,26 @@ function App() {
     isTransactionInProgress,
   ]);
 
+  const handleUpgradeClick = (buildingType: number) => {
+    cancelCurrentTransaction(); // Cancel ongoing transaction
+    setTransactionType("upgrade");
+    setTransactionInProgress(true);
+
+    // Proceed with upgrade logic...
+  };
+
+  const handleClaimClick = () => {
+    cancelCurrentTransaction(); // Cancel ongoing transaction
+    setTransactionType("claim");
+    setTransactionInProgress(true);
+
+    // Proceed with claim logic...
+  };
+
   const handleUpgradeSuccess = () => {
     setTimeout(() => {
       console.log("UPGRADE SUCCESSFUL, awaiting new data...");
+      setTransactionType(null);
       setIsAwaitingBlockchain(true);
       refreshNft();
       fetchBalances();
@@ -164,6 +191,7 @@ function App() {
     setTimeout(() => {
       console.log("CLAIM SUCCESSFUL, awaiting new data...");
       refreshNft();
+      setTransactionType(null);
       setIsAwaitingBlockchain(true);
 
       fetchBalances();
@@ -385,7 +413,7 @@ function App() {
                       <Claim
                         nft={filteredNft}
                         onClaimSuccess={handleClaimSuccess}
-                        onClick={() => setTransactionInProgress(true)}
+                        onClick={() => handleClaimClick()}
                         onError={() => {
                           setTransactionInProgress(false);
                           refreshNft();
@@ -402,7 +430,7 @@ function App() {
                             nft={filteredNft}
                             buildingType={0}
                             onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
-                            onClick={() => setTransactionInProgress(true)}
+                            onClick={() => handleUpgradeClick(0)}
                             onError={() => {
                               setTransactionInProgress(false);
                               refreshNft();
@@ -419,7 +447,7 @@ function App() {
                             nft={filteredNft}
                             buildingType={1}
                             onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
-                            onClick={() => setTransactionInProgress(true)}
+                            onClick={() => handleUpgradeClick(1)}
                             onError={() => {
                               setTransactionInProgress(false);
                               refreshNft();
@@ -436,7 +464,7 @@ function App() {
                               <ClaimFactoryBonus
                                 nft={filteredNft}
                                 onClaimSuccess={handleClaimSuccess}
-                                onClick={() => setTransactionInProgress(true)}
+                                onClick={() => handleClaimClick()}
                                 onError={() => {
                                   setTransactionInProgress(false);
                                   refreshNft();
@@ -454,7 +482,7 @@ function App() {
                             nft={filteredNft}
                             buildingType={2}
                             onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
-                            onClick={() => setTransactionInProgress(true)}
+                            onClick={() => handleUpgradeClick(2)}
                             onError={() => {
                               setTransactionInProgress(false);
                               refreshNft();
@@ -472,7 +500,7 @@ function App() {
                             nft={filteredNft}
                             buildingType={3}
                             onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
-                            onClick={() => setTransactionInProgress(true)}
+                            onClick={() => handleUpgradeClick(3)}
                             onError={() => {
                               setTransactionInProgress(false);
                               refreshNft();
