@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { ADDRESSES } from "../../addresses"; // Import the addresses
+import { ADDRESSES } from "../../addresses.ts"; // Import the addresses
 import { Transaction } from "@mysten/sui/transactions";
 import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 
@@ -14,9 +14,6 @@ const Claim = ({
   onClick: () => void;
   onError: () => void;
 }) => {
-  const [claimMessage, setClaimMessage] = useState(
-    "claim your accumulated tokens"
-  );
   const [isLoading, setIsLoading] = useState(false); // State for loading indication
   const suiClient = useSuiClient();
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
@@ -36,7 +33,7 @@ const Claim = ({
   const claim = useCallback(async () => {
     try {
       setIsLoading(true); // Set loading state
-      setClaimMessage("Processing your claim...");
+      console.log("Processing your claim...");
 
       const transactionBlock = new Transaction();
 
@@ -60,19 +57,19 @@ const Claim = ({
         {
           onSuccess: () => {
             console.log("Claim successful");
-            setClaimMessage("Claim successful! Your tokens have been claimed.");
+            console.log("Claim successful! Your tokens have been claimed.");
             onClaimSuccess(); // Call onSuccess handler
           },
           onError: (error) => {
             console.error("Claim error", error);
-            setClaimMessage("Error: Unable to claim tokens. Please try again.");
+            console.log("Error: Unable to claim tokens. Please try again.");
             onError(); // Call onError handler
           },
         }
       );
     } catch (error) {
       console.error("Claim Error:", error);
-      setClaimMessage("Error: Unable to claim tokens. Please try again.");
+      console.log("Error: Unable to claim tokens. Please try again.");
       onError(); // Catch and handle any outer error
     } finally {
       setIsLoading(false); // Reset loading state
@@ -80,12 +77,11 @@ const Claim = ({
   }, [nft, signAndExecute, onClaimSuccess, onError]);
 
   useEffect(() => {
-    setClaimMessage("claim your accumulated tokens");
+    console.log("claim your accumulated tokens");
   }, []);
 
   return (
     <div className="flex flex-col gap-6">
-      <p>{claimMessage}</p>
       <button
         className={`mx-auto px-5 py-3 border border-transparent text-base font-medium rounded-md text-white ${
           isLoading ? "bg-gray-500" : "bg-indigo-600 hover:bg-indigo-700"

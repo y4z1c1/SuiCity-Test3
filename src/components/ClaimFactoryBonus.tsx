@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ADDRESSES } from "../../addresses";
+import { ADDRESSES } from "../../addresses.ts";
 import { Transaction } from "@mysten/sui/transactions";
 import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 
@@ -16,7 +16,6 @@ const ClaimFactoryBonus = ({
 }) => {
   const suiClient = useSuiClient();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [bonusMessage, setBonusMessage] = useState("claim your factory bonus");
 
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
     execute: async ({ bytes, signature }) =>
@@ -54,19 +53,19 @@ const ClaimFactoryBonus = ({
         {
           onSuccess: (result) => {
             console.log("Claim successful:", result);
-            setBonusMessage("Bonus claimed successfully!");
+            console.log("Bonus claimed successfully!");
             onClaimSuccess();
           },
           onError: (error) => {
             console.error("Claim failed:", error);
-            setBonusMessage("Failed to claim bonus. Please try again.");
+            console.log("Failed to claim bonus. Please try again.");
             onError();
           },
         }
       );
     } catch (error) {
       console.error("Claim Error:", error);
-      setBonusMessage("An error occurred. Please try again.");
+      console.log("An error occurred. Please try again.");
       onError();
     } finally {
       setIsProcessing(false); // Re-enable the button
@@ -74,12 +73,8 @@ const ClaimFactoryBonus = ({
   }, [nft, signAndExecute, onClaimSuccess, onError]);
 
   return (
-    <div className="flex flex-col gap-6">
-      <p>{bonusMessage}</p>
+    <div>
       <button
-        className={`mx-auto px-5 py-3 border border-transparent text-base font-medium rounded-md text-white ${
-          isProcessing ? "bg-gray-500" : "bg-indigo-600 hover:bg-indigo-700"
-        }`}
         onClick={() => {
           onClick(); // Notify parent component
           claimBonus(); // Start the bonus claim process

@@ -1,0 +1,92 @@
+.footer {
+  width: 100%;
+  padding: 20px 20px 0px 20px;
+  z-index: 1000; /* Ensure it stays on top */
+  background-color: transparent; /* Optional: Ensures no visual glitches with blur */
+  transition: all 0.1s ease-in-out; /* Smooth transition */
+  box-sizing: border-box;
+  margin-top: 10px;
+}
+
+.footer-icon {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-right: 5px;
+}
+
+.footer-icon:hover {
+  color: rgba(
+    255,
+    255,
+    255
+  ); /* Change color on hover (for example, Twitter blue) */
+  transition: color 0.2s ease-in-out;
+}
+
+.footer-links {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+}
+
+/* Make the Discord link non-clickable and show a tooltip on hover */
+.discord-soon {
+  pointer-events: none; /* Disables clicking */
+  color: grey; /* Grayscale the icon */
+}
+
+.discord-soon:hover .footer-icon {
+  color: #ffffff; /* Discord blue on hover, if desired */
+}
+
+.app-content {
+  min-height: 100%; /* Ensure content takes full height, so footer stays at the bottom */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensure proper spacing between header, content, and footer */
+  transition: filter 0.3s ease-in-out; /* Smooth blur/unblur transition */
+}
+
+.blurred {
+  filter: blur(8px);
+  transition: filter 0.1s ease-in-out;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.footer-links li a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+}
+
+.footer-links li a:hover {
+  color: rgba(255, 255, 255, 1);
+}
+
+ul {
+  display: block;
+  list-style-type: disc;
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 0px;
+  unicode-bidi: isolate;
+}
+
+.footer-reserved {
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.6rem;
+  text-align: center;
+  font-family: "Helvetica Light";
+}

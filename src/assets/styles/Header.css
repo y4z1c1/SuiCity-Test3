@@ -1,0 +1,95 @@
+/* Default styles for all browsers */
+.header {
+  text-align: center;
+  padding: 60px 0px 0px 0px;
+}
+
+.logo-title-container {
+  display: flex;
+  flex-direction: column; /* Stacks the logo above the text */
+  justify-content: center;
+  align-items: center;
+  gap: 4px; /* Space between logo and text */
+  position: relative; /* Needed to position .specialLeft and .specialRight */
+}
+
+.logo {
+  height: 160px; /* Increase the logo size */
+}
+
+.suicity-title {
+  margin-top: -10px;
+  margin-bottom: 0px;
+  font-size: 3rem; /* Keep the SuiCity text large */
+  color: white;
+  font-family: "Fashion Norsa", sans-serif;
+  text-shadow: 2px 4px 0px rgba(0, 0, 0, 0.4); /* Default shadow */
+}
+
+.title {
+  width: 20%;
+  height: auto;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%; /* Make the navbar full width */
+  display: flex;
+  justify-content: center; /* Horizontally center the nav content */
+  background-color: rgba(0, 0, 0, 0.4); /* Add some transparency */
+  backdrop-filter: blur(10px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(10px); /* Safari-specific blur effect */
+
+  z-index: 1000; /* Ensure it's on top of other elements */
+  padding: 10px 0; /* Add some padding for better visibility */
+}
+
+.nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-size: 0.8rem;
+
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.nav-links a:hover {
+  color: rgb(255, 255, 255, 1);
+}
+
+@media (max-width: 768px) {
+  .suicity-title {
+    font-size: 2rem; /* Decrease the font size for smaller screens */
+    margin-top: -5px; /* Adjust the margin for smaller screens */
+  }
+
+  .logo {
+    height: 120px; /* Decrease the logo size for smaller screens */
+  }
+
+  .title {
+    width: 30%; /* Adjust the width for smaller screens */
+  }
+}
+
+@media (max-width: 375px) {
+  .suicity-title {
+    font-size: 2rem; /* Decrease the font size for smaller screens */
+  }
+
+  .logo {
+    height: 100px; /* Decrease the logo size for smaller screens */
+  }
+
+  .title {
+    width: 50%; /* Adjust the width for smaller screens */
+  }
+}

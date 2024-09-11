@@ -23,8 +23,6 @@ const Upgrade = ({
   onError: () => void;
   gameData: any; // Add gameData as a prop
 }) => {
-  const [upgradeMessage, setUpgradeMessage] =
-    useState<string>("Upgrade available");
   const [isProcessing, setIsProcessing] = useState(false);
   const account = useCurrentAccount();
   const suiClient = useSuiClient();
@@ -106,7 +104,10 @@ const Upgrade = ({
     },
     [buildingType, gameData]
   );
-
+  const costs = useMemo(
+    () => getUpgradeCosts(currentLevel),
+    [currentLevel, getUpgradeCosts]
+  );
   // Function to check user's balance before initiating transaction
   const checkUserBalance = useCallback(
     async (costs: { sui: number; sity: number }) => {
@@ -135,9 +136,9 @@ const Upgrade = ({
       } catch (error) {
         console.error("Error checking user balance:", error);
         if (error instanceof Error) {
-          setUpgradeMessage(error.message || "Error checking balance.");
+          console.log(error.message || "Error checking balance.");
         } else {
-          setUpgradeMessage("Error checking balance.");
+          console.log("Error checking balance.");
         }
         setIsProcessing(false); // Reset processing on error
         throw error; // Re-throw the error to be caught in the upgrade function
@@ -150,7 +151,7 @@ const Upgrade = ({
   const upgrade = useCallback(async () => {
     try {
       setIsProcessing(true); // Set processing state
-      setUpgradeMessage("Processing your upgrade...");
+      console.log("Processing your upgrade...");
 
       if (!nft?.content?.fields) {
         console.error(
@@ -190,13 +191,13 @@ const Upgrade = ({
           {
             onSuccess: () => {
               console.log("Upgrade successful with SUI");
-              setUpgradeMessage("Upgrade successful! SUI used.");
+              console.log("Upgrade successful! SUI used.");
               onUpgradeSuccess();
               setIsProcessing(false); // Reset processing state after success
             },
             onError: (error) => {
               console.error("Upgrade error with SUI", error);
-              setUpgradeMessage("Error: Unable to process SUI transaction.");
+              console.log("Error: Unable to process SUI transaction.");
               setIsProcessing(false); // Reset processing state on error
               onError();
             },
@@ -226,13 +227,13 @@ const Upgrade = ({
           {
             onSuccess: () => {
               console.log("Upgrade successful with SITY");
-              setUpgradeMessage("Upgrade successful! SITY used.");
+              console.log("Upgrade successful! SITY used.");
               onUpgradeSuccess();
               setIsProcessing(false); // Reset processing state after success
             },
             onError: (error) => {
               console.error("Upgrade error with SITY", error);
-              setUpgradeMessage("Error: Unable to process SITY transaction.");
+              console.log("Error: Unable to process SITY transaction.");
               setIsProcessing(false); // Reset processing state on error
               onError();
             },
@@ -242,11 +243,9 @@ const Upgrade = ({
     } catch (error) {
       console.error("Upgrade Error:", error);
       if (error instanceof Error) {
-        setUpgradeMessage(
-          error.message || "Error occurred during the upgrade."
-        );
+        console.log(error.message || "Error occurred during the upgrade.");
       } else {
-        setUpgradeMessage("Error occurred during the upgrade.");
+        console.log("Error occurred during the upgrade.");
       }
       setIsProcessing(false); // Reset processing state on general error
       onError();
@@ -266,31 +265,35 @@ const Upgrade = ({
   useEffect(() => {
     const costs = getUpgradeCosts(currentLevel);
     if (costs.sui > 0) {
-      setUpgradeMessage(
+      console.log(
         `Upgrade for ${(costs.sui / Number(MIST_PER_SUI)).toFixed(2)} SUI`
       );
     } else if (costs.sity > 0) {
-      setUpgradeMessage(`Upgrade for ${(costs.sity / 1000).toFixed(2)} SITY`);
+      console.log(`Upgrade for ${(costs.sity / 1000).toFixed(2)} SITY`);
     } else {
-      setUpgradeMessage("No upgrades available");
+      console.log("No upgrades available");
     }
   }, [currentLevel, getUpgradeCosts]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div>
       {currentLevel < 7 ? (
         <>
           <button
-            className="mx-auto px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
             onClick={() => {
               onClick(); // Notify parent component to pause accumulation
               upgrade(); // Trigger the upgrade logic
             }}
             disabled={isProcessing || !nft?.content?.fields} // Disable button if processing or nft is not ready
           >
-            {isProcessing ? "Processing..." : "Upgrade"}
+            {isProcessing
+              ? "Processing..."
+              : costs.sui > 0
+              ? `Upgrade for ${(costs.sui / Number(MIST_PER_SUI)).toFixed(
+                  2
+                )} $SUI`
+              : `Upgrade for ${(costs.sity / 1000).toFixed(2)} $SITY`}
           </button>
-          <p>{upgradeMessage}</p>
         </>
       ) : (
         <p>Max level reached</p> // Message when the level is maxed out

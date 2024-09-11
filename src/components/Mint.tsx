@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { ADDRESSES } from "../../addresses";
+import { ADDRESSES } from "../../addresses.ts";
 import { Transaction } from "@mysten/sui/transactions";
 import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 

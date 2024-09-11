@@ -1,157 +1,89 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* Apply the blur effect to the entire page when the modal is open */
+/* Smooth transition for blurring/unblurring */
+
+@import url("./assets/styles/fonts.css"); /* Adjust path if needed */
+
+.parallax {
+  transition: transform 0.3s ease-out;
+  will-change: transform;
 }
 
-body {
-  font-family: "Courier New", Courier, monospace;
-  margin: 0;
-  background-color: #242424;
-  color: rgba(255, 255, 255, 0.87);
+.blurred {
+  filter: blur(8px);
+  transition: filter 0.3s ease-in-out;
 }
 
-p {
-  font-size: 100%;
+.app-content {
+  transition: filter 0.3s ease-in-out; /* Apply transition for smooth unblur effect */
 }
 
-.upperDiv {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 70%;
-}
-
-.connectButton {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.centerDiv {
-  text-align: center;
-}
-
-.nft-container {
+/* Optional: Ensure the modal stays above the blurred content */
+.overlay {
+  background-color: rgba(255, 255, 255, 0.5); /* Dark overlay */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: white;
+  width: 300px;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  position: absolute;
+  z-index: 1000;
+}
+
+.close-modal-button {
   margin-top: 20px;
-}
-
-.nft-container h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.nft-container img {
-  width: 250px;
-  height: 250px;
-  object-fit: cover;
+  padding: 10px 20px;
+  background-color: #2d2dff;
+  color: white;
+  border: none;
+  cursor: pointer;
   border-radius: 5px;
-  margin-bottom: 10px;
 }
 
-.nft-container p {
-  margin-bottom: 1px;
-  margin-top: 1px;
-}
-
-.building-grid {
-  display: flex;
-
-  grid-gap: 10px;
-  width: 60%;
-  padding: 1%;
-}
-
-.building-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border: 1px solid #000000;
-  border-radius: 8px;
-  background-color: #00000013;
-  width: 100%;
-}
-
-.building-item p {
-  font-size: 70%;
+.modal h2 {
+  color: #1a1a72;
   font-weight: bold;
+}
+
+.guide-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.guide-link-text {
+  font-size: 1.5rem;
+  color: white;
+  text-decoration: underline;
+}
+
+.guide-link-text:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+h1 {
+  font-family: "Fashion Norsa", "Helvetica", sans-serif;
+}
+h2 {
+  font-size: 2.5rem; /* Keep the SuiCity text large */
+}
+h2 {
+  font-family: "Helvetica Bold", helvetica;
+}
+
+span {
+  font-family: "Helvetica", sans-serif;
 }
 
 button {
-  padding: 5px;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 100%;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-button:disabled {
-  background-color: #999;
-  cursor: not-allowed;
-}
-
-.AccountDropdownMenu_switchAccountMenuItem__div2ql4,
-.AccountDropdownMenu_menuItem__div2ql3 {
-  padding: 5px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  font-size: 100%;
-  cursor: pointer;
-}
-
-.ConnectModal_overlay__gz8z90 {
-  width: 12%;
-  margin: auto;
-  color: white;
-}
-
-.Heading__1aa835k0 {
-  text-align: left;
-}
-
-.ConnectModal_overlay__gz8z90 img {
-  width: 30px;
-  margin-right: 10px;
-  text-align: left;
-}
-
-.ConnectModal_overlay__gz8z90 li {
-  list-style: none;
-  width: 100%;
-}
-
-.WalletListItem_walletItem__1dqqtqs1 {
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-.ConnectModal_overlay__gz8z90 h2,
-.ConnectModal_title__gz8z91,
-.Heading_headingVariants_size_lg__1aa835k3
-  .Heading_headingVariants_weight_bold__1aa835k6,
-.ConnectModal_title__gz8z91i,
-.ConnectModal_whatIsAWalletButton__gz8z93,
-.WhatIsAWallet_content__1ktpkq91,
-.IconButton_container__s6n7bq0 {
-  display: none;
-}
-
-.InfoSection_container__1wtioi70 {
-  background-color: #999;
-}
-
-.ConnectModal_selectedViewContainer__gz8z95 {
-  display: none;
+  font-family: "Helvetica", sans-serif;
 }

@@ -9,6 +9,8 @@ import {
   WalletProvider,
 } from "@mysten/dapp-kit";
 import { getFullnodeUrl } from "@mysten/sui/client";
+import "@mysten/dapp-kit/dist/index.css";
+import { cityTheme } from "./assets/styles/Themes";
 
 const { networkConfig } = createNetworkConfig({
   localnet: { url: getFullnodeUrl("localnet") },
@@ -20,7 +22,7 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
-      <WalletProvider autoConnect={true}>
+      <WalletProvider autoConnect={true} theme={cityTheme}>
         <StrictMode>
           <App />
         </StrictMode>
