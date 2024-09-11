@@ -154,7 +154,6 @@ function App() {
     setTimeout(() => {
       console.log("UPGRADE SUCCESSFUL, awaiting new data...");
       setIsAwaitingBlockchain(true);
-      0xb888509b625953463e775103797a9c764da531484e680f27e2c02c8e9b136da8;
       refreshNft();
       fetchBalances();
       setTransactionInProgress(false);
