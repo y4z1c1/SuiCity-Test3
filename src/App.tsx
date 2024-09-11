@@ -164,6 +164,7 @@ function App() {
     cancelCurrentTransaction(); // Cancel ongoing transaction
     setTransactionType("upgrade");
     setTransactionInProgress(true);
+    console.log("UPGRADE CLICKED", buildingType);
 
     // Proceed with upgrade logic...
   };
