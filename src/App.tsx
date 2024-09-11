@@ -229,41 +229,66 @@ function App() {
     (nft: any) => {
       if (!nft || !gameData) return 0;
 
-      const lastClaimedTimestamp = nft.content.fields?.last_accumulated;
+      // Fetch relevant fields from the NFT data
+      const lastAccumulatedTimestamp =
+        nft.content.fields?.last_accumulated || 0;
+      const lastClaimedTimestamp = nft.content.fields?.last_claimed || 0;
       const residentialOfficeLevel = nft.content.fields?.residental_office || 0;
       const houseLevel = nft.content.fields?.house || 0;
       const entertainmentComplexLevel =
         nft.content.fields?.entertainment_complex || 0;
-      const currentTime = Date.now();
-      const elapsedTime = currentTime - lastClaimedTimestamp;
 
+      // Get current time and calculate time elapsed
+      const currentTime = Date.now();
+      const elapsedTime = currentTime - lastAccumulatedTimestamp;
+      const elapsedTimeFromClaim = currentTime - lastClaimedTimestamp;
+
+      // Calculate the maximum accumulation period based on house and entertainment levels
       const maxAccumulationPeriod = calculateMaxAccumulation(
         houseLevel,
         entertainmentComplexLevel
       );
-      const effectiveElapsedTime = Math.min(elapsedTime, maxAccumulationPeriod);
+
+      // Calculate the effective elapsed time by limiting to the max accumulation period
+      const effectiveElapsedTime = Math.min(
+        elapsedTime,
+        Math.max(0, maxAccumulationPeriod - elapsedTimeFromClaim)
+      );
+
+      // If no effective time has passed, return 0
+      if (effectiveElapsedTime <= 0) return 0;
+
+      // Fetch the accumulation speed based on the residential office level
       const accumulationPerHour =
         gameData.accumulation_speeds[residentialOfficeLevel];
+
+      // Calculate the accumulated SITY based on effective elapsed time (in hours)
       const accumulatedSity =
         (effectiveElapsedTime / (3600 * 1000)) * accumulationPerHour;
 
+      // Log and return accumulated SITY (adjust division by 100 as needed)
       console.log("Accumulated SITY:", accumulatedSity);
       return accumulatedSity / 100;
     },
     [gameData]
   );
 
+  // Function to calculate the maximum accumulation period
   const calculateMaxAccumulation = useCallback(
     (houseLevel: number, entertainmentLevel: number): number => {
       const houseLevelInt = parseInt(String(houseLevel), 10);
       const entertainmentLevelInt = parseInt(String(entertainmentLevel), 10);
       const totalLevel = houseLevelInt + entertainmentLevelInt;
 
+      // Base accumulation period is 3 hours
       if (totalLevel === 0) {
-        return (3 * 3600 * 1000) / gameData.speed;
-      } else if (totalLevel <= 7) {
+        return (3 * 3600 * 1000) / gameData.speed; // 3 hours in milliseconds
+      }
+      // Adds 1 hour per level if total level is <= 7
+      else if (totalLevel <= 7) {
         return ((3 + totalLevel) * 3600 * 1000) / gameData.speed;
       }
+      // Adds 2 hours per level after level 7
       return ((10 + 2 * (totalLevel - 7)) * 3600 * 1000) / gameData.speed;
     },
     [gameData]
