@@ -480,7 +480,7 @@ const Game: React.FC = () => {
           filteredNft?.content?.fields &&
           !isLoading &&
           filteredNft !== null
-            ? `url(/public/images/${currentBuilding.imageBaseUrl}/${
+            ? `url(../../public/images/${currentBuilding.imageBaseUrl}/${
                 filteredNft.content.fields[currentBuilding.field]
               }.webp)`
             : "none", // Fallback to none if filteredNft is not loaded, minting, or if loading
