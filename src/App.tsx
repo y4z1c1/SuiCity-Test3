@@ -90,6 +90,7 @@ function App() {
       houseLevel,
       entertainmentComplexLevel
     );
+    console.log("Max Accumulation:", maxTime);
     const currentTime = Date.now();
     const lastClaimedTimestamp = nft.content.fields?.last_claimed;
     const elapsedTime = currentTime - lastClaimedTimestamp;
@@ -249,11 +250,20 @@ function App() {
         entertainmentComplexLevel
       );
 
+      console.log("Max accumulation period:", maxAccumulationPeriod);
+
       // Calculate the effective elapsed time by limiting to the max accumulation period
-      const effectiveElapsedTime = Math.min(
-        elapsedTime,
-        Math.max(0, maxAccumulationPeriod - elapsedTimeFromClaim)
-      );
+      let effectiveElapsedTime;
+
+      if (elapsedTimeFromClaim <= maxAccumulationPeriod) {
+        effectiveElapsedTime = elapsedTime;
+      } else {
+        effectiveElapsedTime =
+          maxAccumulationPeriod -
+          (lastAccumulatedTimestamp - lastClaimedTimestamp);
+      }
+
+      console.log("Effective elapsed time:", effectiveElapsedTime);
 
       // If no effective time has passed, return 0
       if (effectiveElapsedTime <= 0) return 0;
@@ -263,12 +273,14 @@ function App() {
         gameData.accumulation_speeds[residentialOfficeLevel];
 
       // Calculate the accumulated SITY based on effective elapsed time (in hours)
-      const accumulatedSity =
-        (effectiveElapsedTime / (3600 * 1000)) * accumulationPerHour;
+      const accumulatedSityMs =
+        effectiveElapsedTime * accumulationPerHour * gameData.speed;
+
+      const accumulatedSity = accumulatedSityMs / 3600000;
 
       // Log and return accumulated SITY (adjust division by 100 as needed)
       console.log("Accumulated SITY:", accumulatedSity);
-      return accumulatedSity / 100;
+      return accumulatedSity / 1000;
     },
     [gameData]
   );
@@ -276,8 +288,9 @@ function App() {
   // Function to calculate the maximum accumulation period
   const calculateMaxAccumulation = useCallback(
     (houseLevel: number, entertainmentLevel: number): number => {
-      const totalLevel = houseLevel + entertainmentLevel;
-
+      const totalLevel =
+        parseInt(houseLevel.toString()) +
+        parseInt(entertainmentLevel.toString());
       // Base accumulation period is 3 hours
       if (totalLevel === 0) {
         return (3 * 3600 * 1000) / gameData.speed;
