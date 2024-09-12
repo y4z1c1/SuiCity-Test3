@@ -31,7 +31,8 @@ const Game: React.FC = () => {
   const accumulationIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState<number>(0); // Track current building in the carousel
-
+  const mintBackgroundUrl =
+    "https://bafybeicujqa4oiif4o7gyq6niwltib32arxyrp43uqavfo7bjfnwq3cfrq.ipfs.w3s.link/mint.webp";
   const buildings = [
     {
       type: "R. Office",
@@ -549,14 +550,21 @@ const Game: React.FC = () => {
       style={{
         backgroundImage:
           connectionStatus === "connected" && filteredNft?.content?.fields
-            ? // Apply only when loaded
+            ? // Apply the background for NFT-loaded state
               `url(${currentBuilding.imageBaseUrl}/${
                 filteredNft.content.fields[currentBuilding.field]
               }.webp)`
-            : "none", // Show none until image is fully loaded
-        backgroundPosition: isTouchDevice
-          ? `${backgroundPosition.x}% ${backgroundPosition.y}%`
-          : `${mousePosition.x}% ${mousePosition.y}%`,
+            : `url(${mintBackgroundUrl})`, // Use the minting background when filteredNft is null
+        backgroundPosition:
+          connectionStatus === "connected" && filteredNft?.content?.fields
+            ? isTouchDevice
+              ? `${backgroundPosition.x}% ${backgroundPosition.y}%`
+              : `${mousePosition.x}% ${mousePosition.y}%`
+            : "50% 25%", // Fixed position in case of minting
+        backgroundSize:
+          connectionStatus === "connected" && filteredNft?.content?.fields
+            ? "cover" // Full coverage when NFT is loaded
+            : "100%", // Fixed size for minting background
         backgroundColor:
           connectionStatus !== "connected" || isLoading || filteredNft === null
             ? "white"
@@ -734,13 +742,15 @@ const Game: React.FC = () => {
                 <button
                   onClick={() => {
                     const population = calculatePopulation(filteredNft);
-                    const sityBalance = (
+                    const sity = (
                       accumulatedSity +
                       filteredNft.content.fields.balance / 1000
                     ).toFixed(2);
                     const tweetText = `I just reached a population of ${formatBalance(
-                      population + parseInt(sityBalance)
-                    )} on SuiCity with ${sityBalance} $SITY! 🚀 Check out the game now! @SuiCityP2E`;
+                      population + parseInt(sity)
+                    )} on SuiCity with ${formatBalance(
+                      Number(sityBalance) + parseInt(sity)
+                    )} $SITY! 🚀 Check out the game now! @SuiCityP2E`;
                     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
                       tweetText
                     )}&url=https://suicityp2e.com`;
