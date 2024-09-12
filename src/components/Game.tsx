@@ -6,11 +6,7 @@ import Claim from "./Claim";
 import ClaimFactoryBonus from "./ClaimFactoryBonus";
 import { ADDRESSES } from "../../addresses";
 import { SuiClient, getFullnodeUrl } from "@mysten/sui/client";
-import {
-  ConnectButton,
-  useCurrentWallet,
-  useCurrentAccount,
-} from "@mysten/dapp-kit";
+import { useCurrentWallet, useCurrentAccount } from "@mysten/dapp-kit";
 import { MIST_PER_SUI } from "@mysten/sui/utils";
 
 const Game: React.FC = () => {
@@ -36,28 +32,28 @@ const Game: React.FC = () => {
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState<number>(0); // Track current building in the carousel
   const buildings = [
     {
-      type: "Office",
+      type: "R. Office",
       field: "residental_office",
       imageBaseUrl:
-        "https://bafybeihoqp3ggex3biy2e5ycmlvfj7sjts5trepil6qep76hzpovfkfpqi.ipfs.w3s.link/",
+        "https://bafybeicirp2yeyxcsta4y4ch4vqslapizvrowwi7enepqvq3s4gncpuwlm.ipfs.w3s.link/",
     },
     {
       type: "Factory",
       field: "factory",
       imageBaseUrl:
-        "https://bafybeierlhq6fk3obc7cmst3noeut4ikny6drjftkow3cnagdxhlohfjoa.ipfs.w3s.link/",
+        "https://bafybeih6ncjg3sqkm5jhot7m6brgmub255gdlys6l36lrur5bxgfenswx4.ipfs.w3s.link/",
     },
     {
       type: "House",
       field: "house",
       imageBaseUrl:
-        "https://bafybeihuckfc4uowxoohxrcu2dnliettxzgudzobgj77epo6bah66eag7u.ipfs.w3s.link/",
+        "https://bafybeiemoqvgqghpcikmbizqfsh6ujod4m5yuvv3k5lpz43333sjqki7oe.ipfs.w3s.link/",
     },
     {
-      type: "Entertainment Complex",
+      type: "E. Complex",
       field: "entertainment_complex",
       imageBaseUrl:
-        "https://bafybeif2nwekmeq6hac763772y72abadfvrklaqhydmcsh27e5qyodhika.ipfs.w3s.link/",
+        "https://bafybeibfvxcfwlmpruudsbnl42gtplthi2s7c6yvdbqybz4o7hpd5fkcie.ipfs.w3s.link/",
     },
   ];
 
@@ -78,10 +74,10 @@ const Game: React.FC = () => {
     // If the mouse is within the top 20% or bottom 20%, adjust the background position vertically
     if (mouseYPercent < 25) {
       newY = mousePosition.y - 50 / mouseYPercent; // Move background up when mouse is at the top
-      if (newY < 0) newY = 0; // Clamp the value to 0
-    } else if (mouseYPercent > 90) {
+      if (newY < 25) newY = 25; // Clamp the value to 0
+    } else if (mouseYPercent > 80) {
       newY = mousePosition.y + 50 / mouseYPercent; // Move background down when mouse is at the bottom
-      if (newY > 100) newY = 100; // Clamp the value to 100
+      if (newY > 95) newY = 95; // Clamp the value to 100
     } else {
       newY = 50;
     }
@@ -278,6 +274,17 @@ const Game: React.FC = () => {
       setTransactionInProgress(false);
     }, 2000); // 2000 milliseconds = 2 seconds
     console.log("OUT");
+  };
+
+  const handleMintSuccess = () => {
+    setTimeout(() => {
+      console.log("MINT SUCCESSFUL, awaiting new data...");
+      refreshNft();
+      setTransactionType(null);
+      setIsAwaitingBlockchain(true);
+      fetchBalances();
+      setTransactionInProgress(false);
+    }, 2000); // 2000 milliseconds
   };
 
   // Helper to refresh NFTs
@@ -503,34 +510,6 @@ const Game: React.FC = () => {
             : "transparent", // Show white background if not connected, minting, or loading
       }}
     >
-      <div className="upper-div">
-        {/* Connect Button and Connected Status */}
-        {connectionStatus === "connected" ? (
-          <>
-            {/* Display balance information in columns */}
-            <div className="balance-columns">
-              <div className="balance-sui">
-                <p>{`${formatBalance(suiBalance)} $SUI`}</p>
-              </div>
-
-              <div className="balance-sity">
-                <p>{`${formatBalance(sityBalance)} $SITY`}</p>
-              </div>
-            </div>
-
-            {filteredNft ? <h2>{filteredNft.content.fields.name}</h2> : null}
-
-            {/* Connect Wallet Button */}
-            <ConnectButton />
-          </>
-        ) : (
-          <>
-            <span></span>
-            <ConnectButton />
-          </>
-        )}
-      </div>
-
       {/* Check if the wallet is connected */}
       {connectionStatus === "connected" ? (
         <>
@@ -539,6 +518,56 @@ const Game: React.FC = () => {
             <p>Loading your NFTs and game data...</p>
           ) : filteredNft ? (
             <>
+              <div className="upper-div">
+                {/* Connect Button and Connected Status */}
+                {connectionStatus === "connected" ? (
+                  <>
+                    <div className="balance-columns">
+                      <div className="balance-bar">
+                        <img
+                          src="https://assets.staticimg.com/cms/media/8uGGQmvkfODw7cnx3GuekBb404A2bTYUcTjBklHja.png"
+                          alt="SUI logo"
+                          className="balance-bar-icon"
+                        />
+                        <div className="balance-bar-track">
+                          <div
+                            className="balance-bar-fill balance-bar-fill-sui"
+                            style={{ width: `${suiBalance * 10}%` }}
+                          ></div>
+                          <div className="balance-amount">{`${formatBalance(
+                            suiBalance
+                          )}  $SUI`}</div>
+                        </div>
+                      </div>
+                      <div className="balance-bar">
+                        <img
+                          src="https://sapphire-hollow-dormouse-952.mypinata.cloud/ipfs/QmZrX44HzwEjtGEk7q9o3q4upSD6UJWmZG6dGiPht3uLyA/"
+                          alt="SITY logo"
+                          className="balance-bar-icon"
+                        />
+                        <div className="balance-bar-track">
+                          <div
+                            className="balance-bar-fill balance-bar-fill-sity"
+                            style={{ width: `${sityBalance / 100}%` }}
+                          ></div>
+                          <div className="balance-amount">{`${formatBalance(
+                            sityBalance
+                          )}  $SITY`}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="nft-title">
+                      {filteredNft ? (
+                        <h2>{filteredNft.content.fields.name}</h2>
+                      ) : null}
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </div>
+
               {/* Left Arrow */}
               <button onClick={handlePreviousBuilding} className="arrow-left">
                 &#8592;
@@ -550,25 +579,13 @@ const Game: React.FC = () => {
                 <h2>{`${currentBuilding.type} Level: ${
                   filteredNft.content.fields[currentBuilding.field]
                 }`}</h2>
-                <Upgrade
-                  nft={filteredNft}
-                  buildingType={currentBuildingIndex}
-                  onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
-                  onClick={() => handleUpgradeClick(currentBuildingIndex)}
-                  onError={() => {
-                    setTransactionInProgress(false);
-                    refreshNft();
-                  }}
-                  gameData={gameData}
-                />
+
                 {currentBuilding.type === "Factory" ? (
                   <>
                     <div>
                       {factoryBonusCountdown !== null &&
                       factoryBonusCountdown > 0 ? (
-                        <p>{`Factory bonus countdown: ${formatTime(
-                          factoryBonusCountdown
-                        )}`}</p>
+                        <p>{`${formatTime(factoryBonusCountdown)}`}</p>
                       ) : (
                         <ClaimFactoryBonus
                           nft={filteredNft}
@@ -583,6 +600,17 @@ const Game: React.FC = () => {
                     </div>
                   </>
                 ) : null}
+                <Upgrade
+                  nft={filteredNft}
+                  buildingType={currentBuildingIndex}
+                  onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
+                  onClick={() => handleUpgradeClick(currentBuildingIndex)}
+                  onError={() => {
+                    setTransactionInProgress(false);
+                    refreshNft();
+                  }}
+                  gameData={gameData}
+                />
               </div>
 
               <div className="accumulated">
@@ -603,11 +631,11 @@ const Game: React.FC = () => {
               </div>
 
               <div className="population">
-                <h2>{`Population: ${(
+                <h2>{`Population: ${formatBalance(
                   calculatePopulation(filteredNft) +
-                  accumulatedSity +
-                  filteredNft.content.fields.balance / 1000
-                ).toFixed(0)}`}</h2>
+                    accumulatedSity +
+                    filteredNft.content.fields.balance / 1000
+                )}`}</h2>
 
                 <button
                   onClick={() => {
@@ -637,7 +665,7 @@ const Game: React.FC = () => {
             </>
           ) : (
             <div className="mint">
-              <Mint onMintSuccessful={() => {}} />
+              <Mint onMintSuccessful={handleMintSuccess} />
             </div>
           )}
         </>

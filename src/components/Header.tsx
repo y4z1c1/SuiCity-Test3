@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../assets/styles/Header.css";
 import { Link, useLocation } from "react-router-dom";
+import { ConnectButton } from "@mysten/dapp-kit";
 
 const Header: React.FC = () => {
   const [isSafari, setIsSafari] = useState(false);
@@ -58,56 +59,58 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <div className="navbar" style={{ backgroundColor: navBackColor }}>
-        <nav>
-          <ul className="nav-links">
-            <li>
-              {/* If already on the main page, scroll up, else use Link */}
-              {location.pathname === "/" ? (
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToTop();
-                  }}
-                >
-                  Home
-                </a>
-              ) : (
-                <Link to="/">Home</Link>
-              )}
-            </li>
-            <li>
-              <a href="https://docs.suicityp2e.com" target="_blank">
-                {" "}
-                Docs
-              </a>
-            </li>
-            <li>
-              <Link to="/faq">FAQ</Link>
-            </li>
-            <li>
-              {/* Scroll to footer when Contact Us is clicked */}
+        <div className="logo-title-container">
+          {/* Conditionally render the logo only if it's not the FAQ page */}
+          {isSafari ? (
+            <img src="/title.png" alt="SuiCity Logo" className="title" />
+          ) : (
+            <h1 className="suicity-title">SuiCity</h1>
+          )}
+        </div>
+
+        <ul className="nav-links">
+          <li>
+            {/* If already on the main page, scroll up, else use Link */}
+            {location.pathname === "/" ? (
               <a
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToFooter();
+                  scrollToTop();
                 }}
               >
-                Contact
+                Home
               </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+            ) : (
+              <Link to="/">Home</Link>
+            )}
+          </li>
+          <li>
+            <a href="https://docs.suicityp2e.com" target="_blank">
+              {" "}
+              Docs
+            </a>
+          </li>
+          <li>
+            <Link to="/faq">FAQ</Link>
+          </li>
+          <li>
+            {/* Scroll to footer when Contact Us is clicked */}
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToFooter();
+              }}
+            >
+              Contact
+            </a>
+          </li>
+        </ul>
 
-      <div className="logo-title-container">
-        {/* Conditionally render the logo only if it's not the FAQ page */}
-        {isSafari ? (
-          <img src="/title.png" alt="SuiCity Logo" className="title" />
-        ) : (
-          <h1 className="suicity-title">SuiCity</h1>
-        )}
+        <div className="connectButton">
+          <ConnectButton />
+        </div>
       </div>
     </header>
   );

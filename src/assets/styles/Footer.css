@@ -5,7 +5,7 @@
   background-color: transparent; /* Optional: Ensures no visual glitches with blur */
   transition: all 0.1s ease-in-out; /* Smooth transition */
   box-sizing: border-box;
-  margin-top: 10px;
+  height: 6vh;
 }
 
 .footer-icon {

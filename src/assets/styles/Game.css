@@ -1,22 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 .game-container {
   background-color: white;
   color: rgb(0, 0, 0, 0.8);
   border-radius: 8px;
   margin: 0 auto;
   display: flex;
-  width: 80%;
+  width: 70%;
   height: 80vh;
   flex-direction: column;
   align-items: center;
   box-shadow: 10px 20px 0px rgba(0, 0, 0, 0.4);
   position: relative;
-  margin-bottom: 60px;
   box-sizing: border-box;
-  margin-top: 1%;
   overflow: hidden;
   background-size: 105%; /* Zoom in the background */
   background-position: center;
   transition: background-position 0.8s ease-in-out; /* Smooth movement */
+  margin-top: 3.5vh;
+  margin-bottom: 3.5vh;
 }
 
 .game-container h2 {
@@ -40,44 +41,115 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5% 1%;
-  background-color: rgba(0, 0, 0, 0.4); /* Add some transparency */
-  backdrop-filter: blur(10px); /* Apply the blur effect */
-  -webkit-backdrop-filter: blur(10px); /* Safari-specific blur effect */
+
   width: 100%;
   box-sizing: border-box;
   border-radius: 2px 2px 0px 0px;
-  font-size: 1rem;
   color: white;
   z-index: 1;
 }
 
-.upper-div h2 {
+.nft-title {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 12%;
+  top: 5%;
+  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  width: 20%;
+
+  /* Border */
+  border-radius: 0px 0px 12px 12px; /* Rounded corners for a playful, friendly look */
+
+  /* Box Shadow */
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  backdrop-filter: blur(10px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+
+  /* Padding and Spacing */
+  text-align: center; /* Center text within the div */
+
+  /* Transition for hover effect */
+  transition: transform 0.2s ease-in-out;
+  padding: 1%;
+}
+
+.nft-title h2 {
+  color: rgb(0, 0, 0);
+  font-size: 150%;
+
   text-align: center;
   margin: 0;
-  color: white;
-  font-size: 300%;
 }
 
 .balance-columns {
-  text-align: right;
-  margin-left: 10%;
+  position: absolute;
+  right: 12%;
+  top: 0;
+  font-size: 100%;
+  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  width: 20%;
+  color: rgb(29, 29, 29);
+
+  /* Border */
+  border-radius: 0px 0px 12px 12px; /* Rounded corners for a playful, friendly look */
+
+  /* Box Shadow */
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  backdrop-filter: blur(10px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+
+  /* Padding and Spacing */
+  text-align: center; /* Center text within the div */
+
+  /* Transition for hover effect */
+  transition: transform 0.2s ease-in-out;
+  padding: 1%;
+}
+.balance-bar {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+  width: 100%;
 }
 
-.balance-sity {
-  color: hsl(0, 0%, 100%);
-  font-size: 100%;
-  text-align: left;
-  font-family: "Helvetica Bold";
+.balance-bar-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  border-radius: 50%;
 }
 
-.balance-sui {
-  color: hsl(205, 100%, 67%);
+.balance-bar-track {
+  border-radius: 4px;
+  width: 100%;
+  height: 25px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 1px 1px 5px #200c00, 3px 3px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  background-color: rgb(27, 27, 27);
+}
+
+.balance-bar-fill {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.balance-bar-fill-sui {
+  background-color: #00b3ff; /* SUI color */
+}
+
+.balance-bar-fill-sity {
+  background-color: rgba(31, 33, 192); /* SITY color */
+}
+
+.balance-amount {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgb(29, 29, 29);
+  font-weight: 500;
   font-size: 100%;
-  font-family: "Helvetica Bold";
-  text-align: left;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .upper-div button {
@@ -88,25 +160,6 @@
 
 .upper-div button {
   cursor: pointer;
-}
-
-.Text_textVariants_mono_true__2bv1ur7 {
-  font-family: "Helvetica Light", "Helvetica", Helvetica !important;
-}
-
-.AccountDropdownMenu_connectedAccount__div2ql0 {
-  padding: 1% !important;
-  border-radius: 8px;
-}
-
-.WalletList_container__1v2s6cz0 {
-  cursor: pointer !important;
-}
-
-.Button_buttonVariants_size_lg__x1s81q4 {
-  font-size: 1rem !important;
-  color: rgb(0, 0, 0, 0.8) !important;
-  margin-right: 10% !important;
 }
 
 .carousel-container {
@@ -138,16 +191,18 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
   backdrop-filter: blur(10px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
-  color: white;
+  color: rgb(29, 29, 29);
   border: none;
   cursor: pointer;
   z-index: 20;
-  font-size: 3rem;
-  border-radius: 20%;
+  font-size: 200%;
+  border-radius: 12px;
   cursor: pointer;
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
 }
 
 .arrow-left {
@@ -158,35 +213,46 @@
   right: 5%;
 }
 
+.arrow-left:hover,
+.arrow-right:hover {
+  top: 51%;
+}
+
 .buildingType {
   position: absolute;
-  bottom: 5%;
+  bottom: 0%;
   left: 50%;
   transform: translate(-50%);
 
-  color: white;
-  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  color: rgb(29, 29, 29);
+
+  /* Border */
+  border-radius: 12px 12px 0px 0px; /* Rounded corners for a playful, friendly look */
+
+  /* Box Shadow */
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
   backdrop-filter: blur(10px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
-  border-radius: 8px; /* Optional: Rounded corners */
   padding: 0.5%;
   width: 35%;
   text-align: center;
-  height: 15%;
+  height: 20%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column; /* Use Flexbox to align content vertically */
   justify-content: space-between; /* Space between the content and the button */
 }
-
 .buildingType h2 {
-  display: inline-block; /* Ensure the background fits the h2 text */
-  font-weight: bold; /* Optional: Make the text bold */
-  color: white;
+  font-size: 200%;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .buildingType p {
-  color: white;
+  color: rgb(29, 29, 29);
   margin: 0;
   font-size: 100%;
   line-height: 1.3;
@@ -195,31 +261,36 @@
 .buildingType button {
   align-self: center; /* Center the button horizontally */
   margin-top: auto; /* Push the button to the bottom */
-  width: 100%;
+  margin-bottom: 2%;
+  width: 90%;
   border-radius: 2px;
-  font-family: "Helvetica Light", Helvetica;
   border: none;
   box-sizing: border-box;
   padding: 0.5%;
   font-size: 120%;
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
 }
 
 .buildingType button:hover {
-  background-color: rgba(255, 255, 255, 0.8);
-  color: black;
   cursor: pointer;
+  transform: translate(0, 3px);
 }
 
 .accumulated {
   position: absolute; /* Keep it absolutely positioned relative to the game container */
-  bottom: 5%; /* Align it to the bottom */
-  left: 20%; /* Adjust the horizontal positioning as needed */
-  transform: translate(-50%);
-  color: white;
-  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+  bottom: 0%; /* Align it to the bottom */
+  left: 12%; /* Adjust the horizontal positioning as needed */
+  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  color: rgb(29, 29, 29);
+
+  /* Border */
+  border-radius: 20px 0px 0px 0px; /* Rounded corners for a playful, friendly look */
+
+  /* Box Shadow */
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
   backdrop-filter: blur(10px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
-  border-radius: 8px; /* Optional: Rounded corners */
   padding: 0.5%;
   text-align: center;
   width: 20%;
@@ -233,17 +304,19 @@
 .accumulated button {
   align-self: center; /* Center the button horizontally */
   margin-top: auto; /* Push the button to the bottom */
-  width: 100%;
+  margin-bottom: 2%;
+  width: 90%;
   border-radius: 2px;
-  font-family: "Helvetica Light", Helvetica;
   border: none;
   box-sizing: border-box;
   padding: 0.5%;
   font-size: 120%;
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
 }
 
 .accumulated p {
-  color: white;
+  color: rgb(29, 29, 29);
   margin: 0;
   font-size: 100%;
   line-height: 1.3;
@@ -252,25 +325,29 @@
 .accumulated h2 {
   display: inline-block; /* Ensure the background fits the h2 text */
   font-weight: bold; /* Optional: Make the text bold */
-  color: white;
+  color: rgb(29, 29, 29);
+  font-size: 160%;
 }
 
 .accumulated button:hover {
-  background-color: rgba(255, 255, 255, 0.8);
-  color: black;
   cursor: pointer;
+  transform: translate(0, 3px);
 }
 
 .population {
   position: absolute;
-  bottom: 5%;
-  right: 0%;
-  transform: translate(-50%);
-  color: white;
-  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+  bottom: 0%;
+  right: 12%;
+  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
   backdrop-filter: blur(10px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
-  border-radius: 8px; /* Optional: Rounded corners */
+  color: rgb(29, 29, 29);
+
+  /* Border */
+  border-radius: 00px 20px 0px 00px; /* Rounded corners for a playful, friendly look */
+
+  /* Box Shadow */
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
   padding: 0.5%;
   text-align: center;
   width: 20%;
@@ -282,7 +359,7 @@
 }
 
 .population p {
-  color: white;
+  color: rgb(29, 29, 29);
   margin: 0;
   font-size: 100%;
   line-height: 1.3;
@@ -291,23 +368,24 @@
 .population button {
   align-self: center; /* Center the button horizontally */
   margin-top: auto; /* Push the button to the bottom */
-  width: 100%;
+  margin-bottom: 2%;
+  width: 90%;
   border-radius: 2px;
-  font-family: "Helvetica Light", Helvetica;
   border: none;
   box-sizing: border-box;
   padding: 0.5%;
   font-size: 120%;
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
 }
 
 .population button:hover {
-  background-color: rgba(255, 255, 255, 0.8);
-  color: black;
   cursor: pointer;
+  transform: translate(0, 3px);
 }
 
 .population p {
-  color: white;
+  color: rgb(29, 29, 29);
   margin: 0;
   font-size: 100%;
   line-height: 1.3;
@@ -316,7 +394,8 @@
 .population h2 {
   display: inline-block; /* Ensure the background fits the h2 text */
   font-weight: bold; /* Optional: Make the text bold */
-  color: white;
+  color: rgb(29, 29, 29);
+  font-size: 160%;
 }
 
 .mint button {
@@ -324,49 +403,111 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
-  backdrop-filter: blur(10px); /* Apply the blur effect */
-  -webkit-backdrop-filter: blur(10px); /* For Safari */
-  color: white;
+  background-color: rgba(23, 14, 0, 0.905); /* Semi-transparent background */
+  border-radius: 2px;
   border: none;
-  cursor: pointer;
-
+  box-sizing: border-box;
+  padding: 2%;
   font-size: 300%;
-  padding: 0.5rem 1rem;
-
-  border-radius: 4px;
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  border-radius: 12px;
+  font-weight: 900;
+  color: rgb(255, 255, 255);
+  transition: all 0.1s ease-in-out;
+  letter-spacing: 1.5px;
 }
 
 .mint button:hover {
-  background-color: rgba(0, 0, 0, 0.6);
-  color: rgb(255, 255, 255);
+  cursor: pointer;
+  top: 52%;
 }
 
-@media (max-width: 1920px) {
-  .upper-div h2 {
-    font-size: 200%;
-  }
+/* Apply Kanit for Titles (h1, h2, etc.) */
+.game-container h2,
+.buildingType h2,
+.accumulated h2,
+.population h2 {
+  font-family: "Kanit", cursive;
+  font-weight: 500;
+}
 
+.game-container h3 {
+  font-family: "Kanit", cursive;
+  font-weight: 300;
+}
+
+/* Apply Kanit One for Paragraphs (p) */
+button,
+p,
+.buildingType p,
+.accumulated p,
+.population p {
+  font-family: "Kanit", cursive;
+  font-weight: 200;
+}
+@media (max-width: 1920px) {
   .buildingType h2 {
-    font-size: 150%;
+    font-size: 180%;
   }
 
   .accumulated h2 {
-    font-size: 150%;
+    font-size: 120%;
   }
 
   .population h2 {
-    font-size: 150%;
+    font-size: 120%;
+  }
+
+  .accumulated button,
+  .buildingType button,
+  .population button {
+    width: 95%;
+    font-size: 100%;
+  }
+}
+
+@media (max-width: 1440px) {
+  .buildingType h2 {
+    font-size: 180%;
+  }
+
+  .accumulated h2 {
+    font-size: 110%;
+  }
+
+  .population h2 {
+    font-size: 110%;
+  }
+
+  .accumulated p {
+    font-size: 90%;
+  }
+
+  .population p {
+    font-size: 90%;
+  }
+
+  .buildingType p {
+    font-size: 90%;
+  }
+
+  .balance-amount {
+    font-size: 90%;
   }
 }
 
 @media (max-width: 1024px) {
+  .game-container {
+    width: 85%;
+    background-size: 120%;
+  }
+
   .upper-div h2 {
     font-size: 150%;
   }
 
   .buildingType h2 {
-    font-size: 120%;
+    font-size: 150%;
   }
 
   .accumulated h2 {
@@ -392,56 +533,100 @@
 
 @media (max-width: 768px) {
   .game-container {
-    width: 90%;
-    height: 80vh;
+    width: 95%;
+    background-size: 180%;
+  }
+
+  .balance-columns {
+    right: 6%;
+    width: 30%;
+  }
+  .nft-title {
+    left: 6%;
+    width: 30%;
+  }
+
+  .connectButton {
+    left: 30%;
+    width: 20%;
+  }
+
+  .nav-links {
+    right: 30%;
+  }
+
+  .accumulated {
+    left: 6.5%;
+    width: 25%;
+  }
+  .population {
+    right: 6.5%;
+    width: 25%;
+  }
+}
+
+@media (max-width: 600px) {
+  .game-container {
+    width: 100%;
+    background-size: 200%;
+    height: 75vh;
+    margin-top: 7vh;
+  }
+  .nft-title {
+    left: 0%;
+    width: 40%;
+    border-radius: 0px 0px 12px 0px;
+  }
+
+  .balance-columns {
+    right: 0%;
+    width: 40%;
+    border-radius: 0px 0px 0px 12px;
+  }
+
+  .accumulated {
+    left: 0%;
+    width: 30%;
+  }
+  .buildingType {
+    bottom: 0%;
+    width: 38%;
+  }
+
+  .population {
+    right: 0%;
+    width: 30%;
+  }
+
+  .suicity-title {
+    font-size: 2rem;
+  }
+
+  .logo-title-container {
+    top: 30%;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .navbar {
+    height: 12vh;
+  }
+
+  .connectButton {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 70%;
+    width: max-content;
+    box-sizing: border-box;
+    padding: 2%;
   }
 }
 
 @media (max-width: 425px) {
-  .arrow-left,
-  .arrow-right {
-    font-size: 1.5rem;
-  }
-
-  .upper-div h2 {
-    font-size: 120%;
-  }
-
   .game-container {
-    width: 100%;
-    height: 80vh;
-    border-radius: 0;
-    background-size: 200%;
     box-shadow: 4px 8px 0px rgba(0, 0, 0, 0.4);
-  }
-  .balance-columns {
-    margin-left: 0;
-  }
-
-  .balance-sui,
-  .balance-sity {
-    font-size: 80%;
-  }
-
-  .Button_buttonVariants_size_lg__x1s81q4 {
-    margin-right: 0% !important;
-    font-size: 80% !important;
-  }
-
-  .population button {
-    font-size: 80%;
-  }
-
-  .accumulated button {
-    font-size: 80%;
-  }
-
-  .buildingType button {
-    font-size: 80%;
-  }
-
-  .buildingType h2 {
-    font-size: 100%;
   }
 
   .accumulated h2 {
@@ -452,11 +637,15 @@
     font-size: 100%;
   }
 
-  .accumulated {
-    left: 15%;
+  .nft-title h2 {
+    font-size: 120%;
   }
 
-  .population {
-    right: -5%;
+  .balance-amount {
+    font-size: 80%;
+  }
+
+  .mint button {
+    font-size: 200%;
   }
 }

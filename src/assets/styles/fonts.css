@@ -1,3 +1,6 @@
+/* Import Sigmar and Sigmar One from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Sigmar&family=Sigmar+One&display=swap");
+
 @font-face {
   font-family: "Fashion Norsa";
   src: url("/fonts/fashionnorsa.otf") format("otf"),
@@ -63,6 +66,7 @@
   font-style: normal;
 }
 
+/* Apply Fonts */
 body {
   margin: 0;
   padding: 0;
