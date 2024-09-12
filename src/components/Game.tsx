@@ -64,38 +64,49 @@ const Game: React.FC = () => {
     const { clientX, clientY, currentTarget } = e;
     const { width, height } = currentTarget.getBoundingClientRect();
 
-    // Calculate mouse position as a percentage of the container's width and height
     const mouseXPercent = (clientX / width) * 100;
     const mouseYPercent = (clientY / height) * 100;
 
-    let newX = 50; // Default to center
-    let newY = 50; // Default to center
+    setMousePosition(calculateBackgroundPosition(mouseXPercent, mouseYPercent));
+  };
 
-    // If the mouse is within the top 20% or bottom 20%, adjust the background position vertically
-    if (mouseYPercent < 25) {
-      newY = mousePosition.y - 50 / mouseYPercent; // Move background up when mouse is at the top
-      if (newY < 25) newY = 25; // Clamp the value to 0
-    } else if (mouseYPercent > 80) {
-      newY = mousePosition.y + 50 / mouseYPercent; // Move background down when mouse is at the bottom
-      if (newY > 95) newY = 95; // Clamp the value to 100
+  // Function to handle touch movement
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    const { clientX, clientY } = e.touches[0]; // Get the first touch point
+    const { width, height } = e.currentTarget.getBoundingClientRect();
+
+    const touchXPercent = (clientX / width) * 100;
+    const touchYPercent = (clientY / height) * 100;
+
+    setMousePosition(calculateBackgroundPosition(touchXPercent, touchYPercent));
+  };
+
+  // Helper function to calculate the background position
+  const calculateBackgroundPosition = (xPercent: number, yPercent: number) => {
+    let newX = 50;
+    let newY = 50;
+
+    if (yPercent < 25) {
+      newY = mousePosition.y - 50 / yPercent;
+      if (newY < 25) newY = 25;
+    } else if (yPercent > 80) {
+      newY = mousePosition.y + 50 / yPercent;
+      if (newY > 95) newY = 95;
     } else {
       newY = 50;
     }
 
-    // If the mouse is within the left 20% or right 20%, adjust the background position horizontally
-    if (mouseXPercent < 10) {
-      newX = mousePosition.x - 50 / mouseXPercent; // Move background right when mouse is at the left edge
-      if (newX < 0) newX = 0; // Clamp the value to 0
-    } else if (mouseXPercent > 90) {
-      newX = mousePosition.x + 50 / mouseXPercent; // Move background left when mouse is at the right edge
-      if (newX > 100) newX = 100; // Clamp the value to 100
+    if (xPercent < 10) {
+      newX = mousePosition.x - 50 / xPercent;
+      if (newX < 0) newX = 0;
+    } else if (xPercent > 90) {
+      newX = mousePosition.x + 50 / xPercent;
+      if (newX > 100) newX = 100;
     } else {
       newX = 50;
     }
 
-    // Update the mouse position to the calculated values
-    console.log("Mouse position:", newX, newY);
-    setMousePosition({ x: newX, y: newY });
+    return { x: newX, y: newY };
   };
 
   const currentBuilding = buildings[currentBuildingIndex];
@@ -493,6 +504,7 @@ const Game: React.FC = () => {
     <div
       className="game-container"
       onMouseMove={handleMouseMove}
+      onTouchMove={handleTouchMove} // Touch event for mobile
       style={{
         backgroundImage:
           connectionStatus === "connected" &&
