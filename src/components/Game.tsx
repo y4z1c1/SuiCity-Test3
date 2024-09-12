@@ -777,16 +777,9 @@ const Game: React.FC = () => {
           )}
         </>
       ) : (
-        <h2
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          Please connect your wallet
-        </h2>
+        <div className="pleaseConnect">
+          <h2>Please connect your wallet</h2>
+        </div>
       )}
     </div>
   );

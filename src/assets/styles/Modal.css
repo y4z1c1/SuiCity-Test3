@@ -35,7 +35,8 @@ button {
 
   /* Transition for hover effect */
   transition: transform 0.2s ease-in-out;
-  padding: 0.1%;
+  padding: 0.5% 1%;
+  box-sizing: border-box;
 
   display: flex;
   justify-content: space-evenly;
@@ -58,7 +59,7 @@ button {
   width: 25%;
   height: 60%;
   font-size: 90%;
-  padding: 0.4%;
+  padding: 1%;
 }
 
 .modal-content button:hover {

@@ -237,6 +237,8 @@
   cursor: pointer;
   box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
   transition: all 0.1s ease-in-out;
+  padding: 5px;
+  box-sizing: border-box;
 }
 
 .arrow-left {
@@ -434,7 +436,29 @@
   color: rgb(29, 29, 29);
   font-size: 160%;
 }
-
+.pleaseConnect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.905
+  ); /* Semi-transparent background */
+  border-radius: 2px;
+  border: none;
+  box-sizing: border-box;
+  padding: 1%;
+  font-size: 100%;
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  border-radius: 12px;
+  font-weight: 600;
+  color: rgb(26, 26, 26);
+  transition: all 0.1s ease-in-out;
+  letter-spacing: 1.5px;
+}
 .mint button {
   position: absolute;
   top: 50%;
