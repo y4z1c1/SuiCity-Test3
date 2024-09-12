@@ -49,8 +49,8 @@
 
 .nft-title {
   position: absolute;
-  left: 12%;
-  top: 5%;
+  left: 2%;
+  top: 0%;
   background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
   width: 20%;
 
@@ -78,9 +78,45 @@
   margin: 0;
 }
 
+.nft-specs {
+  position: absolute;
+  right: 2%;
+  top: 0%;
+  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  width: 10%;
+
+  /* Border */
+  border-radius: 0px 0px 12px 12px; /* Rounded corners for a playful, friendly look */
+
+  /* Box Shadow */
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  backdrop-filter: blur(10px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+
+  /* Padding and Spacing */
+  text-align: justify; /* Center text within the div */
+  padding: 0.5%;
+  box-sizing: border-box;
+  /* Transition for hover effect */
+  transition: transform 0.2s ease-in-out;
+  z-index: 10;
+}
+
+.nft-specs p {
+  color: rgb(0, 0, 0);
+  font-size: 80%;
+
+  text-align: justify; /* Center text within the div */
+  margin: 0;
+}
+
+.nft-specs h2 {
+  font-size: 150%;
+}
+
 .balance-columns {
   position: absolute;
-  right: 12%;
+  right: 12.5%;
   top: 0;
   font-size: 100%;
   background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
@@ -88,7 +124,7 @@
   color: rgb(29, 29, 29);
 
   /* Border */
-  border-radius: 0px 0px 12px 12px; /* Rounded corners for a playful, friendly look */
+  border-radius: 0px 0px 0px 12px; /* Rounded corners for a playful, friendly look */
 
   /* Box Shadow */
   box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
@@ -233,7 +269,7 @@
   backdrop-filter: blur(10px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
   padding: 0.5%;
-  width: 35%;
+  width: 45%;
   text-align: center;
   height: 20%;
   box-sizing: border-box;
@@ -243,7 +279,7 @@
   z-index: 10;
 }
 .buildingType h2 {
-  font-size: 200%;
+  font-size: 250%;
   white-space: nowrap;
   max-width: 100%;
   overflow: hidden;
@@ -279,7 +315,7 @@
 .accumulated {
   position: absolute; /* Keep it absolutely positioned relative to the game container */
   bottom: 0%; /* Align it to the bottom */
-  left: 12%; /* Adjust the horizontal positioning as needed */
+  left: 2%; /* Adjust the horizontal positioning as needed */
   background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
   color: rgb(29, 29, 29);
 
@@ -292,7 +328,7 @@
   -webkit-backdrop-filter: blur(10px); /* For Safari */
   padding: 0.5%;
   text-align: center;
-  width: 20%;
+  width: 25%;
   height: 15%; /* Let the height adjust based on the content */
   box-sizing: border-box;
   display: flex;
@@ -326,7 +362,7 @@
   display: inline-block; /* Ensure the background fits the h2 text */
   font-weight: bold; /* Optional: Make the text bold */
   color: rgb(29, 29, 29);
-  font-size: 160%;
+  font-size: 180%;
 }
 
 .accumulated button:hover {
@@ -337,7 +373,7 @@
 .population {
   position: absolute;
   bottom: 0%;
-  right: 12%;
+  right: 2%;
   background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
   backdrop-filter: blur(10px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
@@ -350,7 +386,7 @@
   box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
   padding: 0.5%;
   text-align: center;
-  width: 20%;
+  width: 25%;
   height: 15%;
   box-sizing: border-box;
   display: flex;
@@ -446,54 +482,34 @@ p,
   font-family: "Kanit", cursive;
   font-weight: 200;
 }
-@media (max-width: 1920px) {
-  .buildingType h2 {
-    font-size: 180%;
-  }
-
-  .accumulated h2 {
-    font-size: 120%;
-  }
-
-  .population h2 {
-    font-size: 120%;
-  }
-
-  .accumulated button,
-  .buildingType button,
-  .population button {
-    width: 95%;
-    font-size: 100%;
-  }
-}
 
 @media (max-width: 1440px) {
   .buildingType h2 {
-    font-size: 180%;
+    font-size: 220%;
   }
 
   .accumulated h2 {
-    font-size: 110%;
+    font-size: 170%;
   }
 
   .population h2 {
-    font-size: 110%;
+    font-size: 170%;
   }
 
   .accumulated p {
-    font-size: 90%;
+    font-size: 100%;
   }
 
   .population p {
-    font-size: 90%;
+    font-size: 100%;
   }
 
   .buildingType p {
-    font-size: 90%;
+    font-size: 100%;
   }
 
   .balance-amount {
-    font-size: 90%;
+    font-size: 100%;
   }
 }
 
@@ -508,7 +524,10 @@ p,
   }
 
   .buildingType h2 {
-    font-size: 150%;
+    font-size: 180%;
+    white-space: normal; /* Allow text to wrap */
+    word-wrap: break-word; /* Break long words onto the next line if needed */
+    word-break: break-word; /* Ensure long words will break correctly */
   }
 
   .accumulated h2 {
@@ -530,6 +549,13 @@ p,
   .buildingType button {
     font-size: 100%;
   }
+
+  .nft-specs {
+    width: 15%;
+  }
+  .balance-columns {
+    right: 17.5%;
+  }
 }
 
 @media (max-width: 768px) {
@@ -548,12 +574,13 @@ p,
   }
 
   .balance-columns {
-    right: 6%;
     width: 30%;
   }
   .nft-title {
-    left: 6%;
     width: 30%;
+  }
+  .nft-specs h2 {
+    font-size: 120%;
   }
 
   .connectButton {
@@ -564,23 +591,14 @@ p,
   .nav-links {
     right: 30%;
   }
-
-  .accumulated {
-    left: 6.5%;
-    width: 25%;
-  }
-  .population {
-    right: 6.5%;
-    width: 25%;
-  }
 }
 
 @media (max-width: 600px) {
   .game-container {
     width: 100%;
     background-size: 200%;
-    height: 75vh;
-    margin-top: 7vh;
+    height: 80vh;
+    margin-top: 6vh;
   }
   .nft-title {
     left: 0%;
@@ -596,16 +614,13 @@ p,
 
   .accumulated {
     left: 0%;
-    width: 30%;
   }
   .buildingType {
-    bottom: 0%;
-    width: 38%;
+    width: 48%;
   }
 
   .population {
     right: 0%;
-    width: 30%;
   }
 
   .suicity-title {
@@ -632,6 +647,13 @@ p,
     box-sizing: border-box;
     padding: 2%;
   }
+
+  .nft-specs {
+    left: 0%;
+    width: 25%;
+    top: 60px;
+    border-radius: 0px 12px 12px 0px;
+  }
 }
 
 @media (max-width: 425px) {
@@ -657,5 +679,61 @@ p,
 
   .mint button {
     font-size: 200%;
+  }
+}
+
+@media (max-width: 425px) {
+  .buildingType h2 {
+    font-size: 130%;
+    overflow: visible;
+    text-overflow: initial;
+  }
+  .accumulated h2 {
+    font-size: 100%;
+  }
+  .population h2 {
+    font-size: 100%;
+  }
+  .nft-specs {
+    top: 110px;
+  }
+  .buildingType button {
+    width: 80%;
+    font-size: 80%;
+    margin-bottom: 10%;
+  }
+  .accumulated button {
+    width: 80%;
+    font-size: 80%;
+    margin-bottom: 10%;
+  }
+  .population button {
+    width: 80%;
+    font-size: 80%;
+    margin-bottom: 10%;
+  }
+
+  .buildingType {
+    height: 25%;
+  }
+
+  .accumulated {
+    height: 22%;
+  }
+
+  .population {
+    height: 22%;
+  }
+
+  .accumulated p {
+    font-size: 80%;
+  }
+
+  .buildingType p {
+    font-size: 80%;
+  }
+
+  .population p {
+    font-size: 80%;
   }
 }

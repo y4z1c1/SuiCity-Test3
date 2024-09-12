@@ -599,6 +599,37 @@ const Game: React.FC = () => {
                         <h2>{filteredNft.content.fields.name}</h2>
                       ) : null}
                     </div>
+
+                    {/* New NFT Specs Tab */}
+                    <div className="nft-specs">
+                      <p>Accumulation Speed:</p>
+                      <h2>
+                        {`${
+                          gameData.accumulation_speeds[
+                            filteredNft.content.fields.residental_office
+                          ] / 1000
+                        } $SITY/h`}
+                      </h2>
+
+                      <p>Factory Bonus:</p>
+                      <h2>
+                        {`${
+                          gameData.factory_bonuses[
+                            filteredNft.content.fields.factory
+                          ]
+                        }%`}
+                      </h2>
+
+                      <p>Amenity Points:</p>
+                      <h2>
+                        {`${
+                          parseInt(filteredNft.content.fields.house) +
+                          parseInt(
+                            filteredNft.content.fields.entertainment_complex
+                          )
+                        }`}
+                      </h2>
+                    </div>
                   </>
                 ) : (
                   <></>
