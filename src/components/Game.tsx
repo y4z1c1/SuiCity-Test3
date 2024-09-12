@@ -31,6 +31,7 @@ const Game: React.FC = () => {
   const accumulationIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState<number>(0); // Track current building in the carousel
+
   const buildings = [
     {
       type: "R. Office",
@@ -288,12 +289,9 @@ const Game: React.FC = () => {
   ]);
 
   const handleUpgradeClick = (buildingType: number) => {
-    cancelCurrentTransaction(); // Cancel ongoing transaction
     setTransactionType("upgrade");
     setTransactionInProgress(true);
     console.log("UPGRADE CLICKED", buildingType);
-
-    // Proceed with upgrade logic...
   };
 
   const handleClaimClick = () => {
@@ -544,27 +542,26 @@ const Game: React.FC = () => {
   return (
     <div
       className="game-container"
-      onMouseMove={isTouchDevice ? undefined : handleMouseMove} // Handle mouse movement if it's not a touch device
-      onTouchStart={isTouchDevice ? handleTouchStart : undefined} // Handle touch start for touch devices
-      onTouchMove={isTouchDevice ? handleTouchMove : undefined} // Handle touch move for touch devices
-      onTouchEnd={isTouchDevice ? handleTouchEnd : undefined} // Handle touch end for touch devices
+      onMouseMove={isTouchDevice ? undefined : handleMouseMove}
+      onTouchStart={isTouchDevice ? handleTouchStart : undefined}
+      onTouchMove={isTouchDevice ? handleTouchMove : undefined}
+      onTouchEnd={isTouchDevice ? handleTouchEnd : undefined}
       style={{
         backgroundImage:
-          connectionStatus === "connected" &&
-          filteredNft?.content?.fields &&
-          !isLoading &&
-          filteredNft !== null
-            ? `url(${currentBuilding.imageBaseUrl}/${
+          connectionStatus === "connected" && filteredNft?.content?.fields
+            ? // Apply only when loaded
+              `url(${currentBuilding.imageBaseUrl}/${
                 filteredNft.content.fields[currentBuilding.field]
               }.webp)`
-            : "none", // Fallback to none if filteredNft is not loaded, minting, or if loading
+            : "none", // Show none until image is fully loaded
         backgroundPosition: isTouchDevice
           ? `${backgroundPosition.x}% ${backgroundPosition.y}%`
-          : `${mousePosition.x}% ${mousePosition.y}%`, // Use mousePosition for desktop, backgroundPosition for touch devices
+          : `${mousePosition.x}% ${mousePosition.y}%`,
         backgroundColor:
           connectionStatus !== "connected" || isLoading || filteredNft === null
             ? "white"
-            : "transparent", // Show white background if not connected, minting, or loading
+            : "transparent",
+        transition: "filter 0.3s ease-in-out", // Smooth transition for blur
       }}
     >
       {/* Modal Component */}

@@ -20,7 +20,7 @@ button {
   top: 8%;
   transform: translate(-50%, 0);
   background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
-  width: 20%;
+  width: 15%;
 
   /* Border */
   border-radius: 12px 12px 12px 12px; /* Rounded corners for a playful, friendly look */
@@ -64,4 +64,12 @@ button {
 .modal-content button:hover {
   background-color: #000000;
   transform: translateY(2px);
+}
+
+@media (max-width: 1024px) {
+  .modal-content {
+    left: 50%;
+    width: 40%;
+    top: 60%;
+  }
 }
