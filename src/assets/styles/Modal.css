@@ -69,7 +69,11 @@ button {
 @media (max-width: 1024px) {
   .modal-content {
     left: 50%;
-    width: 40%;
-    top: 60%;
+    width: 60%;
+    top: 55%;
+  }
+
+  .modal-content p {
+    font-size: 100%;
   }
 }

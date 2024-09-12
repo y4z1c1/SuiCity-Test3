@@ -701,6 +701,11 @@ p,
 }
 
 @media (max-width: 425px) {
+  .arrow-left,
+  .arrow-right {
+    font-size: 150%;
+    border-radius: 2px;
+  }
   .buildingType h2 {
     font-size: 130%;
     overflow: visible;
@@ -713,8 +718,16 @@ p,
     font-size: 100%;
   }
   .nft-specs {
-    top: 110px;
+    top: 70px;
   }
+  .nft-specs p {
+    font-size: 60%;
+  }
+
+  .nft-specs h2 {
+    font-size: 90%;
+  }
+
   .buildingType button {
     width: 80%;
     font-size: 80%;
