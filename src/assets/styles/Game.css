@@ -5,8 +5,8 @@
   border-radius: 8px;
   margin: 0 auto;
   display: flex;
-  width: 70%;
-  height: 80vh;
+  width: 80%;
+  height: 85vh;
   flex-direction: column;
   align-items: center;
   box-shadow: 10px 20px 0px rgba(0, 0, 0, 0.4);
@@ -15,20 +15,18 @@
   overflow: hidden;
   background-size: 105%; /* Zoom in the background */
   background-position: center;
-  transition: background-position 0.8s ease-in-out; /* Smooth movement */
-  margin-top: 3.5vh;
-  margin-bottom: 3.5vh;
+  transition: background-position 0.5s ease-in-out; /* Smooth movement */
+  margin-bottom: 1vh;
+  margin-top: 1vh;
 }
 
 .game-container h2 {
   color: rgb(0, 0, 0, 0.8);
-  text-shadow: 2px 4px 60px rgba(0, 0, 0, 0.3);
   font-size: 200%;
   margin: 0%;
 }
 
 .game-container h3 {
-  text-shadow: 2px 4px 60px rgba(0, 0, 0, 0.3);
   margin-block-start: 0em;
   margin-block-end: 0em;
   margin-inline-start: 0px;
@@ -544,6 +542,9 @@ p,
   .game-container {
     width: 95%;
     background-size: 180%;
+    transition: background-position 0s ease-in-out; /* Smooth movement */
+    touch-action: none; /* Prevent the default scroll/pinch/zoom behavior */
+    overflow: hidden; /* Ensure no scrolling is allowed */
   }
 
   .balance-columns {

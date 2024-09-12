@@ -70,6 +70,8 @@ const Game: React.FC = () => {
     setIsTouchDevice(isTouch);
   }, []);
   // Function to handle mouse movement
+  const DAMPING_FACTOR = 0.01;
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY, currentTarget } = e;
     const { width, height } = currentTarget.getBoundingClientRect();
@@ -77,46 +79,49 @@ const Game: React.FC = () => {
     const mouseXPercent = (clientX / width) * 100;
     const mouseYPercent = (clientY / height) * 100;
 
-    setMousePosition(calculateBackgroundPosition(mouseXPercent, mouseYPercent));
+    // Reduce sensitivity by applying a damping factor
+    setMousePosition((prevPos) => {
+      const newX = prevPos.x + (mouseXPercent - prevPos.x) * DAMPING_FACTOR;
+      const newY = prevPos.y + (mouseYPercent - prevPos.y) * DAMPING_FACTOR;
+
+      return { x: newX, y: newY };
+    });
   };
 
   // Function to handle touch start and store initial position
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault(); // Prevent default touch behavior (scrolling)
     const { clientX, clientY } = e.touches[0];
     touchStartRef.current = { x: clientX, y: clientY };
   };
 
   // Function to handle touch movement
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault(); // Prevent default touch behavior (scrolling)
     const { clientX, clientY } = e.touches[0];
     const { width, height } = e.currentTarget.getBoundingClientRect();
 
-    if (!touchStartRef.current) return; // Ensure touch start is recorded
+    if (!touchStartRef.current) return;
 
     const touchStartX = touchStartRef.current.x;
     const touchStartY = touchStartRef.current.y;
 
-    // Calculate how much the user has moved since touch start
     const deltaX = clientX - touchStartX;
     const deltaY = clientY - touchStartY;
 
-    // Convert movement to percentage of the screen's dimensions
     const moveXPercent = (deltaX / width) * 100;
     const moveYPercent = (deltaY / height) * 100;
 
-    // Update background position based on movement
     setBackgroundPosition((prevPos) => {
       let newX = prevPos.x - moveXPercent;
       let newY = prevPos.y - moveYPercent;
 
-      // Ensure background position stays within bounds (0-100%)
       newX = Math.max(0, Math.min(newX, 100));
       newY = Math.max(0, Math.min(newY, 100));
 
       return { x: newX, y: newY };
     });
 
-    // Update the initial touch position for smoother transitions
     touchStartRef.current = { x: clientX, y: clientY };
   };
 
@@ -706,7 +711,7 @@ const Game: React.FC = () => {
                     ).toFixed(2);
                     const tweetText = `I just reached a population of ${formatBalance(
                       population + parseInt(sityBalance)
-                    )} on SuiCity with ${sityBalance} $SITY! 🚀 Check out the game now! #SuiCity`;
+                    )} on SuiCity with ${sityBalance} $SITY! 🚀 Check out the game now! @SuiCityP2E`;
                     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
                       tweetText
                     )}&url=https://suicityp2e.com`;
