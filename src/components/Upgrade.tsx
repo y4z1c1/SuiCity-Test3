@@ -128,20 +128,22 @@ const Upgrade = ({
         const sityBalance = parseInt(sityBalanceResponse.totalBalance);
 
         if (costs.sui > 0 && suiBalance < costs.sui) {
-          showModal("Insufficient SUI balance."); // Show success message in the modal
+          showModal(
+            "Insufficient SUI balance. You need more SUI to upgrade this building."
+          );
 
           throw new Error("Insufficient SUI balance.");
         }
         if (costs.sity > 0 && sityBalance < costs.sity) {
-          showModal("Insufficient SITY balance."); // Show success message in the modal
+          showModal(
+            "Insufficient SITY balance. You need more SITY to upgrade this building."
+          );
 
           throw new Error("Insufficient SITY balance.");
         }
 
         return true;
       } catch (error) {
-        showModal("Error checking balance."); // Show success message in the modal
-
         console.error("Error checking user balance:", error);
         if (error instanceof Error) {
           console.log(error.message || "Error checking balance.");
