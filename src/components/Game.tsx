@@ -57,13 +57,18 @@ const Game: React.FC = () => {
     },
   ];
 
-  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 }); // Start at center
   const [backgroundPosition, setBackgroundPosition] = useState({
     x: 50,
     y: 50,
   });
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+  const [isTouchDevice, setIsTouchDevice] = useState(false); // To detect if the device is touch-enabled
   const touchStartRef = useRef<{ x: number; y: number } | null>(null); // To store initial touch position
 
+  useEffect(() => {
+    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    setIsTouchDevice(isTouch);
+  }, []);
   // Function to handle mouse movement
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY, currentTarget } = e;
@@ -542,10 +547,10 @@ const Game: React.FC = () => {
   return (
     <div
       className="game-container"
-      onMouseMove={handleMouseMove}
-      onTouchStart={handleTouchStart} // Track touch start
-      onTouchMove={handleTouchMove} // Handle sliding
-      onTouchEnd={handleTouchEnd} // Reset touch start when touch ends
+      onMouseMove={isTouchDevice ? undefined : handleMouseMove} // Handle mouse movement if it's not a touch device
+      onTouchStart={isTouchDevice ? handleTouchStart : undefined} // Handle touch start for touch devices
+      onTouchMove={isTouchDevice ? handleTouchMove : undefined} // Handle touch move for touch devices
+      onTouchEnd={isTouchDevice ? handleTouchEnd : undefined} // Handle touch end for touch devices
       style={{
         backgroundImage:
           connectionStatus === "connected" &&
@@ -556,7 +561,9 @@ const Game: React.FC = () => {
                 filteredNft.content.fields[currentBuilding.field]
               }.webp)`
             : "none", // Fallback to none if filteredNft is not loaded, minting, or if loading
-        backgroundPosition: `${mousePosition.x}% ${mousePosition.y - 2}%`, // Start at the center and move with mouse
+        backgroundPosition: isTouchDevice
+          ? `${backgroundPosition.x}% ${backgroundPosition.y}%`
+          : `${mousePosition.x}% ${mousePosition.y}%`, // Use mousePosition for desktop, backgroundPosition for touch devices
         backgroundColor:
           connectionStatus !== "connected" || isLoading || filteredNft === null
             ? "white"
