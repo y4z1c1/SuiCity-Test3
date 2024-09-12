@@ -8,11 +8,13 @@ const ClaimFactoryBonus = ({
   onClaimSuccess,
   onClick,
   onError,
+  showModal, // Add showModal as a prop
 }: {
   nft: any;
   onClaimSuccess: () => void;
   onClick: () => void;
   onError: () => void;
+  showModal: (message: string) => void; // Define showModal prop type
 }) => {
   const suiClient = useSuiClient();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -54,11 +56,15 @@ const ClaimFactoryBonus = ({
           onSuccess: (result) => {
             console.log("Claim successful:", result);
             console.log("Bonus claimed successfully!");
+            showModal("Bonus claimed successfully!"); // Show success message in the modal
+
             onClaimSuccess();
           },
           onError: (error) => {
             console.error("Claim failed:", error);
             console.log("Failed to claim bonus. Please try again.");
+            showModal("Failed to claim bonus. Please try again."); // Show success message in the modal
+
             onError();
           },
         }
@@ -66,6 +72,8 @@ const ClaimFactoryBonus = ({
     } catch (error) {
       console.error("Claim Error:", error);
       console.log("An error occurred. Please try again.");
+      showModal("An error occurred. Please try again."); // Show success message in the modal
+
       onError();
     } finally {
       setIsProcessing(false); // Re-enable the button

@@ -8,11 +8,13 @@ const Claim = ({
   onClaimSuccess,
   onClick,
   onError, // Prop to handle error
+  showModal, // Add showModal as a prop
 }: {
   nft: any;
   onClaimSuccess: () => void;
   onClick: () => void;
   onError: () => void;
+  showModal: (message: string) => void; // Define showModal prop type
 }) => {
   const [isLoading, setIsLoading] = useState(false); // State for loading indication
   const suiClient = useSuiClient();
@@ -58,11 +60,15 @@ const Claim = ({
           onSuccess: () => {
             console.log("Claim successful");
             console.log("Claim successful! Your tokens have been claimed.");
+            showModal("Claim successful! Your tokens have been claimed."); // Show success message in the modal
+
             onClaimSuccess(); // Call onSuccess handler
           },
           onError: (error) => {
             console.error("Claim error", error);
             console.log("Error: Unable to claim tokens. Please try again.");
+            showModal("Error: Unable to claim tokens. Please try again."); // Show success message in the modal
+
             onError(); // Call onError handler
           },
         }
@@ -70,6 +76,8 @@ const Claim = ({
     } catch (error) {
       console.error("Claim Error:", error);
       console.log("Error: Unable to claim tokens. Please try again.");
+      showModal("Error: Unable to claim tokens. Please try again."); // Show success message in the modal
+
       onError(); // Catch and handle any outer error
     } finally {
       setIsLoading(false); // Reset loading state

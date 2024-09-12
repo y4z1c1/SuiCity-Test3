@@ -1,0 +1,67 @@
+button {
+  padding-block: 0px;
+  padding-inline: 0px;
+}
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+.modal-content {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  transform: translate(-50%, 0);
+  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  width: 20%;
+
+  /* Border */
+  border-radius: 12px 12px 12px 12px; /* Rounded corners for a playful, friendly look */
+
+  /* Box Shadow */
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  backdrop-filter: blur(10px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+
+  /* Padding and Spacing */
+  text-align: center; /* Center text within the div */
+
+  /* Transition for hover effect */
+  transition: transform 0.2s ease-in-out;
+  padding: 0.1%;
+
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.modal-content p {
+  font-family: "Kanit";
+  font-weight: 300;
+  font-size: 120%;
+  text-align: left;
+}
+
+.modal-content button {
+  border: none;
+  background-color: #151515;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 25%;
+  height: 60%;
+  font-size: 90%;
+  padding: 0.4%;
+}
+
+.modal-content button:hover {
+  background-color: #000000;
+  transform: translateY(2px);
+}

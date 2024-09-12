@@ -5,7 +5,9 @@ import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 
 const Mint = ({
   onMintSuccessful, // Add onMintSuccessful prop
+  showModal,
 }: {
+  showModal: (message: string) => void; // Define showModal prop type
   onMintSuccessful: () => void;
 }) => {
   const suiClient = useSuiClient();
@@ -40,15 +42,19 @@ const Mint = ({
         {
           onSuccess: (result) => {
             console.log("Mint successful ", result);
+            showModal("Mint successful!"); // Show success message in the modal
+
             onMintSuccessful(); // Trigger the success callback
           },
           onError: (error) => {
             console.error("Mint error:", error);
+            showModal("An error occured, please try again!"); // Show success message in the modal
           },
         }
       );
     } catch (error) {
       console.error("Mint Error:", error);
+      showModal("An error occured, please try again!"); // Show success message in the modal
     }
   }, [signAndExecute, onMintSuccessful]);
 

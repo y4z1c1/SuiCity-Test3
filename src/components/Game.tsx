@@ -8,6 +8,7 @@ import { ADDRESSES } from "../../addresses";
 import { SuiClient, getFullnodeUrl } from "@mysten/sui/client";
 import { useCurrentWallet, useCurrentAccount } from "@mysten/dapp-kit";
 import { MIST_PER_SUI } from "@mysten/sui/utils";
+import Modal from "./Modal"; // Import the new Modal component
 
 const Game: React.FC = () => {
   const { connectionStatus } = useCurrentWallet();
@@ -128,6 +129,25 @@ const Game: React.FC = () => {
   // Function to handle touch end (optional reset or cleanup)
   const handleTouchEnd = () => {
     touchStartRef.current = null; // Reset the reference when the touch ends
+  };
+
+  // Inside your Game component
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setModalMessage(null); // Clear message on close
+  };
+
+  const showModal = (message: string) => {
+    setModalMessage(message);
+    setIsModalOpen(true);
+
+    // Automatically close the modal after 10 seconds
+    setTimeout(() => {
+      handleCloseModal();
+    }, 4000); // 10 seconds
   };
 
   const currentBuilding = buildings[currentBuildingIndex];
@@ -547,6 +567,12 @@ const Game: React.FC = () => {
             : "transparent", // Show white background if not connected, minting, or loading
       }}
     >
+      {/* Modal Component */}
+      <Modal
+        show={isModalOpen}
+        message={modalMessage || ""}
+        onClose={handleCloseModal}
+      />
       {/* Check if the wallet is connected */}
       {connectionStatus === "connected" ? (
         <>
@@ -663,6 +689,7 @@ const Game: React.FC = () => {
                             setTransactionInProgress(false);
                             refreshNft();
                           }}
+                          showModal={showModal} // Pass showModal as a prop here
                         />
                       )}
                     </div>
@@ -678,6 +705,7 @@ const Game: React.FC = () => {
                     refreshNft();
                   }}
                   gameData={gameData}
+                  showModal={showModal} // Pass showModal as a prop here
                 />
               </div>
 
@@ -695,6 +723,7 @@ const Game: React.FC = () => {
                     setTransactionInProgress(false);
                     refreshNft();
                   }}
+                  showModal={showModal} // Pass showModal as a prop here
                 />
               </div>
 
@@ -733,7 +762,10 @@ const Game: React.FC = () => {
             </>
           ) : (
             <div className="mint">
-              <Mint onMintSuccessful={handleMintSuccess} />
+              <Mint
+                onMintSuccessful={handleMintSuccess}
+                showModal={showModal} // Pass showModal as a prop here
+              />
             </div>
           )}
         </>

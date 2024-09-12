@@ -13,7 +13,7 @@
   position: relative;
   box-sizing: border-box;
   overflow: hidden;
-  background-size: 105%; /* Zoom in the background */
+  background-size: 100%; /* Zoom in the background */
   background-position: center;
   transition: background-position 0.5s ease-in-out; /* Smooth movement */
   margin-bottom: 1vh;
