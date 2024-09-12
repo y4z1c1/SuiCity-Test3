@@ -130,34 +130,6 @@ const Game: React.FC = () => {
     touchStartRef.current = null; // Reset the reference when the touch ends
   };
 
-  // Helper function to calculate the background position
-  const calculateBackgroundPosition = (xPercent: number, yPercent: number) => {
-    let newX = 50;
-    let newY = 50;
-
-    if (yPercent < 25) {
-      newY = mousePosition.y - 50 / yPercent;
-      if (newY < 25) newY = 25;
-    } else if (yPercent > 80) {
-      newY = mousePosition.y + 50 / yPercent;
-      if (newY > 95) newY = 95;
-    } else {
-      newY = 50;
-    }
-
-    if (xPercent < 10) {
-      newX = mousePosition.x - 50 / xPercent;
-      if (newX < 0) newX = 0;
-    } else if (xPercent > 90) {
-      newX = mousePosition.x + 50 / xPercent;
-      if (newX > 100) newX = 100;
-    } else {
-      newX = 50;
-    }
-
-    return { x: newX, y: newY };
-  };
-
   const currentBuilding = buildings[currentBuildingIndex];
   const provider = new SuiClient({
     url: getFullnodeUrl("testnet"),
