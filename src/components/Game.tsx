@@ -58,6 +58,11 @@ const Game: React.FC = () => {
   ];
 
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 }); // Start at center
+  const [backgroundPosition, setBackgroundPosition] = useState({
+    x: 50,
+    y: 50,
+  });
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null); // To store initial touch position
 
   // Function to handle mouse movement
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -70,15 +75,49 @@ const Game: React.FC = () => {
     setMousePosition(calculateBackgroundPosition(mouseXPercent, mouseYPercent));
   };
 
+  // Function to handle touch start and store initial position
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const { clientX, clientY } = e.touches[0];
+    touchStartRef.current = { x: clientX, y: clientY };
+  };
+
   // Function to handle touch movement
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const { clientX, clientY } = e.touches[0]; // Get the first touch point
+    const { clientX, clientY } = e.touches[0];
     const { width, height } = e.currentTarget.getBoundingClientRect();
 
-    const touchXPercent = (clientX / width) * 100;
-    const touchYPercent = (clientY / height) * 100;
+    if (!touchStartRef.current) return; // Ensure touch start is recorded
 
-    setMousePosition(calculateBackgroundPosition(touchXPercent, touchYPercent));
+    const touchStartX = touchStartRef.current.x;
+    const touchStartY = touchStartRef.current.y;
+
+    // Calculate how much the user has moved since touch start
+    const deltaX = clientX - touchStartX;
+    const deltaY = clientY - touchStartY;
+
+    // Convert movement to percentage of the screen's dimensions
+    const moveXPercent = (deltaX / width) * 100;
+    const moveYPercent = (deltaY / height) * 100;
+
+    // Update background position based on movement
+    setBackgroundPosition((prevPos) => {
+      let newX = prevPos.x - moveXPercent;
+      let newY = prevPos.y - moveYPercent;
+
+      // Ensure background position stays within bounds (0-100%)
+      newX = Math.max(0, Math.min(newX, 100));
+      newY = Math.max(0, Math.min(newY, 100));
+
+      return { x: newX, y: newY };
+    });
+
+    // Update the initial touch position for smoother transitions
+    touchStartRef.current = { x: clientX, y: clientY };
+  };
+
+  // Function to handle touch end (optional reset or cleanup)
+  const handleTouchEnd = () => {
+    touchStartRef.current = null; // Reset the reference when the touch ends
   };
 
   // Helper function to calculate the background position
@@ -504,7 +543,9 @@ const Game: React.FC = () => {
     <div
       className="game-container"
       onMouseMove={handleMouseMove}
-      onTouchMove={handleTouchMove} // Touch event for mobile
+      onTouchStart={handleTouchStart} // Track touch start
+      onTouchMove={handleTouchMove} // Handle sliding
+      onTouchEnd={handleTouchEnd} // Reset touch start when touch ends
       style={{
         backgroundImage:
           connectionStatus === "connected" &&
