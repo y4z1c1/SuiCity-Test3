@@ -564,7 +564,7 @@ const Game: React.FC = () => {
         backgroundSize:
           connectionStatus === "connected" && filteredNft?.content?.fields
             ? "cover" // Full coverage when NFT is loaded
-            : "100%", // Fixed size for minting background
+            : "cover", // Fixed size for minting background
         backgroundColor:
           connectionStatus !== "connected" || isLoading || filteredNft === null
             ? "white"
