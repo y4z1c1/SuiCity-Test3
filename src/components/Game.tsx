@@ -30,6 +30,9 @@ const Game: React.FC = () => {
     useState<boolean>(false);
   const accumulationIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [isUpgradeInfoExpanded, setIsUpgradeInfoExpanded] = useState(false); // Track whether upgrade info is expanded
+  const [isMobileExpanded, setIsMobileExpanded] = useState(false); // Track whether building is expanded on mobile
+
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState<number>(0); // Track current building in the carousel
   const mintBackgroundUrl =
     "https://bafybeicujqa4oiif4o7gyq6niwltib32arxyrp43uqavfo7bjfnwq3cfrq.ipfs.w3s.link/mint.webp";
@@ -39,24 +42,32 @@ const Game: React.FC = () => {
       field: "residental_office",
       imageBaseUrl:
         "https://bafybeicirp2yeyxcsta4y4ch4vqslapizvrowwi7enepqvq3s4gncpuwlm.ipfs.w3s.link/",
+      buildingUrl:
+        "https://bafybeifuduov5eskub2xftpk77a2jqw2kct5zqmdigasr5jvisr3hywl2a.ipfs.w3s.link/",
     },
     {
       type: "Factory",
       field: "factory",
       imageBaseUrl:
         "https://bafybeih6ncjg3sqkm5jhot7m6brgmub255gdlys6l36lrur5bxgfenswx4.ipfs.w3s.link/",
+      buildingUrl:
+        "https://bafybeihoculyfo4c72xajyhb6i2qrvlrvfjisnyc6phevvbp2o66xad43u.ipfs.w3s.link/",
     },
     {
       type: "House",
       field: "house",
       imageBaseUrl:
         "https://bafybeiemoqvgqghpcikmbizqfsh6ujod4m5yuvv3k5lpz43333sjqki7oe.ipfs.w3s.link/",
+      buildingUrl:
+        "https://bafybeia3fvv7zavw4q5kn5vlauog5bgjf3w7m4rybebq74e2nwa5stjndq.ipfs.w3s.link/",
     },
     {
       type: "E. Complex",
       field: "entertainment_complex",
       imageBaseUrl:
         "https://bafybeibfvxcfwlmpruudsbnl42gtplthi2s7c6yvdbqybz4o7hpd5fkcie.ipfs.w3s.link/",
+      buildingUrl:
+        "https://bafybeif3k5wwp3anwmx5yxxlcdjga2rzuuvfs6pxouiekepu5dkdtbv7ya.ipfs.w3s.link/",
     },
   ];
 
@@ -73,7 +84,7 @@ const Game: React.FC = () => {
     setIsTouchDevice(isTouch);
   }, []);
   // Function to handle mouse movement
-  const DAMPING_FACTOR = 0.01;
+  const DAMPING_FACTOR = 0.005;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY, currentTarget } = e;
@@ -288,11 +299,39 @@ const Game: React.FC = () => {
     isAwaitingBlockchain,
     isTransactionInProgress,
   ]);
+  const handleUpgradeHover = () => {
+    setTimeout(() => {
+      setIsUpgradeInfoExpanded(true);
+    }, 100);
+  };
+
+  const handleUpgradeLeave = () => {
+    setIsUpgradeInfoExpanded(false);
+  };
 
   const handleUpgradeClick = (buildingType: number) => {
-    setTransactionType("upgrade");
-    setTransactionInProgress(true);
-    console.log("UPGRADE CLICKED", buildingType);
+    if (isTouchDevice) {
+      // Check if the view is expanded
+      if (!isMobileExpanded) {
+        // First click: expand the building type div
+        setIsMobileExpanded(true);
+        setIsUpgradeInfoExpanded(true);
+      } else {
+        // Second click: initiate upgrade and collapse the view
+        setIsMobileExpanded(false);
+        setIsUpgradeInfoExpanded(false);
+        setTransactionType("upgrade");
+        setTransactionInProgress(true);
+        console.log("UPGRADE CLICKED", buildingType);
+        // Call upgrade function here
+      }
+    } else {
+      // For non-mobile devices, just handle the upgrade click as usual
+      setIsUpgradeInfoExpanded(false); // Collapse when clicked
+      setTransactionType("upgrade");
+      setTransactionInProgress(true);
+      console.log("UPGRADE CLICKED", buildingType);
+    }
   };
 
   const handleClaimClick = () => {
@@ -616,7 +655,7 @@ const Game: React.FC = () => {
                         <div className="balance-bar-track">
                           <div
                             className="balance-bar-fill balance-bar-fill-sity"
-                            style={{ width: `${sityBalance / 100}%` }}
+                            style={{ width: `${sityBalance / 1000}%` }}
                           ></div>
                           <div className="balance-amount">{`${formatBalance(
                             sityBalance
@@ -674,11 +713,218 @@ const Game: React.FC = () => {
 
               {/* Building Display */}
 
-              <div className="buildingType">
+              <div
+                className={`buildingType ${
+                  isTouchDevice
+                    ? isMobileExpanded
+                      ? "expanded"
+                      : "collapsed"
+                    : isUpgradeInfoExpanded &&
+                      filteredNft.content.fields[currentBuilding.field] < 7
+                    ? "expanded"
+                    : "collapsed"
+                }`}
+                onMouseEnter={
+                  !isTouchDevice &&
+                  filteredNft.content.fields[currentBuilding.field] < 7
+                    ? handleUpgradeHover
+                    : undefined
+                }
+                onMouseLeave={
+                  !isTouchDevice &&
+                  filteredNft.content.fields[currentBuilding.field] < 7
+                    ? handleUpgradeLeave
+                    : undefined
+                }
+                onClick={() => {
+                  if (isTouchDevice) {
+                    handleUpgradeClick(currentBuildingIndex); // Handle the click for mobile devices
+                  }
+                }}
+              >
                 <h2>{`${currentBuilding.type} Level: ${
                   filteredNft.content.fields[currentBuilding.field]
                 }`}</h2>
 
+                {isUpgradeInfoExpanded && (
+                  <div className="additional-info">
+                    {/* Building Images */}
+                    <div className="building-images">
+                      <div className="building-image">
+                        <img
+                          src={`${currentBuilding.buildingUrl}/${
+                            filteredNft.content.fields[currentBuilding.field]
+                          }.png`}
+                          alt="Current Level"
+                          className="building-image-zoom"
+                        />
+                        <p className="level-text current-level">{`Level ${
+                          filteredNft.content.fields[currentBuilding.field]
+                        }`}</p>
+                      </div>
+
+                      {/* Arrow Between Images */}
+                      <div className="level-arrow">
+                        <p>➔</p>
+                      </div>
+
+                      <div className="building-image">
+                        <img
+                          src={`${currentBuilding.buildingUrl}/${
+                            parseInt(
+                              filteredNft.content.fields[currentBuilding.field]
+                            ) + 1
+                          }.png`}
+                          alt="Next Level"
+                          className="building-image-zoom"
+                        />
+                        <p className="level-text next-level">{`Level ${
+                          parseInt(
+                            filteredNft.content.fields[currentBuilding.field]
+                          ) + 1
+                        }`}</p>
+                      </div>
+                    </div>
+
+                    {/* Upgrade Benefit Text */}
+                    <div className="upgrade-benefit">
+                      {currentBuilding.type === "R. Office" && (
+                        <>
+                          <p style={{ color: "gray", fontSize: "14px" }}>
+                            Accumulation Speed:
+                          </p>
+                          <p
+                            className="benefit-value"
+                            style={{ color: "gray", fontSize: "16px" }}
+                          >
+                            {`${
+                              gameData.accumulation_speeds[
+                                filteredNft.content.fields[
+                                  currentBuilding.field
+                                ]
+                              ] / 1000
+                            } $SITY/hour`}
+                          </p>
+
+                          <p
+                            style={{
+                              color: "green",
+                              fontSize: "18px",
+                              marginTop: "10px",
+                            }}
+                          >
+                            Accumulation Speed (Next Level):
+                          </p>
+                          <p
+                            className="benefit-value next-level"
+                            style={{
+                              color: "green",
+                              fontSize: "20px",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {`${
+                              gameData.accumulation_speeds[
+                                parseInt(
+                                  filteredNft.content.fields[
+                                    currentBuilding.field
+                                  ]
+                                ) + 1
+                              ] / 1000
+                            } $SITY/hour`}
+                          </p>
+                        </>
+                      )}
+
+                      {currentBuilding.type === "Factory" && (
+                        <>
+                          <p style={{ color: "gray", fontSize: "14px" }}>
+                            Factory Bonus:
+                          </p>
+                          <p
+                            className="benefit-value"
+                            style={{ color: "gray", fontSize: "16px" }}
+                          >
+                            {`${
+                              gameData.factory_bonuses[
+                                filteredNft.content.fields[
+                                  currentBuilding.field
+                                ]
+                              ]
+                            }%`}
+                          </p>
+
+                          <p
+                            style={{
+                              color: "green",
+                              fontSize: "18px",
+                              marginTop: "10px",
+                            }}
+                          >
+                            Factory Bonus (Next Level):
+                          </p>
+                          <p
+                            className="benefit-value next-level"
+                            style={{
+                              color: "green",
+                              fontSize: "20px",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {`${
+                              gameData.factory_bonuses[
+                                parseInt(
+                                  filteredNft.content.fields[
+                                    currentBuilding.field
+                                  ]
+                                ) + 1
+                              ]
+                            }%`}
+                          </p>
+                        </>
+                      )}
+
+                      {(currentBuilding.type === "House" ||
+                        currentBuilding.type === "E. Complex") && (
+                        <>
+                          <p style={{ color: "gray", fontSize: "14px" }}>
+                            Amenity Points:
+                          </p>
+                          <p
+                            className="benefit-value"
+                            style={{ color: "gray", fontSize: "16px" }}
+                          >
+                            {filteredNft.content.fields[currentBuilding.field]}
+                          </p>
+
+                          <p
+                            style={{
+                              color: "green",
+                              fontSize: "18px",
+                              marginTop: "10px",
+                            }}
+                          >
+                            Amenity Points (Next Level):
+                          </p>
+                          <p
+                            className="benefit-value next-level"
+                            style={{
+                              color: "green",
+                              fontSize: "20px",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {parseInt(
+                              filteredNft.content.fields[currentBuilding.field]
+                            ) + 1}
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Use ClaimFactoryBonus and Upgrade components instead of the button */}
                 {currentBuilding.type === "Factory" ? (
                   <>
                     <div>
@@ -700,6 +946,7 @@ const Game: React.FC = () => {
                     </div>
                   </>
                 ) : null}
+
                 <Upgrade
                   nft={filteredNft}
                   buildingType={currentBuildingIndex}
@@ -711,6 +958,7 @@ const Game: React.FC = () => {
                   }}
                   gameData={gameData}
                   showModal={showModal} // Pass showModal as a prop here
+                  isTouchDevice={isTouchDevice} // Pass isTouchDevice to Upgrade
                 />
               </div>
 

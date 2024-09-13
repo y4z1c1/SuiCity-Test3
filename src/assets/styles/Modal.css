@@ -17,10 +17,10 @@ button {
 .modal-content {
   position: absolute;
   left: 50%;
-  top: 8%;
+  top: 65%;
   transform: translate(-50%, 0);
   background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
-  width: 15%;
+  min-width: 20%;
 
   /* Border */
   border-radius: 12px 12px 12px 12px; /* Rounded corners for a playful, friendly look */
@@ -35,7 +35,7 @@ button {
 
   /* Transition for hover effect */
   transition: transform 0.2s ease-in-out;
-  padding: 0.5% 1%;
+  padding: 0.2% 0.4%;
   box-sizing: border-box;
 
   display: flex;
@@ -71,7 +71,8 @@ button {
   .modal-content {
     left: 50%;
     width: 60%;
-    top: 55%;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .modal-content p {

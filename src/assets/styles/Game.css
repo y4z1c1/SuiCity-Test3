@@ -13,7 +13,7 @@
   position: relative;
   box-sizing: border-box;
   overflow: hidden;
-  background-size: 105%; /* Zoom in the background */
+  background-size: 110%; /* Zoom in the background */
   background-position: center;
   transition: background-position 0.5s ease-in-out; /* Smooth movement */
   margin-bottom: 1vh;
@@ -83,7 +83,7 @@
   right: 2%;
   top: 0%;
   background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
-  width: 10%;
+  width: 14%;
 
   /* Border */
   border-radius: 0px 0px 12px 12px; /* Rounded corners for a playful, friendly look */
@@ -111,12 +111,12 @@
 }
 
 .nft-specs h2 {
-  font-size: 150%;
+  font-size: 120%;
 }
 
 .balance-columns {
   position: absolute;
-  right: 12.5%;
+  right: 16.5%;
   top: 0;
   font-size: 100%;
   background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
@@ -182,7 +182,7 @@
   transform: translateY(-50%);
   color: rgb(29, 29, 29);
   font-weight: 500;
-  font-size: 100%;
+  font-size: 90%;
   color: rgba(255, 255, 255, 0.75);
 }
 
@@ -273,13 +273,92 @@
   padding: 0.5%;
   width: 45%;
   text-align: center;
-  height: 20%;
+  min-height: 15%;
+  max-height: 20%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column; /* Use Flexbox to align content vertically */
   justify-content: space-between; /* Space between the content and the button */
   z-index: 10;
+
+  transition: all 0.5s ease-in-out; /* Smooth transition */
 }
+
+.buildingType.expanded {
+  min-height: 60%;
+  max-height: 76%;
+}
+
+.buildingType.collapsed {
+  min-height: 15%;
+  max-height: 20%;
+}
+/* Zoom the building images by 30% when in expanded view */
+.building-image img {
+  width: 80%; /* Default image size */
+  height: auto;
+  transition: transform 0.3s ease-in-out; /* Smooth zoom transition */
+}
+.building-image-zoom {
+  transform: scale(1.7); /* Zoom in by 30% */
+}
+.level-arrow {
+  font-size: 30px;
+  color: gray;
+  margin: 0 15px; /* Adjust spacing between images */
+}
+/* Level Text Styling */
+.level-text {
+  margin-top: 5px;
+}
+
+/* Additional styling for expanded view */
+.buildingType.expanded .building-images {
+  display: flex;
+  justify-content: center;
+  flex-direction: row; /* Stack images vertically */
+  align-items: center;
+  margin-bottom: 10px; /* Add space between images and benefit text */
+}
+
+.building-images {
+  width: 100%;
+  text-align: center;
+}
+.benefit-text {
+  font-family: "Helvetica", sans-serif;
+  color: #ffffff;
+  background: linear-gradient(135deg, #6d83f2, #4e54c8);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.benefit-description {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.benefit-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.benefit-next {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffeb3b;
+}
+
+.next-level {
+  color: #ffeb3b;
+  font-size: 18px;
+  font-weight: bold;
+}
+
 .buildingType h2 {
   font-size: 250%;
   white-space: nowrap;
@@ -311,7 +390,6 @@
 
 .buildingType button:hover {
   cursor: pointer;
-  transform: translate(0, 3px);
 }
 
 .accumulated {
@@ -322,7 +400,7 @@
   color: rgb(29, 29, 29);
 
   /* Border */
-  border-radius: 20px 0px 0px 0px; /* Rounded corners for a playful, friendly look */
+  border-radius: 12px 12px 0px 0px; /* Rounded corners for a playful, friendly look */
 
   /* Box Shadow */
   box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
@@ -331,7 +409,7 @@
   padding: 0.5%;
   text-align: center;
   width: 25%;
-  height: 15%; /* Let the height adjust based on the content */
+  min-height: 13%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column; /* Use Flexbox to align content vertically */
@@ -382,14 +460,14 @@
   color: rgb(29, 29, 29);
 
   /* Border */
-  border-radius: 00px 20px 0px 00px; /* Rounded corners for a playful, friendly look */
+  border-radius: 12px 12px 0px 0px; /* Rounded corners for a playful, friendly look */
 
   /* Box Shadow */
   box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
   padding: 0.5%;
   text-align: center;
   width: 25%;
-  height: 15%;
+  min-height: 13%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column; /* Use Flexbox to align content vertically */
@@ -526,7 +604,15 @@ p,
   }
 
   .nft-specs h2 {
-    font-size: 120%;
+    font-size: 100%;
+  }
+
+  .nft-specs p {
+    font-size: 70%;
+  }
+
+  .nft-title {
+    width: 25%;
   }
 }
 
@@ -556,7 +642,7 @@ p,
   }
 
   .balance-amount {
-    font-size: 100%;
+    font-size: 80%;
   }
 }
 
@@ -599,6 +685,9 @@ p,
 
   .nft-specs {
     width: 15%;
+  }
+  .nft-specs h2 {
+    font-size: 100%;
   }
   .balance-columns {
     right: 17.5%;
@@ -774,15 +863,19 @@ p,
   }
 
   .buildingType {
-    height: 25%;
+    min-height: 20%;
+  }
+
+  .buildingType.collapsed {
+    min-height: 20%;
   }
 
   .accumulated {
-    height: 22%;
+    min-height: 18%;
   }
 
   .population {
-    height: 22%;
+    min-height: 18%;
   }
 
   .accumulated p {

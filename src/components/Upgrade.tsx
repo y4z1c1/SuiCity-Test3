@@ -16,6 +16,7 @@ const Upgrade = ({
   onError,
   gameData, // Pass the gameData object containing cost_multiplier and other values
   showModal, // Add showModal as a prop
+  isTouchDevice, // Add isTouchDevice as a prop
 }: {
   nft: any;
   buildingType: number;
@@ -24,11 +25,12 @@ const Upgrade = ({
   onError: () => void;
   gameData: any; // Add gameData as a prop
   showModal: (message: string) => void; // Define showModal prop type
+  isTouchDevice: boolean; // Define the type for isTouchDevice
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const account = useCurrentAccount();
   const suiClient = useSuiClient();
-
+  const [clickCount, setClickCount] = useState(0);
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
     execute: async ({ bytes, signature }) =>
       suiClient.executeTransactionBlock({
@@ -293,7 +295,21 @@ const Upgrade = ({
       console.log("No upgrades available");
     }
   }, [currentLevel, getUpgradeCosts]);
+  const handleClick = () => {
+    setClickCount((prevCount) => prevCount + 1);
+    console.log("Click count:", clickCount);
 
+    console.log("Touch device:", isTouchDevice);
+    if (isTouchDevice) {
+      if (clickCount === 1) {
+        // Trigger upgrade on the second click for mobile devices
+        upgrade();
+        setClickCount(0); // Reset click count after triggering upgrade
+      }
+    } else {
+      upgrade(); // Directly trigger upgrade for non-touch devices
+    }
+  };
   return (
     <div>
       {currentLevel < 7 ? (
@@ -301,7 +317,7 @@ const Upgrade = ({
           <button
             onClick={() => {
               onClick(); // Notify parent component to pause accumulation
-              upgrade(); // Trigger the upgrade logic
+              handleClick(); // Handle the upgrade logic
             }}
             disabled={isProcessing || !nft?.content?.fields} // Disable button if processing or nft is not ready
           >
