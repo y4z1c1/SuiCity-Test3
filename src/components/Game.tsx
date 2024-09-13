@@ -35,7 +35,7 @@ const Game: React.FC = () => {
 
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState<number>(0); // Track current building in the carousel
   const mintBackgroundUrl =
-    "https://bafybeicujqa4oiif4o7gyq6niwltib32arxyrp43uqavfo7bjfnwq3cfrq.ipfs.w3s.link/mint.webp";
+    "https://bafybeifzamdszfcbsrlmff7xqpdhjrjrp44u3iqzodm5r3bhg6aiycxjsu.ipfs.w3s.link/mint-2.webp";
   const buildings = [
     {
       type: "R. Office",
@@ -43,7 +43,7 @@ const Game: React.FC = () => {
       imageBaseUrl:
         "https://bafybeicirp2yeyxcsta4y4ch4vqslapizvrowwi7enepqvq3s4gncpuwlm.ipfs.w3s.link/",
       buildingUrl:
-        "https://bafybeifuduov5eskub2xftpk77a2jqw2kct5zqmdigasr5jvisr3hywl2a.ipfs.w3s.link/",
+        "https://bafybeicz5hchwhdfde2pjeo3tbndppqfa7npyyauwi4rjio3edutqok7w4.ipfs.w3s.link/",
     },
     {
       type: "Factory",
@@ -51,7 +51,7 @@ const Game: React.FC = () => {
       imageBaseUrl:
         "https://bafybeih6ncjg3sqkm5jhot7m6brgmub255gdlys6l36lrur5bxgfenswx4.ipfs.w3s.link/",
       buildingUrl:
-        "https://bafybeihoculyfo4c72xajyhb6i2qrvlrvfjisnyc6phevvbp2o66xad43u.ipfs.w3s.link/",
+        "https://bafybeieb6jtila7flzlkybvl36wdrokz37v4nsjbw33itragrpdtl6o36a.ipfs.w3s.link/",
     },
     {
       type: "House",
@@ -59,7 +59,7 @@ const Game: React.FC = () => {
       imageBaseUrl:
         "https://bafybeiemoqvgqghpcikmbizqfsh6ujod4m5yuvv3k5lpz43333sjqki7oe.ipfs.w3s.link/",
       buildingUrl:
-        "https://bafybeia3fvv7zavw4q5kn5vlauog5bgjf3w7m4rybebq74e2nwa5stjndq.ipfs.w3s.link/",
+        "https://bafybeidwyrjf7ivqm76mg2wg3jbwtvo4sifuxkbrar3xzwn7xkugkbiqke.ipfs.w3s.link/",
     },
     {
       type: "E. Complex",
@@ -67,7 +67,7 @@ const Game: React.FC = () => {
       imageBaseUrl:
         "https://bafybeibfvxcfwlmpruudsbnl42gtplthi2s7c6yvdbqybz4o7hpd5fkcie.ipfs.w3s.link/",
       buildingUrl:
-        "https://bafybeif3k5wwp3anwmx5yxxlcdjga2rzuuvfs6pxouiekepu5dkdtbv7ya.ipfs.w3s.link/",
+        "https://bafybeibyvpq4sr33flefgewlxhvfyhgqdd5kcycaz2xortm6uqqrp6ahfa.ipfs.w3s.link/",
     },
   ];
 
@@ -89,6 +89,15 @@ const Game: React.FC = () => {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY, currentTarget } = e;
     const { width, height } = currentTarget.getBoundingClientRect();
+
+    // Calculate the top 10% and bottom 20% of the element's height
+    const topBoundary = height * 0.1;
+    const bottomBoundary = height * 0.85;
+
+    // Check if the mouse is within the active area (not within top 10% or bottom 20%)
+    if (clientY < topBoundary || clientY > bottomBoundary) {
+      return; // Do nothing if the mouse is outside the active area
+    }
 
     const mouseXPercent = (clientX / width) * 100;
     const mouseYPercent = (clientY / height) * 100;
@@ -648,7 +657,7 @@ const Game: React.FC = () => {
                       </div>
                       <div className="balance-bar">
                         <img
-                          src="https://sapphire-hollow-dormouse-952.mypinata.cloud/ipfs/QmZrX44HzwEjtGEk7q9o3q4upSD6UJWmZG6dGiPht3uLyA/"
+                          src="https://bafybeig4236djyafwvxzkb3km7o3xa25lsfg55bxvyrwbxyemlzjnjjpsi.ipfs.w3s.link/sity%20logo.png"
                           alt="SITY logo"
                           className="balance-bar-icon"
                         />
@@ -672,8 +681,18 @@ const Game: React.FC = () => {
 
                     {/* New NFT Specs Tab */}
                     <div className="nft-specs">
-                      <p>Accumulation Speed:</p>
+                      <p>Accumulation Speed: </p>
                       <h2>
+                        <img
+                          src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/acc1.webp"
+                          alt="acc-icon"
+                          className="acc-icon"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            marginRight: "3px",
+                          }}
+                        />
                         {`${
                           gameData.accumulation_speeds[
                             filteredNft.content.fields.residental_office
@@ -681,8 +700,18 @@ const Game: React.FC = () => {
                         } $SITY/h`}
                       </h2>
 
-                      <p>Factory Bonus:</p>
+                      <p> Factory Bonus:</p>
                       <h2>
+                        <img
+                          src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/gear1.webp"
+                          alt="gear-icon"
+                          className="gear-icon"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            marginRight: "5px",
+                          }}
+                        />
                         {`${
                           gameData.factory_bonuses[
                             filteredNft.content.fields.factory
@@ -692,6 +721,16 @@ const Game: React.FC = () => {
 
                       <p>Amenity Points:</p>
                       <h2>
+                        <img
+                          src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/star1.webp"
+                          alt="star-icon"
+                          className="star-icon"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            marginRight: "5px",
+                          }}
+                        />
                         {`${
                           parseInt(filteredNft.content.fields.house) +
                           parseInt(
@@ -757,7 +796,7 @@ const Game: React.FC = () => {
                         <img
                           src={`${currentBuilding.buildingUrl}/${
                             filteredNft.content.fields[currentBuilding.field]
-                          }.png`}
+                          }.webp`}
                           alt="Current Level"
                           className="building-image-zoom"
                         />
@@ -777,7 +816,7 @@ const Game: React.FC = () => {
                             parseInt(
                               filteredNft.content.fields[currentBuilding.field]
                             ) + 1
-                          }.png`}
+                          }.webp`}
                           alt="Next Level"
                           className="building-image-zoom"
                         />
@@ -966,10 +1005,24 @@ const Game: React.FC = () => {
               </div>
 
               <div className="accumulated">
-                <h2>{`${(
-                  accumulatedSity +
-                  filteredNft.content.fields.balance / 1000
-                ).toFixed(2)} $SITY`}</h2>
+                <h2>
+                  <img
+                    src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/coins1.webp"
+                    alt="coin-icon"
+                    className="coin-icon"
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      marginRight: "5px",
+                      borderRadius: "50%",
+                      transform: "translateY(5px)",
+                    }}
+                  />
+                  {`${(
+                    accumulatedSity +
+                    filteredNft.content.fields.balance / 1000
+                  ).toFixed(2)} $SITY`}
+                </h2>
                 <p>{`${countdown ? formatTime(countdown) : "Full"}`}</p>
                 <Claim
                   nft={filteredNft}
@@ -984,11 +1037,24 @@ const Game: React.FC = () => {
               </div>
 
               <div className="population">
-                <h2>{`Population: ${formatBalance(
-                  calculatePopulation(filteredNft) +
-                    accumulatedSity +
-                    filteredNft.content.fields.balance / 1000
-                )}`}</h2>
+                <h2>
+                  <img
+                    src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/peop1.webp"
+                    alt="people-icon"
+                    className="people-icon"
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      marginRight: "5px",
+                      transform: "translateY(5px)",
+                    }}
+                  />
+                  {`Population: ${formatBalance(
+                    calculatePopulation(filteredNft) +
+                      accumulatedSity +
+                      filteredNft.content.fields.balance / 1000
+                  )}`}
+                </h2>
 
                 <button
                   onClick={() => {

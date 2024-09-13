@@ -51,7 +51,7 @@
   position: absolute;
   left: 2%;
   top: 0%;
-  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
   width: 20%;
 
   /* Border */
@@ -82,7 +82,7 @@
   position: absolute;
   right: 2%;
   top: 0%;
-  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
   width: 14%;
 
   /* Border */
@@ -102,6 +102,30 @@
   z-index: 10;
 }
 
+.nft-specs h2,
+.accumulated h2,
+.population h2 {
+  display: flex;
+  align-items: center; /* Align items vertically */
+}
+
+.nft-specs h2 img,
+.accumulated h2 img,
+.population h2 img {
+  margin-left: 5px; /* Space between text and icon */
+}
+
+.accumulated h2,
+.population h2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.accumulated h2 img,
+.population h2 img {
+  margin-left: 5px; /* Space between text and icon */
+}
 .nft-specs p {
   color: rgb(0, 0, 0);
   font-size: 80%;
@@ -119,7 +143,7 @@
   right: 16.5%;
   top: 0;
   font-size: 100%;
-  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
   width: 20%;
   color: rgb(29, 29, 29);
 
@@ -158,8 +182,8 @@
   height: 25px;
   position: relative;
   overflow: hidden;
-  box-shadow: 1px 1px 5px #200c00, 3px 3px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
-  background-color: rgb(27, 27, 27);
+  background-color: rgb(255, 255, 255, 0.6);
+  box-shadow: 3px 3px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
 }
 
 .balance-bar-fill {
@@ -181,9 +205,9 @@
   top: 50%;
   transform: translateY(-50%);
   color: rgb(29, 29, 29);
+  font-family: "Kanit", sans-serif;
   font-weight: 500;
   font-size: 90%;
-  color: rgba(255, 255, 255, 0.75);
 }
 
 .upper-div button {
@@ -225,7 +249,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
   backdrop-filter: blur(10px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
   color: rgb(29, 29, 29);
@@ -260,7 +284,7 @@
   left: 50%;
   transform: translate(-50%);
 
-  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
   color: rgb(29, 29, 29);
 
   /* Border */
@@ -390,13 +414,14 @@
 
 .buildingType button:hover {
   cursor: pointer;
+  transform: translateY(3px);
 }
 
 .accumulated {
   position: absolute; /* Keep it absolutely positioned relative to the game container */
   bottom: 0%; /* Align it to the bottom */
   left: 2%; /* Adjust the horizontal positioning as needed */
-  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
   color: rgb(29, 29, 29);
 
   /* Border */
@@ -418,6 +443,8 @@
 }
 
 .accumulated button {
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+
   align-self: center; /* Center the button horizontally */
   margin-top: auto; /* Push the button to the bottom */
   margin-bottom: 2%;
@@ -454,7 +481,7 @@
   position: absolute;
   bottom: 0%;
   right: 2%;
-  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
   backdrop-filter: blur(10px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
   color: rgb(29, 29, 29);
@@ -515,27 +542,25 @@
   font-size: 160%;
 }
 .pleaseConnect {
+  text-align: center;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.905
-  ); /* Semi-transparent background */
+  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
   border-radius: 2px;
   border: none;
   box-sizing: border-box;
   padding: 1%;
-  font-size: 100%;
+  font-size: 80%;
   box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
   border-radius: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: rgb(26, 26, 26);
   transition: all 0.1s ease-in-out;
   letter-spacing: 1.5px;
+  backdrop-filter: blur(10px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
 }
 .mint button {
   position: absolute;
@@ -589,14 +614,33 @@ p,
   font-family: "Kanit", cursive;
   font-weight: 200;
 }
+.acc-icon {
+  filter: drop-shadow(2px 2px 10px rgba(0, 128, 0, 0.65));
+}
+
+.gear-icon {
+  filter: drop-shadow(1px 1px 5px rgba(255, 0, 0, 0.65));
+}
+
+.star-icon {
+  filter: drop-shadow(1px 1px 5px rgba(45, 157, 255, 0.65));
+}
+
+.coin-icon {
+  filter: drop-shadow(1px 1px 5px rgba(255, 255, 0, 0.65));
+}
+
+.people-icon {
+  filter: drop-shadow(1px 1px 5px rgba(0, 0, 255, 0.65));
+}
 
 @media (max-width: 1920px) {
   .accumulated h2 {
-    font-size: 150%;
+    font-size: 130%;
   }
 
   .population h2 {
-    font-size: 150%;
+    font-size: 130%;
   }
 
   .buildingType h2 {
@@ -614,19 +658,27 @@ p,
   .nft-title {
     width: 25%;
   }
+
+  .nft-specs {
+    width: 18%;
+  }
+
+  .balance-columns {
+    right: 20.5%;
+  }
 }
 
 @media (max-width: 1440px) {
   .buildingType h2 {
-    font-size: 180%;
+    font-size: 170%;
   }
 
   .accumulated h2 {
-    font-size: 140%;
+    font-size: 120%;
   }
 
   .population h2 {
-    font-size: 140%;
+    font-size: 120%;
   }
 
   .accumulated p {
@@ -643,6 +695,16 @@ p,
 
   .balance-amount {
     font-size: 80%;
+  }
+
+  .population button {
+    font-size: 90%;
+  }
+  .accumulated button {
+    font-size: 90%;
+  }
+  .buildingType button {
+    font-size: 90%;
   }
 }
 
@@ -671,26 +733,33 @@ p,
     font-size: 120%;
   }
 
-  .population button {
-    font-size: 100%;
-  }
-
-  .accumulated button {
-    font-size: 100%;
-  }
-
-  .buildingType button {
-    font-size: 100%;
-  }
-
-  .nft-specs {
-    width: 15%;
-  }
   .nft-specs h2 {
-    font-size: 100%;
+    font-size: 80%;
   }
-  .balance-columns {
-    right: 17.5%;
+
+  .buildingType {
+    min-height: 25%;
+    max-height: 30%;
+  }
+
+  .buildingType.collapsed {
+    min-height: 25%;
+    max-height: 30%;
+  }
+
+  .buildingType.expanded {
+    min-height: 60%;
+    max-height: 70%;
+  }
+
+  .population {
+    min-height: 20%;
+    max-height: 25%;
+  }
+
+  .accumulated {
+    min-height: 20%;
+    max-height: 25%;
   }
 }
 
@@ -710,13 +779,11 @@ p,
   }
 
   .balance-columns {
-    width: 30%;
+    width: 20%;
+    right: 24.5%;
   }
   .nft-title {
     width: 30%;
-  }
-  .nft-specs h2 {
-    font-size: 120%;
   }
 
   .connectButton {
@@ -726,6 +793,10 @@ p,
 
   .nav-links {
     right: 30%;
+  }
+
+  .nft-specs {
+    width: 22%;
   }
 }
 
@@ -740,6 +811,9 @@ p,
     left: 0%;
     width: 40%;
     border-radius: 0px 0px 12px 0px;
+  }
+  .upper-div h2 {
+    font-size: 120%;
   }
 
   .balance-columns {
@@ -787,9 +861,13 @@ p,
 
   .nft-specs {
     left: 0%;
-    width: 25%;
+    width: 35%;
     top: 60px;
     border-radius: 0px 12px 12px 0px;
+  }
+
+  .nft-specs h2 {
+    font-size: 100%;
   }
 }
 
