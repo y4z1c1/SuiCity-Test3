@@ -876,21 +876,21 @@ p,
     box-shadow: 4px 8px 0px rgba(0, 0, 0, 0.4);
   }
   .accumulated p {
-    font-size: 80%;
+    font-size: 70%;
   }
   .population p {
-    font-size: 80%;
+    font-size: 70%;
   }
   .buildingType p {
-    font-size: 80%;
+    font-size: 70%;
   }
 
   .accumulated h2 {
-    font-size: 90%;
+    font-size: 80%;
   }
 
   .population h2 {
-    font-size: 90%;
+    font-size: 80%;
   }
 
   .nft-title h2 {
