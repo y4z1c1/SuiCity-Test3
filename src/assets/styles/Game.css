@@ -314,8 +314,8 @@
 }
 
 .buildingType.expanded {
-  min-height: 80%;
-  max-height: 90%;
+  min-height: 70%;
+  max-height: 80%;
 }
 
 .buildingType.collapsed {

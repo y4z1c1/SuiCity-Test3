@@ -108,7 +108,7 @@ ul {
   backdrop-filter: blur(10px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(10px); /* Safari-specific blur effect */
   border-radius: 8px;
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  box-shadow: 10px 20px 0px #000000a9, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
   backdrop-filter: blur(10px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
   padding: 15px;
@@ -192,9 +192,17 @@ ul {
   transform: translateY(1px); /* Pressed effect on click */
 }
 
+@media (max-width: 1440px) {
+  .feedback-form {
+    width: 60%;
+  }
+}
 @media (max-width: 1024px) {
   .warn {
     width: 85%;
+  }
+  .feedback-form {
+    width: 80%;
   }
 }
 @media (max-width: 768px) {
