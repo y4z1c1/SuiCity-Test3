@@ -7,7 +7,7 @@ const Mint = ({
   onMintSuccessful, // Add onMintSuccessful prop
   showModal,
 }: {
-  showModal: (message: string) => void; // Define showModal prop type
+  showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
   onMintSuccessful: () => void;
 }) => {
   const suiClient = useSuiClient();
@@ -42,19 +42,18 @@ const Mint = ({
         {
           onSuccess: (result) => {
             console.log("Mint successful ", result);
-            showModal("Mint successful!"); // Show success message in the modal
 
             onMintSuccessful(); // Trigger the success callback
           },
           onError: (error) => {
             console.error("Mint error:", error);
-            showModal("An error occured, please try again!"); // Show success message in the modal
+            showModal("An error occured, please try again!", 0); // Show success message in the modal
           },
         }
       );
     } catch (error) {
       console.error("Mint Error:", error);
-      showModal("An error occured, please try again!"); // Show success message in the modal
+      showModal("An error occured, please try again!", 0); // Show success message in the modal
     }
   }, [signAndExecute, onMintSuccessful]);
 

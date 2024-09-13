@@ -32,6 +32,7 @@ const Game: React.FC = () => {
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isUpgradeInfoExpanded, setIsUpgradeInfoExpanded] = useState(false); // Track whether upgrade info is expanded
   const [isMobileExpanded, setIsMobileExpanded] = useState(false); // Track whether building is expanded on mobile
+  const [bgColor, setBgColor] = useState<0 | 1 | 2>(0); // Default to red (0)
 
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState<number>(0); // Track current building in the carousel
   const mintBackgroundUrl =
@@ -162,16 +163,17 @@ const Game: React.FC = () => {
     setModalMessage(null); // Clear message on close
   };
 
-  const showModal = (message: string) => {
+  const showModal = (message: string, bgColor: 0 | 1 | 2) => {
     setModalMessage(message);
     setIsModalOpen(true);
 
-    // Automatically close the modal after 10 seconds
+    // Automatically close the modal after 4 seconds
     setTimeout(() => {
       handleCloseModal();
-    }, 4000); // 10 seconds
-  };
+    }, 2500);
 
+    setBgColor(bgColor); // Set the background color based on the passed value
+  };
   const currentBuilding = buildings[currentBuildingIndex];
   const provider = new SuiClient({
     url: getFullnodeUrl("testnet"),
@@ -620,11 +622,11 @@ const Game: React.FC = () => {
         transition: "filter 0.3s ease-in-out", // Smooth transition for blur
       }}
     >
-      {/* Modal Component */}
       <Modal
         show={isModalOpen}
         message={modalMessage || ""}
         onClose={handleCloseModal}
+        bgColor={bgColor} // Pass the bgColor prop
       />
       {/* Check if the wallet is connected */}
       {connectionStatus === "connected" ? (

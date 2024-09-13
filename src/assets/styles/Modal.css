@@ -1,7 +1,3 @@
-button {
-  padding-block: 0px;
-  padding-inline: 0px;
-}
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -12,37 +8,57 @@ button {
   justify-content: center;
   align-items: center;
   margin: 0;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out; /* Smooth fade effect */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+}
+
+/* Background colors based on the 'bgColor' prop */
+.bg-red {
+  background-color: rgba(90, 0, 0, 0.2); /* Dark Red */
+}
+
+.bg-green {
+  background-color: rgba(0, 120, 0, 0.2); /* Dark Green */
+}
+
+.bg-black {
+  background-color: rgba(0, 0, 0, 0.2); /* Dark Black */
 }
 
 .modal-content {
   position: absolute;
   left: 50%;
-  top: 65%;
-  transform: translate(-50%, 0);
-  background-color: #ffffffb6; /* Light, playful yellowish tone to match the game */
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
   min-width: 20%;
-
-  /* Border */
-  border-radius: 12px 12px 12px 12px; /* Rounded corners for a playful, friendly look */
-
-  /* Box Shadow */
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
-  backdrop-filter: blur(10px); /* Apply the blur effect */
-  -webkit-backdrop-filter: blur(10px); /* For Safari */
-
-  /* Padding and Spacing */
-  text-align: center; /* Center text within the div */
-
-  /* Transition for hover effect */
-  transition: transform 0.2s ease-in-out;
+  border-radius: 12px; /* Rounded corners */
+  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* 3D effect */
+  backdrop-filter: blur(10px);
   padding: 0.2% 0.4%;
   box-sizing: border-box;
-
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  opacity: 1;
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out; /* Smooth fade effect */
 }
 
+/* Fade-in class for modal */
+.fade-in {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Fade-out class for modal */
+.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Text and button styles */
 .modal-content p {
   font-family: "Kanit";
   font-weight: 300;

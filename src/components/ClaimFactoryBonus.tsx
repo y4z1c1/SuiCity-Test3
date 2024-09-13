@@ -14,7 +14,7 @@ const ClaimFactoryBonus = ({
   onClaimSuccess: () => void;
   onClick: () => void;
   onError: () => void;
-  showModal: (message: string) => void; // Define showModal prop type
+  showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
 }) => {
   const suiClient = useSuiClient();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -56,14 +56,14 @@ const ClaimFactoryBonus = ({
           onSuccess: (result) => {
             console.log("Claim successful:", result);
             console.log("Bonus claimed successfully!");
-            showModal("Bonus claimed successfully!"); // Show success message in the modal
+            showModal("Bonus claimed successfully!", 1); // Show success message in the modal
 
             onClaimSuccess();
           },
           onError: (error) => {
             console.error("Claim failed:", error);
             console.log("Failed to claim bonus. Please try again.");
-            showModal("Failed to claim bonus. Please try again."); // Show success message in the modal
+            showModal("Failed to claim bonus. Please try again.", 0); // Show success message in the modal
 
             onError();
           },
@@ -72,7 +72,7 @@ const ClaimFactoryBonus = ({
     } catch (error) {
       console.error("Claim Error:", error);
       console.log("An error occurred. Please try again.");
-      showModal("An error occurred. Please try again."); // Show success message in the modal
+      showModal("An error occurred. Please try again.", 0); // Show success message in the modal
 
       onError();
     } finally {

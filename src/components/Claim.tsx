@@ -14,7 +14,7 @@ const Claim = ({
   onClaimSuccess: () => void;
   onClick: () => void;
   onError: () => void;
-  showModal: (message: string) => void; // Define showModal prop type
+  showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
 }) => {
   const [isLoading, setIsLoading] = useState(false); // State for loading indication
   const suiClient = useSuiClient();
@@ -60,14 +60,14 @@ const Claim = ({
           onSuccess: () => {
             console.log("Claim successful");
             console.log("Claim successful! Your tokens have been claimed.");
-            showModal("Claim successful! Your tokens have been claimed."); // Show success message in the modal
+            showModal("Claim successful! Your tokens have been claimed.", 1); // Show success message in the modal
 
             onClaimSuccess(); // Call onSuccess handler
           },
           onError: (error) => {
             console.error("Claim error", error);
             console.log("Error: Unable to claim tokens. Please try again.");
-            showModal("Error: Unable to claim tokens. Please try again."); // Show success message in the modal
+            showModal("Error: Unable to claim tokens. Please try again.", 0); // Show success message in the modal
 
             onError(); // Call onError handler
           },
@@ -76,7 +76,7 @@ const Claim = ({
     } catch (error) {
       console.error("Claim Error:", error);
       console.log("Error: Unable to claim tokens. Please try again.");
-      showModal("Error: Unable to claim tokens. Please try again."); // Show success message in the modal
+      showModal("Error: Unable to claim tokens. Please try again.", 0); // Show success message in the modal
 
       onError(); // Catch and handle any outer error
     } finally {

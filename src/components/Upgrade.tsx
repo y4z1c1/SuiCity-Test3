@@ -24,7 +24,7 @@ const Upgrade = ({
   onClick: () => void;
   onError: () => void;
   gameData: any; // Add gameData as a prop
-  showModal: (message: string) => void; // Define showModal prop type
+  showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
   isTouchDevice: boolean; // Define the type for isTouchDevice
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -131,14 +131,16 @@ const Upgrade = ({
 
         if (costs.sui > 0 && suiBalance < costs.sui) {
           showModal(
-            "Insufficient SUI balance. You need more SUI to upgrade this building."
+            "Insufficient SUI balance. You need more SUI to upgrade this building.",
+            0
           );
 
           throw new Error("Insufficient SUI balance.");
         }
         if (costs.sity > 0 && sityBalance < costs.sity) {
           showModal(
-            "Insufficient SITY balance. You need more SITY to upgrade this building."
+            "Insufficient SITY balance. You need more SITY to upgrade this building.",
+            0
           );
 
           throw new Error("Insufficient SITY balance.");
@@ -204,7 +206,7 @@ const Upgrade = ({
             onSuccess: () => {
               console.log("Upgrade successful with SUI");
               console.log("Upgrade successful! SUI used.");
-              showModal("Upgrade successful!"); // Show success message in the modal
+              showModal("Upgrade successful!", 1); // Show success message in the modal
 
               onUpgradeSuccess();
               setIsProcessing(false); // Reset processing state after success
@@ -212,7 +214,7 @@ const Upgrade = ({
             onError: (error) => {
               console.error("Upgrade error with SUI", error);
               console.log("Error: Unable to process SUI transaction.");
-              showModal("Error: Unable to process SUI transaction."); // Show success message in the modal
+              showModal("Error: Unable to process SUI transaction.", 0); // Show success message in the modal
 
               setIsProcessing(false); // Reset processing state on error
               onError();
@@ -244,7 +246,7 @@ const Upgrade = ({
             onSuccess: () => {
               console.log("Upgrade successful with SITY");
               console.log("Upgrade successful! SITY used.");
-              showModal("Upgrade successful!"); // Show success message in the modal
+              showModal("Upgrade successful!", 1); // Show success message in the modal
 
               onUpgradeSuccess();
               setIsProcessing(false); // Reset processing state after success
@@ -252,7 +254,7 @@ const Upgrade = ({
             onError: (error) => {
               console.error("Upgrade error with SITY", error);
               console.log("Error: Unable to process SITY transaction.");
-              showModal("Error: Unable to process SUI transaction."); // Show success message in the modal
+              showModal("Error: Unable to process SUI transaction.", 0); // Show success message in the modal
 
               setIsProcessing(false); // Reset processing state on error
               onError();
@@ -266,7 +268,7 @@ const Upgrade = ({
         console.log(error.message || "Error occurred during the upgrade.");
       } else {
         console.log("Error occurred during the upgrade.");
-        showModal("Error occurred during the upgrade."); // Show success message in the modal
+        showModal("Error occurred during the upgrade.", 0); // Show success message in the modal
       }
       setIsProcessing(false); // Reset processing state on general error
       onError();
