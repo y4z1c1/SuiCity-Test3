@@ -4,6 +4,13 @@ import "../assets/styles/Footer.css";
 const Footer: React.FC = () => {
   const [feedback, setFeedback] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
+  const [error, setError] = useState("");
+
+  // Regular expression for validating Ethereum address
+  const isValidWalletAddress = (address: string): boolean => {
+    const regex = /^0x[a-fA-F0-9]{40}$/;
+    return regex.test(address);
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -11,6 +18,22 @@ const Footer: React.FC = () => {
     const { name, value } = e.target;
     if (name === "feedback") setFeedback(value);
     if (name === "walletAddress") setWalletAddress(value);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isValidWalletAddress(walletAddress)) {
+      setError("Invalid wallet address format. Please check and try again.");
+      return;
+    }
+    setError("");
+
+    // Clear form fields
+    setFeedback("");
+    setWalletAddress("");
+
+    // Submit the form programmatically
+    e.currentTarget.submit();
   };
 
   return (
@@ -25,10 +48,12 @@ const Footer: React.FC = () => {
 
       <form
         name="getFeedback"
+        action="/pages/success" // Custom success page path
         method="POST"
         data-netlify="true"
         data-netlify-honeypot="bot-field"
         className="feedback-form"
+        onSubmit={handleSubmit}
       >
         <input type="hidden" name="form-name" value="getFeedback" />
         <p>
@@ -52,6 +77,7 @@ const Footer: React.FC = () => {
               onChange={handleChange}
               required
             />
+            {error && <p className="error-message">{error}</p>}
           </label>
         </p>
         <p>
