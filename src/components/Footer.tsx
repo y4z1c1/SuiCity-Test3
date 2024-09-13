@@ -24,12 +24,13 @@ const Footer: React.FC = () => {
       </p>
 
       <form
-        name="feedback"
+        name="getFeedback"
         method="POST"
         data-netlify="true"
+        data-netlify-honeypot="bot-field"
         className="feedback-form"
       >
-        <input type="hidden" name="form-name" value="feedback" />
+        <input type="hidden" name="form-name" value="getFeedback" />
         <p>
           <label>
             Feedback
