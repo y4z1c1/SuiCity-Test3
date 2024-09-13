@@ -804,7 +804,7 @@ p,
   .game-container {
     width: 100%;
     background-size: 200%;
-    height: 90vh;
+    height: 85vh;
     margin-top: 1vh;
   }
   .nft-title {
@@ -875,17 +875,26 @@ p,
   .game-container {
     box-shadow: 4px 8px 0px rgba(0, 0, 0, 0.4);
   }
+  .accumulated p {
+    font-size: 80%;
+  }
+  .population p {
+    font-size: 80%;
+  }
+  .buildingType p {
+    font-size: 80%;
+  }
 
   .accumulated h2 {
-    font-size: 100%;
+    font-size: 90%;
   }
 
   .population h2 {
-    font-size: 100%;
+    font-size: 90%;
   }
 
   .nft-title h2 {
-    font-size: 120%;
+    font-size: 90%;
   }
 
   .balance-amount {
