@@ -21,7 +21,7 @@ const Modal: React.FC<ModalProps> = ({ show, message, onClose, bgColor }) => {
       setIsFadingIn(false);
       setTimeout(() => {
         setIsVisible(false); // Hide after animation completes
-      }, 600); // Match the duration of the fade-out animation
+      }, 1000); // Match the duration of the fade-out animation
     }
   }, [show]);
 
