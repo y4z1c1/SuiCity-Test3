@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
     if (name === "walletAddress") setWalletAddress(value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isValidWalletAddress(walletAddress)) {
       setError("Invalid wallet address format. Please check and try again.");
@@ -32,8 +32,29 @@ const Footer: React.FC = () => {
     setFeedback("");
     setWalletAddress("");
 
-    // Submit the form programmatically
-    e.currentTarget.submit();
+    // Handle form submission programmatically
+    try {
+      const formData = new FormData(e.currentTarget);
+      const response = await fetch(e.currentTarget.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
+      }
+
+      // Redirect or show a success message
+      window.location.href = "/pages/success";
+    } catch (error) {
+      console.error("There was a problem with the form submission:", error);
+      setError(
+        "An error occurred while submitting the form. Please try again."
+      );
+    }
   };
 
   return (
