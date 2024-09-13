@@ -733,8 +733,8 @@ p,
   .game-container {
     width: 100%;
     background-size: 200%;
-    height: 80vh;
-    margin-top: 6vh;
+    height: 90vh;
+    margin-top: 1vh;
   }
   .nft-title {
     left: 0%;
@@ -772,16 +772,17 @@ p,
   }
 
   .navbar {
-    height: 12vh;
+    height: 8vh;
   }
 
   .connectButton {
-    left: 50%;
     transform: translate(-50%, -50%);
+    left: 50%;
+    width: 50%;
     top: 70%;
-    width: max-content;
     box-sizing: border-box;
-    padding: 2%;
+    padding: 0%;
+    justify-content: center;
   }
 
   .nft-specs {
