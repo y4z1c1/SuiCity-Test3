@@ -4,6 +4,22 @@ import "../assets/styles/Footer.css";
 const Footer: React.FC = () => {
   return (
     <footer className="footer" id="footer">
+      <p
+        style={{
+          color: "red",
+          textAlign: "center",
+          width: "60%",
+          margin: "auto",
+          marginTop: "20px",
+          marginBottom: "20px",
+        }}
+      >
+        This is a test version of the game, and many features, mechanics, and
+        visual elements are still under development. Please note that everything
+        is subject to change as we continue to refine and improve the
+        experience. Expect updates, modifications, and potential resets as we
+        work towards the final version."
+      </p>
       <div>
         <ul className="footer-links">
           <li>

@@ -92,7 +92,10 @@ const Header: React.FC = () => {
             </a>
           </li>
           <li>
-            <Link to="/faq">FAQ</Link>
+            <a href="https://suicityp2e.com/faq" target="_blank">
+              {" "}
+              FAQ
+            </a>
           </li>
           <li>
             {/* Scroll to footer when Contact Us is clicked */}

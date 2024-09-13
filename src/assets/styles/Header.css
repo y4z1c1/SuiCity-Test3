@@ -31,7 +31,7 @@
 }
 
 .title {
-  width: 20%;
+  width: 50%;
   height: auto;
 }
 
@@ -154,7 +154,7 @@
   }
 
   .title {
-    width: 30%; /* Adjust the width for smaller screens */
+    width: 60%; /* Adjust the width for smaller screens */
   }
 }
 

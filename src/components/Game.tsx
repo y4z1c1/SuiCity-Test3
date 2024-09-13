@@ -66,7 +66,7 @@ const Game: React.FC = () => {
       type: "E. Complex",
       field: "entertainment_complex",
       imageBaseUrl:
-        "https://bafybeibfvxcfwlmpruudsbnl42gtplthi2s7c6yvdbqybz4o7hpd5fkcie.ipfs.w3s.link/",
+        "https://bafybeifussnaorucnonp6bfpfa3nlum5wvgi7wfrv5usd6h2ubbsv5yizm.ipfs.w3s.link/",
       buildingUrl:
         "https://bafybeibyvpq4sr33flefgewlxhvfyhgqdd5kcycaz2xortm6uqqrp6ahfa.ipfs.w3s.link/",
     },
@@ -792,6 +792,12 @@ const Game: React.FC = () => {
 
                 {isUpgradeInfoExpanded && (
                   <div className="additional-info">
+                    <p style={{ fontSize: "12px" }}>
+                      Upgrading will not only improve your building’s
+                      functionality but will also change the metadata,
+                      appearance, and rarity of your NFT, thanks to the power of
+                      dynamic NFTs.
+                    </p>
                     {/* Building Images */}
                     <div className="building-images">
                       <div className="building-image">
@@ -964,6 +970,13 @@ const Game: React.FC = () => {
                           </p>
                         </>
                       )}
+                      <a
+                        target="_blank"
+                        className="details"
+                        href="https://docs.suicityp2e.com/"
+                      >
+                        more details
+                      </a>
                     </div>
                   </div>
                 )}
