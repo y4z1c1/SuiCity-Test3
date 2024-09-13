@@ -6,9 +6,9 @@ const Footer: React.FC = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [error, setError] = useState("");
 
-  // Regular expression for validating Ethereum address
+  // Regular expression for validating SUI address
   const isValidWalletAddress = (address: string): boolean => {
-    const regex = /^0x[a-fA-F0-9]{40}$/;
+    const regex = /^0x[a-fA-F0-9]{64}$/; // 66 characters including "0x"
     return regex.test(address);
   };
 
