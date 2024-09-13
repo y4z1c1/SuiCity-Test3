@@ -712,11 +712,11 @@ const Game: React.FC = () => {
               </button>
 
               {/* Building Display */}
-
               <div
                 className={`buildingType ${
                   isTouchDevice
-                    ? isMobileExpanded
+                    ? isMobileExpanded &&
+                      filteredNft.content.fields[currentBuilding.field] < 7
                       ? "expanded"
                       : "collapsed"
                     : isUpgradeInfoExpanded &&
@@ -737,7 +737,10 @@ const Game: React.FC = () => {
                     : undefined
                 }
                 onClick={() => {
-                  if (isTouchDevice) {
+                  if (
+                    isTouchDevice &&
+                    filteredNft.content.fields[currentBuilding.field] < 7
+                  ) {
                     handleUpgradeClick(currentBuildingIndex); // Handle the click for mobile devices
                   }
                 }}
