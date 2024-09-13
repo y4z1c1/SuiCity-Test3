@@ -69,7 +69,6 @@ const Footer: React.FC = () => {
 
       <form
         name="getFeedback"
-        action="/pages/success" // Custom success page path
         method="POST"
         data-netlify="true"
         data-netlify-honeypot="bot-field"
