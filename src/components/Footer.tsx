@@ -33,7 +33,7 @@ const Footer: React.FC = () => {
         <input type="hidden" name="form-name" value="getFeedback" />
         <p>
           <label>
-            Feedback
+            <h2>Give Us Some Feedback</h2>
             <textarea
               name="feedback"
               value={feedback}
@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
         </p>
         <p>
           <label>
-            Wallet Address
+            <h2>Your Wallet Address</h2>
             <input
               type="text"
               name="walletAddress"
