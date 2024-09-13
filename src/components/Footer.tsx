@@ -5,6 +5,7 @@ const Footer: React.FC = () => {
   const [feedback, setFeedback] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false); // New state to track form submission
 
   // Regular expression for validating SUI address
   const isValidWalletAddress = (address: string): boolean => {
@@ -46,6 +47,9 @@ const Footer: React.FC = () => {
       if (!response.ok) {
         throw new Error("Network response was not ok.");
       }
+
+      // If form submission is successful, show success message
+      setIsSubmitted(true);
     } catch (error) {
       console.error("There was a problem with the form submission:", error);
       setError(
@@ -73,34 +77,44 @@ const Footer: React.FC = () => {
         onSubmit={handleSubmit}
       >
         <input type="hidden" name="form-name" value="getFeedback" />
-        <p>
-          <label>
-            <h2>Give Us Some Feedback</h2>
-            <textarea
-              name="feedback"
-              value={feedback}
-              onChange={handleChange}
-              required
-            />
-          </label>
-        </p>
-        <p>
-          <label>
-            <h2>Your Wallet Address</h2>
-            <input
-              type="text"
-              name="walletAddress"
-              value={walletAddress}
-              onChange={handleChange}
-              required
-            />
-            {error && <p className="error-message">{error}</p>}
-          </label>
-        </p>
-        <p>
-          <button type="submit">Submit Feedback</button>
-        </p>
+
+        {isSubmitted ? (
+          <p className="success-message">
+            🎉 Thank you for your feedback! Your submission was successful.
+          </p>
+        ) : (
+          <>
+            <p>
+              <label>
+                <h2>Give Us Some Feedback</h2>
+                <textarea
+                  name="feedback"
+                  value={feedback}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+            </p>
+            <p>
+              <label>
+                <h2>Your Wallet Address</h2>
+                <input
+                  type="text"
+                  name="walletAddress"
+                  value={walletAddress}
+                  onChange={handleChange}
+                  required
+                />
+                {error && <p className="error-message">{error}</p>}
+              </label>
+            </p>
+            <p>
+              <button type="submit">Submit Feedback</button>
+            </p>
+          </>
+        )}
       </form>
+
       <div>
         <ul className="footer-links">
           <li>
@@ -147,6 +161,7 @@ const Footer: React.FC = () => {
           </li>
         </ul>
       </div>
+
       <div>
         <p className="footer-reserved">SuiCity © 2024. All rights reserved.</p>
       </div>
