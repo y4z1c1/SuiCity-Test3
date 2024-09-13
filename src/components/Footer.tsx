@@ -20,14 +20,13 @@ const Footer: React.FC = () => {
         visual elements are still under development. Please note that everything
         is subject to change as we continue to refine and improve the
         experience. Expect updates, modifications, and potential resets as we
-        work towards the final version."
+        work towards the final version.
       </p>
 
       <form
         name="feedback"
         method="POST"
         data-netlify="true"
-        netlify-honeypot="bot-field"
         className="feedback-form"
       >
         <input type="hidden" name="form-name" value="feedback" />
@@ -72,7 +71,7 @@ const Footer: React.FC = () => {
           </li>
           <li>
             <a
-              href="https://discord.com/invite/Aeth26cr25 "
+              href="https://discord.com/invite/Aeth26cr25"
               target="_blank"
               aria-label="Discord Link for SuiCityP2E"
             >
