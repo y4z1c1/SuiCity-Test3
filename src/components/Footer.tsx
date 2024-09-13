@@ -46,9 +46,6 @@ const Footer: React.FC = () => {
       if (!response.ok) {
         throw new Error("Network response was not ok.");
       }
-
-      // Redirect or show a success message
-      window.location.href = "/pages/success";
     } catch (error) {
       console.error("There was a problem with the form submission:", error);
       setError(
