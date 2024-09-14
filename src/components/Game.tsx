@@ -697,10 +697,12 @@ const Game: React.FC = () => {
     setIsLoading(true); // Reset loading when account changes
   }, [account?.address]);
 
-  // useEffect to check eligibility whenever the user's address changes
   useEffect(() => {
-    checkEligibility();
-  }, [checkEligibility]);
+    if (!filteredNft && account?.address) {
+      // If user hasn't minted an NFT, check eligibility
+      checkEligibility();
+    }
+  }, [account?.address, filteredNft, checkEligibility]);
 
   // Render loading state if eligibility is still being checked
   if (isLoading) {
@@ -763,7 +765,7 @@ const Game: React.FC = () => {
           {isUserEligible || passNft ? (
             <>
               {/* Display Eligibility Messages */}
-              {showEligibilityMessage && (
+              {!filteredNft && showEligibilityMessage && (
                 <div className="eligibility-status">
                   <p>Eligibility Result: {isUserEligible ? "✅" : "🚫"}</p>
                 </div>
