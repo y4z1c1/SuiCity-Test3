@@ -9,15 +9,26 @@ const ClaimFactoryBonus = ({
   onClick,
   onError,
   showModal, // Add showModal as a prop
+  suiBalance,
 }: {
   nft: any;
   onClaimSuccess: () => void;
   onClick: () => void;
   onError: () => void;
   showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
+  suiBalance: number;
 }) => {
   const suiClient = useSuiClient();
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const checkUserBalance = useCallback(() => {
+    if (suiBalance < 0.005) {
+      showModal("You need more SUI in order to pay gas.", 0);
+      throw new Error("You should have more SUI in order to pay gas.");
+    }
+
+    return true;
+  }, [suiBalance, showModal]);
 
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
     execute: async ({ bytes, signature }) =>
@@ -36,6 +47,7 @@ const ClaimFactoryBonus = ({
     try {
       const transactionBlock = new Transaction();
 
+      await checkUserBalance(); // Check user balance before proceeding
       console.log("Claiming bonus for NFT:", nft.objectId);
       transactionBlock.moveCall({
         target: `${ADDRESSES.PACKAGE}::nft::claim_factory_bonus`,
@@ -56,14 +68,14 @@ const ClaimFactoryBonus = ({
           onSuccess: (result) => {
             console.log("Claim successful:", result);
             console.log("Bonus claimed successfully!");
-            showModal("Bonus claimed successfully!", 1); // Show success message in the modal
+            showModal(`Bonus claimed successfully!`, 1); // Show success message in the modal
 
             onClaimSuccess();
           },
           onError: (error) => {
             console.error("Claim failed:", error);
             console.log("Failed to claim bonus. Please try again.");
-            showModal("Failed to claim bonus. Please try again.", 0); // Show success message in the modal
+            showModal(`Error: ${error}`, 0); // Show success message in the modal
 
             onError();
           },
@@ -72,7 +84,6 @@ const ClaimFactoryBonus = ({
     } catch (error) {
       console.error("Claim Error:", error);
       console.log("An error occurred. Please try again.");
-      showModal("An error occurred. Please try again.", 0); // Show success message in the modal
 
       onError();
     } finally {

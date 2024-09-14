@@ -17,12 +17,16 @@ const Upgrade = ({
   gameData, // Pass the gameData object containing cost_multiplier and other values
   showModal, // Add showModal as a prop
   isTouchDevice, // Add isTouchDevice as a prop
+  suiBalance, // Receive SUI balance as prop
+  sityBalance, // Receive SITY balance as prop
 }: {
   nft: any;
   buildingType: number;
   onUpgradeSuccess: () => void;
   onClick: () => void;
   onError: () => void;
+  suiBalance: number; // Add SUI balance as prop
+  sityBalance: number; // Add SITY balance as prop
   gameData: any; // Add gameData as a prop
   showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
   isTouchDevice: boolean; // Define the type for isTouchDevice
@@ -113,53 +117,25 @@ const Upgrade = ({
     [currentLevel, getUpgradeCosts]
   );
   // Function to check user's balance before initiating transaction
-  const checkUserBalance = useCallback(
-    async (costs: { sui: number; sity: number }) => {
-      try {
-        // Fetch SUI balance
-        const suiBalanceResponse = await suiClient.getBalance({
-          owner: String(account?.address),
-        });
-        const suiBalance = parseInt(suiBalanceResponse.totalBalance);
+  // Check if the user has enough balance to upgrade
+  const checkUserBalance = useCallback(() => {
+    if (suiBalance < 0.005) {
+      showModal("You need more SUI in order to pay gas.", 0);
+      throw new Error("You need more SUI in order to pay gas.");
+    }
 
-        // Fetch SITY balance
-        const sityBalanceResponse = await suiClient.getBalance({
-          owner: String(account?.address),
-          coinType: `${ADDRESSES.TOKEN_TYPE}`,
-        });
-        const sityBalance = parseInt(sityBalanceResponse.totalBalance);
+    if (costs.sui > 0 && suiBalance * Number(MIST_PER_SUI) < costs.sui) {
+      showModal("Insufficient SUI balance.", 0);
+      throw new Error("Insufficient SUI balance.");
+    }
 
-        if (costs.sui > 0 && suiBalance < costs.sui) {
-          showModal(
-            "Insufficient SUI balance. You need more SUI to upgrade this building.",
-            0
-          );
+    if (costs.sity > 0 && sityBalance * 1000 < costs.sity) {
+      showModal("Insufficient SITY balance.", 0);
+      throw new Error("Insufficient SITY balance.");
+    }
 
-          throw new Error("Insufficient SUI balance.");
-        }
-        if (costs.sity > 0 && sityBalance < costs.sity) {
-          showModal(
-            "Insufficient SITY balance. You need more SITY to upgrade this building.",
-            0
-          );
-
-          throw new Error("Insufficient SITY balance.");
-        }
-
-        return true;
-      } catch (error) {
-        console.error("Error checking user balance:", error);
-        if (error instanceof Error) {
-          console.log(error.message || "Error checking balance.");
-        } else {
-          console.log("Error checking balance.");
-        }
-        setIsProcessing(false); // Reset processing on error
-        throw error; // Re-throw the error to be caught in the upgrade function
-      }
-    },
-    [account?.address, suiClient]
-  );
+    return true;
+  }, [costs, suiBalance, sityBalance, showModal]);
 
   // Upgrade logic
   const upgrade = useCallback(async () => {
@@ -177,7 +153,7 @@ const Upgrade = ({
       const costs = getUpgradeCosts(currentLevel);
 
       // Check if the user has sufficient balance before proceeding
-      await checkUserBalance(costs); // Throws error if balance is insufficient
+      await checkUserBalance(); // Throws error if balance is insufficient
 
       const transactionBlock = new Transaction();
       transactionBlock.setSender(String(account?.address));
@@ -203,8 +179,8 @@ const Upgrade = ({
         signAndExecute(
           { transaction: transactionBlock },
           {
-            onSuccess: () => {
-              console.log("Upgrade successful with SUI");
+            onSuccess: (result) => {
+              console.log("Upgrade successful with SUI", result);
               console.log("Upgrade successful! SUI used.");
               showModal("Upgrade successful!", 1); // Show success message in the modal
 
@@ -214,7 +190,7 @@ const Upgrade = ({
             onError: (error) => {
               console.error("Upgrade error with SUI", error);
               console.log("Error: Unable to process SUI transaction.");
-              showModal("Error: Unable to process SUI transaction.", 0); // Show success message in the modal
+              showModal(`Error: ${error}`, 0); // Show success message in the modal
 
               setIsProcessing(false); // Reset processing state on error
               onError();
@@ -254,7 +230,7 @@ const Upgrade = ({
             onError: (error) => {
               console.error("Upgrade error with SITY", error);
               console.log("Error: Unable to process SITY transaction.");
-              showModal("Error: Unable to process SUI transaction.", 0); // Show success message in the modal
+              showModal(`Error: ${error}`, 0); // Show success message in the modal
 
               setIsProcessing(false); // Reset processing state on error
               onError();

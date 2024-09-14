@@ -9,12 +9,14 @@ const Claim = ({
   onClick,
   onError, // Prop to handle error
   showModal, // Add showModal as a prop
+  suiBalance, // Receive SUI balance as prop
 }: {
   nft: any;
   onClaimSuccess: () => void;
   onClick: () => void;
   onError: () => void;
   showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
+  suiBalance: number;
 }) => {
   const [isLoading, setIsLoading] = useState(false); // State for loading indication
   const suiClient = useSuiClient();
@@ -31,11 +33,22 @@ const Claim = ({
       }),
   });
 
+  const checkUserBalance = useCallback(() => {
+    if (suiBalance < 0.005) {
+      console.log("SUI ALERT!!! : :", suiBalance);
+      showModal("You need more SUI in order to pay gas.", 0);
+      throw new Error("You need more SUI in order to pay gas.");
+    }
+
+    return true;
+  }, [suiBalance, showModal]);
+
   // Memoized claim function to prevent unnecessary re-renders
   const claim = useCallback(async () => {
     try {
       setIsLoading(true); // Set loading state
       console.log("Processing your claim...");
+      await checkUserBalance(); // Check user balance before proceeding
 
       const transactionBlock = new Transaction();
 
@@ -67,7 +80,7 @@ const Claim = ({
           onError: (error) => {
             console.error("Claim error", error);
             console.log("Error: Unable to claim tokens. Please try again.");
-            showModal("Error: Unable to claim tokens. Please try again.", 0); // Show success message in the modal
+            showModal(`Error: ${error}`, 0); // Show success message in the modal
 
             onError(); // Call onError handler
           },
@@ -76,7 +89,6 @@ const Claim = ({
     } catch (error) {
       console.error("Claim Error:", error);
       console.log("Error: Unable to claim tokens. Please try again.");
-      showModal("Error: Unable to claim tokens. Please try again.", 0); // Show success message in the modal
 
       onError(); // Catch and handle any outer error
     } finally {

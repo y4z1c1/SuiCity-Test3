@@ -6,9 +6,11 @@ import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 const Mint = ({
   onMintSuccessful, // Add onMintSuccessful prop
   showModal,
+  suiBalance,
 }: {
   showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
   onMintSuccessful: () => void;
+  suiBalance: number;
 }) => {
   const suiClient = useSuiClient();
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
@@ -24,9 +26,19 @@ const Mint = ({
       }),
   });
 
+  const checkUserBalance = useCallback(() => {
+    if (suiBalance < 0.005) {
+      showModal("You need more SUI in order to pay gas.", 0);
+      throw new Error("You should have more SUI in order to pay gas.");
+    }
+
+    return true;
+  }, [suiBalance, showModal]);
+
   const mint = useCallback(async () => {
     try {
       const transactionBlock = new Transaction();
+      await checkUserBalance(); // Check user balance before proceeding
       transactionBlock.moveCall({
         target: `${ADDRESSES.PACKAGE}::nft::build_city`,
         arguments: [
@@ -47,13 +59,12 @@ const Mint = ({
           },
           onError: (error) => {
             console.error("Mint error:", error);
-            showModal("An error occured, please try again!", 0); // Show success message in the modal
+            showModal(`Error: ${error}`, 0); // Show success message in the modal
           },
         }
       );
     } catch (error) {
       console.error("Mint Error:", error);
-      showModal("An error occured, please try again!", 0); // Show success message in the modal
     }
   }, [signAndExecute, onMintSuccessful]);
 

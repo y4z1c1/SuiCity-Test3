@@ -18,6 +18,7 @@
     "install": "^0.13.0",
     "node-fetch": "^3.3.2",
     "npm": "^10.8.3",
+    "oauth": "^0.10.0",
     "parallax-js": "^3.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -26,6 +27,7 @@
     "react-router-dom": "^6.26.1",
     "router": "^2.0.0",
     "sitemap": "^8.0.0",
+    "twitter-api-v2": "^1.17.2",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
