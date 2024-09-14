@@ -598,6 +598,7 @@
   letter-spacing: 1.5px;
   backdrop-filter: blur(10px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
+  z-index: 1000;
 }
 .mint button {
   position: absolute;
