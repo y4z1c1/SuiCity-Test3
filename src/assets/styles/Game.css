@@ -598,6 +598,7 @@
   color: rgb(26, 26, 26);
   transition: all 0.1s ease-in-out;
   letter-spacing: 1.5px;
+  z-index: 2;
 }
 
 .mint button:hover {

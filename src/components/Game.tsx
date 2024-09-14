@@ -10,6 +10,37 @@ import { useCurrentWallet, useCurrentAccount } from "@mysten/dapp-kit";
 import { MIST_PER_SUI } from "@mysten/sui/utils";
 import Modal from "./Modal"; // Import the new Modal component
 
+// Define the IPFS link for the addresses
+const ipfsLink =
+  "https://bafkreidctlfwodbnhtx2h7vqw52urfvpuschoiy6ffob2wovczioicx2ya.ipfs.w3s.link/";
+
+// Helper function to fetch addresses from IPFS
+const fetchAddressesFromIpfs = async (): Promise<string[]> => {
+  try {
+    const response = await fetch(ipfsLink);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch addresses from IPFS");
+    }
+
+    const data = await response.text();
+    const addresses = data
+      .split("\n")
+      .map((address: string) => address.trim())
+      .filter(Boolean);
+
+    return addresses;
+  } catch (err) {
+    console.error("Error fetching addresses:", err);
+    return [];
+  }
+};
+
+// Function to check if the user's address is in the IPFS list
+const isAddressInList = async (userAddress: string): Promise<boolean> => {
+  const addresses = await fetchAddressesFromIpfs();
+  return addresses.includes(userAddress);
+};
 const Game: React.FC = () => {
   const { connectionStatus } = useCurrentWallet();
   const account = useCurrentAccount();
@@ -33,8 +64,9 @@ const Game: React.FC = () => {
   const [isUpgradeInfoExpanded, setIsUpgradeInfoExpanded] = useState(false); // Track whether upgrade info is expanded
   const [isMobileExpanded, setIsMobileExpanded] = useState(false); // Track whether building is expanded on mobile
   const [bgColor, setBgColor] = useState<0 | 1 | 2>(0); // Default to red (0)
-
+  const [isUserEligible, setIsUserEligible] = useState<boolean>(false);
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState<number>(0); // Track current building in the carousel
+  const [passNft, setPassNft] = useState<any>(null); // Storing only a single filtered NFT
   const mintBackgroundUrl =
     "https://bafybeifzamdszfcbsrlmff7xqpdhjrjrp44u3iqzodm5r3bhg6aiycxjsu.ipfs.w3s.link/mint-2.webp";
   const buildings = [
@@ -177,6 +209,9 @@ const Game: React.FC = () => {
   const currentBuilding = buildings[currentBuildingIndex];
   const provider = new SuiClient({
     url: getFullnodeUrl("testnet"),
+  });
+  const providerMainnet = new SuiClient({
+    url: getFullnodeUrl("mainnet"),
   });
 
   const handleNextBuilding = () => {
@@ -589,6 +624,76 @@ const Game: React.FC = () => {
       entertainmentPopulation
     );
   };
+
+  // Function to refresh Passes (check if user owns the specific pass)
+  const refreshPass = useCallback(async () => {
+    console.log("Refreshing Passes...");
+    try {
+      const allObjects: any[] = [];
+      let lastObject = null;
+      let hasMore = true;
+
+      while (hasMore) {
+        const object = await providerMainnet.getOwnedObjects({
+          owner: String(account?.address),
+          cursor:
+            lastObject?.data?.[lastObject.data.length - 1]?.data?.objectId ||
+            null,
+          options: { showType: true, showContent: true },
+        });
+
+        allObjects.push(...object.data);
+
+        if (object.data.length === 0 || !object.nextCursor) {
+          hasMore = false;
+        } else {
+          lastObject = object;
+        }
+      }
+
+      const nft = allObjects.find(
+        (nft) =>
+          String(nft.data?.type) ===
+            `0x4cb43a298a78ab64a3181305e45cef6b4ecadf35e85c92496aa1590c11af5c70::nft::NFTMetadata` &&
+          nft.data?.content?.fields?.name === "TESTGAMEPASS"
+      );
+
+      console.log("PASS NFT found:", nft?.data);
+      setPassNft(nft?.data || null); // Store the pass NFT if found
+      return !!nft; // Return true if the Pass NFT is found
+    } catch (error) {
+      console.error("Error refreshing Passes:", error);
+      return false; // Return false in case of error
+    }
+  }, [account?.address]);
+
+  // Function to check eligibility (address in IPFS list + Pass NFT ownership)
+  const checkEligibility = useCallback(async () => {
+    if (account?.address) {
+      const isAddressEligible = await isAddressInList(account.address);
+      const hasPassNft = await refreshPass();
+
+      // User is eligible if their address is in the IPFS list and they own the Pass NFT
+      setIsUserEligible(isAddressEligible || hasPassNft);
+      setIsLoading(false); // Stop loading once eligibility is checked
+      console.log("User eligibility:", isAddressEligible || hasPassNft);
+    }
+  }, [account?.address, refreshPass]);
+
+  // useEffect to check eligibility whenever the user's address changes
+  useEffect(() => {
+    checkEligibility();
+  }, [checkEligibility]);
+
+  // Render loading state if eligibility is still being checked
+  if (isLoading) {
+    return <p>Checking eligibility...</p>;
+  }
+
+  // If the user is not eligible, show a message
+  if (isUserEligible === false) {
+    return <h2>You are not eligible to participate in this game.</h2>;
+  }
 
   return (
     <div
