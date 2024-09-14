@@ -65,6 +65,9 @@ const Game: React.FC = () => {
   const [isMobileExpanded, setIsMobileExpanded] = useState(false); // Track whether building is expanded on mobile
   const [bgColor, setBgColor] = useState<0 | 1 | 2>(0); // Default to red (0)
   const [isUserEligible, setIsUserEligible] = useState<boolean>(false);
+  const [passNft, setPassNft] = useState<boolean>(false);
+  const [showEligibilityMessage, setShowEligibilityMessage] =
+    useState<boolean>(true);
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState<number>(0); // Track current building in the carousel
   const mintBackgroundUrl =
     "https://bafybeifzamdszfcbsrlmff7xqpdhjrjrp44u3iqzodm5r3bhg6aiycxjsu.ipfs.w3s.link/mint-2.webp";
@@ -658,9 +661,13 @@ const Game: React.FC = () => {
       );
 
       console.log("PASS NFT found:", nft?.data);
+      if ((nft?.data).size > 0) {
+        setPassNft(true); // Set the Pass NFT state to true if found
+      }
       return !!nft; // Return true if the Pass NFT is found
     } catch (error) {
       console.error("Error refreshing Passes:", error);
+      setPassNft(false); // Set the Pass NFT state to false in case of error
       return false; // Return false in case of error
     }
   }, [account?.address]);
@@ -674,9 +681,21 @@ const Game: React.FC = () => {
       // User is eligible if their address is in the IPFS list and they own the Pass NFT
       setIsUserEligible(isAddressEligible || hasPassNft);
       setIsLoading(false); // Stop loading once eligibility is checked
+      setShowEligibilityMessage(true); // Show eligibility message
       console.log("User eligibility:", isAddressEligible || hasPassNft);
+
+      // Hide eligibility message after 3 seconds
+      setTimeout(() => {
+        setShowEligibilityMessage(false);
+      }, 2000);
     }
   }, [account?.address, refreshPass]);
+
+  // useEffect to reset eligibility message when account changes
+  useEffect(() => {
+    setShowEligibilityMessage(true);
+    setIsLoading(true); // Reset loading when account changes
+  }, [account?.address]);
 
   // useEffect to check eligibility whenever the user's address changes
   useEffect(() => {
@@ -688,10 +707,19 @@ const Game: React.FC = () => {
     return <p>Checking eligibility...</p>;
   }
 
-  // If the user is not eligible, show a message
-  if (isUserEligible === false) {
-    return <h2>You are not eligible to participate in this game.</h2>;
-  }
+  const eligibilityMessage = () => {
+    if (isLoading) {
+      return "Checking eligibility...";
+    } else if (showEligibilityMessage) {
+      return (
+        <>
+          <p>Early Supporter {isUserEligible === true ? "✅" : "🚫"}</p>
+          <p>Test Pass NFT {passNft === true ? "✅" : "🚫"}</p>
+        </>
+      );
+    }
+    return null;
+  };
 
   return (
     <div
@@ -734,481 +762,507 @@ const Game: React.FC = () => {
       {/* Check if the wallet is connected */}
       {connectionStatus === "connected" ? (
         <>
-          {/* Loading NFTs and Game Data */}
-          {isLoading ? (
-            <p>Loading your NFTs and game data...</p>
-          ) : filteredNft ? (
+          {/* Check if the user is eligible */}
+          {isUserEligible || passNft ? (
             <>
-              <div className="upper-div">
-                {/* Connect Button and Connected Status */}
-                {connectionStatus === "connected" ? (
-                  <>
-                    <div className="balance-columns">
-                      <div className="balance-bar">
-                        <img
-                          src="https://assets.staticimg.com/cms/media/8uGGQmvkfODw7cnx3GuekBb404A2bTYUcTjBklHja.png"
-                          alt="SUI logo"
-                          className="balance-bar-icon"
-                        />
-                        <div className="balance-bar-track">
-                          <div
-                            className="balance-bar-fill balance-bar-fill-sui"
-                            style={{ width: `${suiBalance * 10}%` }}
-                          ></div>
-                          <div className="balance-amount">{`${formatBalance(
-                            suiBalance
-                          )}  $SUI`}</div>
+              {/* Display Eligibility Messages */}
+              <div className="eligibility-status">{eligibilityMessage()}</div>
+              {/* Loading NFTs and Game Data */}
+              {isLoading ? (
+                <p>Loading your NFTs and game data...</p>
+              ) : filteredNft ? (
+                <>
+                  <div className="upper-div">
+                    {/* Connect Button and Connected Status */}
+                    {connectionStatus === "connected" ? (
+                      <>
+                        <div className="balance-columns">
+                          <div className="balance-bar">
+                            <img
+                              src="https://assets.staticimg.com/cms/media/8uGGQmvkfODw7cnx3GuekBb404A2bTYUcTjBklHja.png"
+                              alt="SUI logo"
+                              className="balance-bar-icon"
+                            />
+                            <div className="balance-bar-track">
+                              <div
+                                className="balance-bar-fill balance-bar-fill-sui"
+                                style={{ width: `${suiBalance * 10}%` }}
+                              ></div>
+                              <div className="balance-amount">{`${formatBalance(
+                                suiBalance
+                              )}  $SUI`}</div>
+                            </div>
+                          </div>
+                          <div className="balance-bar">
+                            <img
+                              src="https://bafybeig4236djyafwvxzkb3km7o3xa25lsfg55bxvyrwbxyemlzjnjjpsi.ipfs.w3s.link/sity%20logo.png"
+                              alt="SITY logo"
+                              className="balance-bar-icon"
+                            />
+                            <div className="balance-bar-track">
+                              <div
+                                className="balance-bar-fill balance-bar-fill-sity"
+                                style={{ width: `${sityBalance / 1000}%` }}
+                              ></div>
+                              <div className="balance-amount">{`${formatBalance(
+                                sityBalance
+                              )}  $SITY`}</div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="balance-bar">
-                        <img
-                          src="https://bafybeig4236djyafwvxzkb3km7o3xa25lsfg55bxvyrwbxyemlzjnjjpsi.ipfs.w3s.link/sity%20logo.png"
-                          alt="SITY logo"
-                          className="balance-bar-icon"
-                        />
-                        <div className="balance-bar-track">
-                          <div
-                            className="balance-bar-fill balance-bar-fill-sity"
-                            style={{ width: `${sityBalance / 1000}%` }}
-                          ></div>
-                          <div className="balance-amount">{`${formatBalance(
-                            sityBalance
-                          )}  $SITY`}</div>
+
+                        <div className="nft-title">
+                          {filteredNft ? (
+                            <h2>{filteredNft.content.fields.name}</h2>
+                          ) : null}
                         </div>
-                      </div>
-                    </div>
 
-                    <div className="nft-title">
-                      {filteredNft ? (
-                        <h2>{filteredNft.content.fields.name}</h2>
-                      ) : null}
-                    </div>
-
-                    {/* New NFT Specs Tab */}
-                    <div className="nft-specs">
-                      <p>Accumulation Speed: </p>
-                      <h2>
-                        <img
-                          src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/acc1.webp"
-                          alt="acc-icon"
-                          className="acc-icon"
-                          style={{
-                            width: "30px",
-                            height: "30px",
-                            marginRight: "3px",
-                          }}
-                        />
-                        {`${
-                          gameData.accumulation_speeds[
-                            filteredNft.content.fields.residental_office
-                          ] / 1000
-                        } $SITY/h`}
-                      </h2>
-
-                      <p> Factory Bonus:</p>
-                      <h2>
-                        <img
-                          src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/gear1.webp"
-                          alt="gear-icon"
-                          className="gear-icon"
-                          style={{
-                            width: "30px",
-                            height: "30px",
-                            marginRight: "5px",
-                          }}
-                        />
-                        {`${
-                          gameData.factory_bonuses[
-                            filteredNft.content.fields.factory
-                          ]
-                        }%`}
-                      </h2>
-
-                      <p>Amenity Points:</p>
-                      <h2>
-                        <img
-                          src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/star1.webp"
-                          alt="star-icon"
-                          className="star-icon"
-                          style={{
-                            width: "30px",
-                            height: "30px",
-                            marginRight: "5px",
-                          }}
-                        />
-                        {`${
-                          parseInt(filteredNft.content.fields.house) +
-                          parseInt(
-                            filteredNft.content.fields.entertainment_complex
-                          )
-                        }`}
-                      </h2>
-                    </div>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </div>
-
-              {/* Left Arrow */}
-              <button onClick={handlePreviousBuilding} className="arrow-left">
-                &#8592;
-              </button>
-
-              {/* Building Display */}
-              <div
-                className={`buildingType ${
-                  isTouchDevice
-                    ? isMobileExpanded &&
-                      filteredNft.content.fields[currentBuilding.field] < 7
-                      ? "expanded"
-                      : "collapsed"
-                    : isUpgradeInfoExpanded &&
-                      filteredNft.content.fields[currentBuilding.field] < 7
-                    ? "expanded"
-                    : "collapsed"
-                }`}
-                onMouseEnter={
-                  !isTouchDevice &&
-                  filteredNft.content.fields[currentBuilding.field] < 7
-                    ? handleUpgradeHover
-                    : undefined
-                }
-                onMouseLeave={
-                  !isTouchDevice &&
-                  filteredNft.content.fields[currentBuilding.field] < 7
-                    ? handleUpgradeLeave
-                    : undefined
-                }
-                onClick={() => {
-                  if (
-                    isTouchDevice &&
-                    filteredNft.content.fields[currentBuilding.field] < 7
-                  ) {
-                    handleUpgradeClick(currentBuildingIndex); // Handle the click for mobile devices
-                  }
-                }}
-              >
-                <h2>{`${currentBuilding.type} Level: ${
-                  filteredNft.content.fields[currentBuilding.field]
-                }`}</h2>
-
-                {isUpgradeInfoExpanded && (
-                  <div className="additional-info">
-                    <p style={{ fontSize: "12px" }}>
-                      Upgrading will not only improve your building’s
-                      functionality but will also change the metadata,
-                      appearance, and rarity of your NFT, thanks to the power of
-                      dynamic NFTs.
-                    </p>
-                    {/* Building Images */}
-                    <div className="building-images">
-                      <div className="building-image">
-                        <img
-                          src={`${currentBuilding.buildingUrl}/${
-                            filteredNft.content.fields[currentBuilding.field]
-                          }.webp`}
-                          alt="Current Level"
-                          className="building-image-zoom"
-                        />
-                        <p className="level-text current-level">{`Level ${
-                          filteredNft.content.fields[currentBuilding.field]
-                        }`}</p>
-                      </div>
-
-                      {/* Arrow Between Images */}
-                      <div className="level-arrow">
-                        <p>➔</p>
-                      </div>
-
-                      <div className="building-image">
-                        <img
-                          src={`${currentBuilding.buildingUrl}/${
-                            parseInt(
-                              filteredNft.content.fields[currentBuilding.field]
-                            ) + 1
-                          }.webp`}
-                          alt="Next Level"
-                          className="building-image-zoom"
-                        />
-                        <p className="level-text next-level">{`Level ${
-                          parseInt(
-                            filteredNft.content.fields[currentBuilding.field]
-                          ) + 1
-                        }`}</p>
-                      </div>
-                    </div>
-
-                    {/* Upgrade Benefit Text */}
-                    <div className="upgrade-benefit">
-                      {currentBuilding.type === "R. Office" && (
-                        <>
-                          <p style={{ color: "gray", fontSize: "14px" }}>
-                            Accumulation Speed:
-                          </p>
-                          <p
-                            className="benefit-value"
-                            style={{ color: "gray", fontSize: "16px" }}
-                          >
+                        {/* New NFT Specs Tab */}
+                        <div className="nft-specs">
+                          <p>Accumulation Speed: </p>
+                          <h2>
+                            <img
+                              src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/acc1.webp"
+                              alt="acc-icon"
+                              className="acc-icon"
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                marginRight: "3px",
+                              }}
+                            />
                             {`${
                               gameData.accumulation_speeds[
-                                filteredNft.content.fields[
-                                  currentBuilding.field
-                                ]
+                                filteredNft.content.fields.residental_office
                               ] / 1000
-                            } $SITY/hour`}
-                          </p>
+                            } $SITY/h`}
+                          </h2>
 
-                          <p
-                            style={{
-                              color: "green",
-                              fontSize: "18px",
-                              marginTop: "10px",
-                            }}
-                          >
-                            Accumulation Speed (Next Level):
-                          </p>
-                          <p
-                            className="benefit-value next-level"
-                            style={{
-                              color: "green",
-                              fontSize: "20px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {`${
-                              gameData.accumulation_speeds[
-                                parseInt(
-                                  filteredNft.content.fields[
-                                    currentBuilding.field
-                                  ]
-                                ) + 1
-                              ] / 1000
-                            } $SITY/hour`}
-                          </p>
-                        </>
-                      )}
-
-                      {currentBuilding.type === "Factory" && (
-                        <>
-                          <p style={{ color: "gray", fontSize: "14px" }}>
-                            Factory Bonus:
-                          </p>
-                          <p
-                            className="benefit-value"
-                            style={{ color: "gray", fontSize: "16px" }}
-                          >
+                          <p> Factory Bonus:</p>
+                          <h2>
+                            <img
+                              src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/gear1.webp"
+                              alt="gear-icon"
+                              className="gear-icon"
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                marginRight: "5px",
+                              }}
+                            />
                             {`${
                               gameData.factory_bonuses[
-                                filteredNft.content.fields[
-                                  currentBuilding.field
-                                ]
+                                filteredNft.content.fields.factory
                               ]
                             }%`}
-                          </p>
+                          </h2>
 
-                          <p
-                            style={{
-                              color: "green",
-                              fontSize: "18px",
-                              marginTop: "10px",
-                            }}
-                          >
-                            Factory Bonus (Next Level):
-                          </p>
-                          <p
-                            className="benefit-value next-level"
-                            style={{
-                              color: "green",
-                              fontSize: "20px",
-                              fontWeight: "bold",
-                            }}
-                          >
+                          <p>Amenity Points:</p>
+                          <h2>
+                            <img
+                              src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/star1.webp"
+                              alt="star-icon"
+                              className="star-icon"
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                marginRight: "5px",
+                              }}
+                            />
                             {`${
-                              gameData.factory_bonuses[
-                                parseInt(
-                                  filteredNft.content.fields[
-                                    currentBuilding.field
-                                  ]
-                                ) + 1
-                              ]
-                            }%`}
-                          </p>
-                        </>
-                      )}
-
-                      {(currentBuilding.type === "House" ||
-                        currentBuilding.type === "E. Complex") && (
-                        <>
-                          <p style={{ color: "gray", fontSize: "14px" }}>
-                            Amenity Points:
-                          </p>
-                          <p
-                            className="benefit-value"
-                            style={{ color: "gray", fontSize: "16px" }}
-                          >
-                            {filteredNft.content.fields[currentBuilding.field]}
-                          </p>
-
-                          <p
-                            style={{
-                              color: "green",
-                              fontSize: "18px",
-                              marginTop: "10px",
-                            }}
-                          >
-                            Amenity Points (Next Level):
-                          </p>
-                          <p
-                            className="benefit-value next-level"
-                            style={{
-                              color: "green",
-                              fontSize: "20px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {parseInt(
-                              filteredNft.content.fields[currentBuilding.field]
-                            ) + 1}
-                          </p>
-                        </>
-                      )}
-                      <a
-                        target="_blank"
-                        className="details"
-                        href="https://docs.suicityp2e.com/"
-                      >
-                        more details
-                      </a>
-                    </div>
+                              parseInt(filteredNft.content.fields.house) +
+                              parseInt(
+                                filteredNft.content.fields.entertainment_complex
+                              )
+                            }`}
+                          </h2>
+                        </div>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </div>
-                )}
 
-                {/* Use ClaimFactoryBonus and Upgrade components instead of the button */}
-                {currentBuilding.type === "Factory" ? (
-                  <>
-                    <div>
-                      {factoryBonusCountdown !== null &&
-                      factoryBonusCountdown > 0 ? (
-                        <p>{`${formatTime(factoryBonusCountdown)}`}</p>
-                      ) : (
-                        <ClaimFactoryBonus
-                          nft={filteredNft}
-                          onClaimSuccess={handleClaimSuccess}
-                          onClick={() => handleClaimClick()}
-                          onError={() => {
-                            setTransactionInProgress(false);
-                            refreshNft();
-                          }}
-                          showModal={showModal} // Pass showModal as a prop here
-                        />
-                      )}
-                    </div>
-                  </>
-                ) : null}
+                  {/* Left Arrow */}
+                  <button
+                    onClick={handlePreviousBuilding}
+                    className="arrow-left"
+                  >
+                    &#8592;
+                  </button>
 
-                <Upgrade
-                  nft={filteredNft}
-                  buildingType={currentBuildingIndex}
-                  onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
-                  onClick={() => handleUpgradeClick(currentBuildingIndex)}
-                  onError={() => {
-                    setTransactionInProgress(false);
-                    refreshNft();
-                  }}
-                  gameData={gameData}
-                  showModal={showModal} // Pass showModal as a prop here
-                  isTouchDevice={isTouchDevice} // Pass isTouchDevice to Upgrade
-                />
-              </div>
-
-              <div className="accumulated">
-                <h2>
-                  <img
-                    src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/coins1.webp"
-                    alt="coin-icon"
-                    className="coin-icon"
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      marginRight: "5px",
-                      borderRadius: "50%",
-                      transform: "translateY(5px)",
+                  {/* Building Display */}
+                  <div
+                    className={`buildingType ${
+                      isTouchDevice
+                        ? isMobileExpanded &&
+                          filteredNft.content.fields[currentBuilding.field] < 7
+                          ? "expanded"
+                          : "collapsed"
+                        : isUpgradeInfoExpanded &&
+                          filteredNft.content.fields[currentBuilding.field] < 7
+                        ? "expanded"
+                        : "collapsed"
+                    }`}
+                    onMouseEnter={
+                      !isTouchDevice &&
+                      filteredNft.content.fields[currentBuilding.field] < 7
+                        ? handleUpgradeHover
+                        : undefined
+                    }
+                    onMouseLeave={
+                      !isTouchDevice &&
+                      filteredNft.content.fields[currentBuilding.field] < 7
+                        ? handleUpgradeLeave
+                        : undefined
+                    }
+                    onClick={() => {
+                      if (
+                        isTouchDevice &&
+                        filteredNft.content.fields[currentBuilding.field] < 7
+                      ) {
+                        handleUpgradeClick(currentBuildingIndex); // Handle the click for mobile devices
+                      }
                     }}
+                  >
+                    <h2>{`${currentBuilding.type} Level: ${
+                      filteredNft.content.fields[currentBuilding.field]
+                    }`}</h2>
+
+                    {isUpgradeInfoExpanded && (
+                      <div className="additional-info">
+                        <p style={{ fontSize: "12px" }}>
+                          Upgrading will not only improve your building’s
+                          functionality but will also change the metadata,
+                          appearance, and rarity of your NFT, thanks to the
+                          power of dynamic NFTs.
+                        </p>
+                        {/* Building Images */}
+                        <div className="building-images">
+                          <div className="building-image">
+                            <img
+                              src={`${currentBuilding.buildingUrl}/${
+                                filteredNft.content.fields[
+                                  currentBuilding.field
+                                ]
+                              }.webp`}
+                              alt="Current Level"
+                              className="building-image-zoom"
+                            />
+                            <p className="level-text current-level">{`Level ${
+                              filteredNft.content.fields[currentBuilding.field]
+                            }`}</p>
+                          </div>
+
+                          {/* Arrow Between Images */}
+                          <div className="level-arrow">
+                            <p>➔</p>
+                          </div>
+
+                          <div className="building-image">
+                            <img
+                              src={`${currentBuilding.buildingUrl}/${
+                                parseInt(
+                                  filteredNft.content.fields[
+                                    currentBuilding.field
+                                  ]
+                                ) + 1
+                              }.webp`}
+                              alt="Next Level"
+                              className="building-image-zoom"
+                            />
+                            <p className="level-text next-level">{`Level ${
+                              parseInt(
+                                filteredNft.content.fields[
+                                  currentBuilding.field
+                                ]
+                              ) + 1
+                            }`}</p>
+                          </div>
+                        </div>
+
+                        {/* Upgrade Benefit Text */}
+                        <div className="upgrade-benefit">
+                          {currentBuilding.type === "R. Office" && (
+                            <>
+                              <p style={{ color: "gray", fontSize: "14px" }}>
+                                Accumulation Speed:
+                              </p>
+                              <p
+                                className="benefit-value"
+                                style={{ color: "gray", fontSize: "16px" }}
+                              >
+                                {`${
+                                  gameData.accumulation_speeds[
+                                    filteredNft.content.fields[
+                                      currentBuilding.field
+                                    ]
+                                  ] / 1000
+                                } $SITY/hour`}
+                              </p>
+
+                              <p
+                                style={{
+                                  color: "green",
+                                  fontSize: "18px",
+                                  marginTop: "10px",
+                                }}
+                              >
+                                Accumulation Speed (Next Level):
+                              </p>
+                              <p
+                                className="benefit-value next-level"
+                                style={{
+                                  color: "green",
+                                  fontSize: "20px",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {`${
+                                  gameData.accumulation_speeds[
+                                    parseInt(
+                                      filteredNft.content.fields[
+                                        currentBuilding.field
+                                      ]
+                                    ) + 1
+                                  ] / 1000
+                                } $SITY/hour`}
+                              </p>
+                            </>
+                          )}
+
+                          {currentBuilding.type === "Factory" && (
+                            <>
+                              <p style={{ color: "gray", fontSize: "14px" }}>
+                                Factory Bonus:
+                              </p>
+                              <p
+                                className="benefit-value"
+                                style={{ color: "gray", fontSize: "16px" }}
+                              >
+                                {`${
+                                  gameData.factory_bonuses[
+                                    filteredNft.content.fields[
+                                      currentBuilding.field
+                                    ]
+                                  ]
+                                }%`}
+                              </p>
+
+                              <p
+                                style={{
+                                  color: "green",
+                                  fontSize: "18px",
+                                  marginTop: "10px",
+                                }}
+                              >
+                                Factory Bonus (Next Level):
+                              </p>
+                              <p
+                                className="benefit-value next-level"
+                                style={{
+                                  color: "green",
+                                  fontSize: "20px",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {`${
+                                  gameData.factory_bonuses[
+                                    parseInt(
+                                      filteredNft.content.fields[
+                                        currentBuilding.field
+                                      ]
+                                    ) + 1
+                                  ]
+                                }%`}
+                              </p>
+                            </>
+                          )}
+
+                          {(currentBuilding.type === "House" ||
+                            currentBuilding.type === "E. Complex") && (
+                            <>
+                              <p style={{ color: "gray", fontSize: "14px" }}>
+                                Amenity Points:
+                              </p>
+                              <p
+                                className="benefit-value"
+                                style={{ color: "gray", fontSize: "16px" }}
+                              >
+                                {
+                                  filteredNft.content.fields[
+                                    currentBuilding.field
+                                  ]
+                                }
+                              </p>
+
+                              <p
+                                style={{
+                                  color: "green",
+                                  fontSize: "18px",
+                                  marginTop: "10px",
+                                }}
+                              >
+                                Amenity Points (Next Level):
+                              </p>
+                              <p
+                                className="benefit-value next-level"
+                                style={{
+                                  color: "green",
+                                  fontSize: "20px",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {parseInt(
+                                  filteredNft.content.fields[
+                                    currentBuilding.field
+                                  ]
+                                ) + 1}
+                              </p>
+                            </>
+                          )}
+                          <a
+                            target="_blank"
+                            className="details"
+                            href="https://docs.suicityp2e.com/"
+                          >
+                            more details
+                          </a>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Use ClaimFactoryBonus and Upgrade components instead of the button */}
+                    {currentBuilding.type === "Factory" ? (
+                      <>
+                        <div>
+                          {factoryBonusCountdown !== null &&
+                          factoryBonusCountdown > 0 ? (
+                            <p>{`${formatTime(factoryBonusCountdown)}`}</p>
+                          ) : (
+                            <ClaimFactoryBonus
+                              nft={filteredNft}
+                              onClaimSuccess={handleClaimSuccess}
+                              onClick={() => handleClaimClick()}
+                              onError={() => {
+                                setTransactionInProgress(false);
+                                refreshNft();
+                              }}
+                              showModal={showModal} // Pass showModal as a prop here
+                            />
+                          )}
+                        </div>
+                      </>
+                    ) : null}
+
+                    <Upgrade
+                      nft={filteredNft}
+                      buildingType={currentBuildingIndex}
+                      onUpgradeSuccess={() => handleUpgradeSuccess()} // Pass the building type and NFT
+                      onClick={() => handleUpgradeClick(currentBuildingIndex)}
+                      onError={() => {
+                        setTransactionInProgress(false);
+                        refreshNft();
+                      }}
+                      gameData={gameData}
+                      showModal={showModal} // Pass showModal as a prop here
+                      isTouchDevice={isTouchDevice} // Pass isTouchDevice to Upgrade
+                    />
+                  </div>
+
+                  <div className="accumulated">
+                    <h2>
+                      <img
+                        src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/coins1.webp"
+                        alt="coin-icon"
+                        className="coin-icon"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          marginRight: "5px",
+                          borderRadius: "50%",
+                          transform: "translateY(5px)",
+                        }}
+                      />
+                      {`${(
+                        accumulatedSity +
+                        filteredNft.content.fields.balance / 1000
+                      ).toFixed(2)} $SITY`}
+                    </h2>
+                    <p>{`${countdown ? formatTime(countdown) : "Full"}`}</p>
+                    <Claim
+                      nft={filteredNft}
+                      onClaimSuccess={handleClaimSuccess}
+                      onClick={() => handleClaimClick()}
+                      onError={() => {
+                        setTransactionInProgress(false);
+                        refreshNft();
+                      }}
+                      showModal={showModal} // Pass showModal as a prop here
+                    />
+                  </div>
+
+                  <div className="population">
+                    <h2>
+                      <img
+                        src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/peop1.webp"
+                        alt="people-icon"
+                        className="people-icon"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          marginRight: "5px",
+                          transform: "translateY(5px)",
+                        }}
+                      />
+                      {`Population: ${formatBalance(
+                        calculatePopulation(filteredNft) +
+                          accumulatedSity +
+                          filteredNft.content.fields.balance / 1000
+                      )}`}
+                    </h2>
+
+                    <button
+                      onClick={() => {
+                        const population = calculatePopulation(filteredNft);
+                        const sity = (
+                          accumulatedSity +
+                          filteredNft.content.fields.balance / 1000
+                        ).toFixed(2);
+                        const tweetText = `I just reached a population of ${formatBalance(
+                          population + parseInt(sity)
+                        )} on SuiCity with ${formatBalance(
+                          Number(sityBalance) + parseInt(sity)
+                        )} $SITY! 🚀 Check out the game now! @SuiCityP2E`;
+                        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                          tweetText
+                        )}&url=https://suicityp2e.com`;
+
+                        window.open(twitterUrl, "_blank");
+                      }}
+                    >
+                      Share it on Twitter
+                    </button>
+                  </div>
+
+                  {/* Right Arrow */}
+                  <button onClick={handleNextBuilding} className="arrow-right">
+                    &#8594;
+                  </button>
+                </>
+              ) : (
+                <div className="mint">
+                  <Mint
+                    onMintSuccessful={handleMintSuccess}
+                    showModal={showModal} // Pass showModal as a prop here
                   />
-                  {`${(
-                    accumulatedSity +
-                    filteredNft.content.fields.balance / 1000
-                  ).toFixed(2)} $SITY`}
-                </h2>
-                <p>{`${countdown ? formatTime(countdown) : "Full"}`}</p>
-                <Claim
-                  nft={filteredNft}
-                  onClaimSuccess={handleClaimSuccess}
-                  onClick={() => handleClaimClick()}
-                  onError={() => {
-                    setTransactionInProgress(false);
-                    refreshNft();
-                  }}
-                  showModal={showModal} // Pass showModal as a prop here
-                />
-              </div>
-
-              <div className="population">
-                <h2>
-                  <img
-                    src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/peop1.webp"
-                    alt="people-icon"
-                    className="people-icon"
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      marginRight: "5px",
-                      transform: "translateY(5px)",
-                    }}
-                  />
-                  {`Population: ${formatBalance(
-                    calculatePopulation(filteredNft) +
-                      accumulatedSity +
-                      filteredNft.content.fields.balance / 1000
-                  )}`}
-                </h2>
-
-                <button
-                  onClick={() => {
-                    const population = calculatePopulation(filteredNft);
-                    const sity = (
-                      accumulatedSity +
-                      filteredNft.content.fields.balance / 1000
-                    ).toFixed(2);
-                    const tweetText = `I just reached a population of ${formatBalance(
-                      population + parseInt(sity)
-                    )} on SuiCity with ${formatBalance(
-                      Number(sityBalance) + parseInt(sity)
-                    )} $SITY! 🚀 Check out the game now! @SuiCityP2E`;
-                    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                      tweetText
-                    )}&url=https://suicityp2e.com`;
-
-                    window.open(twitterUrl, "_blank");
-                  }}
-                >
-                  Share it on Twitter
-                </button>
-              </div>
-
-              {/* Right Arrow */}
-              <button onClick={handleNextBuilding} className="arrow-right">
-                &#8594;
-              </button>
+                </div>
+              )}
             </>
           ) : (
-            <div className="mint">
-              <Mint
-                onMintSuccessful={handleMintSuccess}
-                showModal={showModal} // Pass showModal as a prop here
-              />
-            </div>
+            <p className="eligibility-status">
+              You are not eligible for test game.
+            </p>
           )}
         </>
       ) : (
