@@ -713,8 +713,10 @@ const Game: React.FC = () => {
     } else if (showEligibilityMessage) {
       return (
         <>
-          <p>Early Supporter {isUserEligible === true ? "✅" : "🚫"}</p>
-          <p>Test Pass NFT {passNft === true ? "✅" : "🚫"}</p>
+          <p>
+            Eligibility Check:{" "}
+            {(isUserEligible || passNft) === true ? "✅" : "🚫"}
+          </p>
         </>
       );
     }
