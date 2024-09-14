@@ -707,22 +707,6 @@ const Game: React.FC = () => {
     return <p>Checking eligibility...</p>;
   }
 
-  const eligibilityMessage = () => {
-    if (isLoading) {
-      return "Checking eligibility...";
-    } else if (showEligibilityMessage) {
-      return (
-        <>
-          <p>
-            Eligibility Result:{" "}
-            {(isUserEligible || passNft) === true ? "✅" : "🚫"}
-          </p>
-        </>
-      );
-    }
-    return null;
-  };
-
   return (
     <div
       className="game-container"
@@ -768,7 +752,11 @@ const Game: React.FC = () => {
           {isUserEligible || passNft ? (
             <>
               {/* Display Eligibility Messages */}
-              <div className="eligibility-status">{eligibilityMessage()}</div>
+              {showEligibilityMessage && (
+                <div className="eligibility-status">
+                  <p>Eligibility Result: {isUserEligible ? "✅" : "🚫"}</p>
+                </div>
+              )}
               {/* Loading NFTs and Game Data */}
               {isLoading ? (
                 <p>Loading your NFTs and game data...</p>
