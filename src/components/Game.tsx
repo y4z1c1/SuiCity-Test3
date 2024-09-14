@@ -704,7 +704,18 @@ const Game: React.FC = () => {
 
   // Render loading state if eligibility is still being checked
   if (isLoading) {
-    return <p>Checking eligibility...</p>;
+    return (
+      <p
+        style={{
+          position: "absolute",
+          top: "10%",
+          left: "50%",
+          transform: "translate(-50%,-50%)",
+        }}
+      >
+        Checking eligibility...
+      </p>
+    );
   }
 
   return (
