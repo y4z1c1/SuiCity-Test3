@@ -66,7 +66,6 @@ const Game: React.FC = () => {
   const [bgColor, setBgColor] = useState<0 | 1 | 2>(0); // Default to red (0)
   const [isUserEligible, setIsUserEligible] = useState<boolean>(false);
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState<number>(0); // Track current building in the carousel
-  const [passNft, setPassNft] = useState<any>(null); // Storing only a single filtered NFT
   const mintBackgroundUrl =
     "https://bafybeifzamdszfcbsrlmff7xqpdhjrjrp44u3iqzodm5r3bhg6aiycxjsu.ipfs.w3s.link/mint-2.webp";
   const buildings = [
@@ -659,7 +658,6 @@ const Game: React.FC = () => {
       );
 
       console.log("PASS NFT found:", nft?.data);
-      setPassNft(nft?.data || null); // Store the pass NFT if found
       return !!nft; // Return true if the Pass NFT is found
     } catch (error) {
       console.error("Error refreshing Passes:", error);
