@@ -714,7 +714,7 @@ const Game: React.FC = () => {
       return (
         <>
           <p>
-            Eligibility Check:{" "}
+            Eligibility Result:{" "}
             {(isUserEligible || passNft) === true ? "✅" : "🚫"}
           </p>
         </>
