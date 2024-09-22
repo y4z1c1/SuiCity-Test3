@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ADDRESSES } from "../../addresses.ts";
 import { Transaction } from "@mysten/sui/transactions";
 import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
