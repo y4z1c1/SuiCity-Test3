@@ -549,14 +549,23 @@ const Building: React.FC<BuildingProps> = ({
       {/* Background video */}
       <video
         playsInline
-        loop
+        webkit-playsinline="true"
+        autoPlay
         muted
+        loop
         className="building-background-video"
         ref={videoRef}
-      >
-        {/* The source will be set dynamically in useEffect */}
-        Your browser does not support the video tag.
-      </video>
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: -1,
+          pointerEvents: "none", // Prevent user interaction
+        }}
+      />
 
     </>
   );

@@ -695,39 +695,44 @@ const Game: React.FC = () => {
   const preloadVideos = useCallback(async () => {
     const videoUrls: { [key: string]: string } = {};
 
-    for (const building of buildings) {
-      // Skip the Castle as it doesn't have a video
-      if (building.disabled) continue;
+    await Promise.all(
+      buildings.map(async (building) => {
+        if (building.disabled) return;
 
-      // Determine the current level for each building
-      const currentLevel =
-        building.type === "Office"
-          ? office
-          : building.type === "Factory"
-            ? factory
-            : building.type === "House"
-              ? house
-              : enter; // for "Entertainment Complex"
+        const currentLevel =
+          building.type === "Office"
+            ? office
+            : building.type === "Factory"
+              ? factory
+              : building.type === "House"
+                ? house
+                : enter; // for "Entertainment Complex"
 
-      // Generate video URL
-      const videoUrl = `${building.videoBase}${currentLevel}.webm`;
+        const videoUrl = `${building.videoBase}${currentLevel}.webm`;
 
-      try {
-        // Fetch the video data as a blob
-        const response = await fetch(videoUrl);
-        const blob = await response.blob();
+        try {
+          // Fetch the video data as a blob
+          const response = await fetch(videoUrl);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch video for ${building.type}`);
+          }
+          const blob = await response.blob();
 
-        // Create an object URL
-        const objectUrl = URL.createObjectURL(blob);
-        videoUrls[building.type] = objectUrl;
-      } catch (error) {
-        console.error(`Error preloading video for ${building.type}:`, error);
-      }
-    }
+          // Create an object URL
+          const objectUrl = URL.createObjectURL(blob);
+          videoUrls[building.type] = objectUrl;
+
+          console.log(`Preloaded video for ${building.type} at level ${currentLevel}`);
+        } catch (error) {
+          console.error(`Error preloading video for ${building.type}:`, error);
+        }
+      })
+    );
 
     // Update the state with preloaded video URLs
     setPreloadedVideoUrls(videoUrls);
   }, [buildings, office, factory, house, enter]);
+
 
   useEffect(() => {
     if (isMapView) {
@@ -739,7 +744,8 @@ const Game: React.FC = () => {
       });
       setPreloadedVideoUrls({});
     }
-  }, [isMapView, preloadVideos]);
+  }, [isMapView, preloadVideos, preloadedVideoUrls]);
+
 
 
   return (
