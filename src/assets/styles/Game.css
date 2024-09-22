@@ -1581,6 +1581,11 @@ p,
 }
 
 @media (max-width: 768px) {
+  .ref input {
+    font-size: 60%;
+    padding: 1%;
+    width: 90%;
+  }
   .buildingType.expanded h2 {
     font-size: 100%;
   }
