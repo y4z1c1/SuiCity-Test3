@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useCurrentAccount } from "@mysten/dapp-kit"; // Assuming you're using this hook for current account
 import ClaimReference from "./ClaimReference";
 
@@ -15,7 +15,7 @@ const Reference = ({ nft, showModal, officeLevel, factoryLevel, houseLevel, ente
     const currentAccount = useCurrentAccount(); // Get current wallet address
     const [refNumber, setRefNumber] = useState<number | null>(null); // State for reference number
     const [usedRefs, setUsedRefs] = useState<string[]>([]); // List of used references
-    const [newUsedRefs, setNewUsedRefs] = useState<string[]>([]); // List of new used references
+    const [, setNewUsedRefs] = useState<string[]>([]); // List of new used references
     const [refUsed, setRefUsed] = useState<boolean>(false); // State for reference usage
 
     // Check if the reference has already been used (from nft content)

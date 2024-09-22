@@ -28,7 +28,7 @@ const Population: React.FC<PopulationProps> = ({
   };
 
   // Function to calculate population based on building levels
-  const calculatePopulation = (nft: any) => {
+  const calculatePopulation = () => {
     const basePopulation = 10000;
 
     const calculateForBuilding = (level: number) => {
@@ -53,7 +53,7 @@ const Population: React.FC<PopulationProps> = ({
   };
 
   // Calculate the total population including accumulated SITY
-  const population = calculatePopulation(filteredNft);
+  const population = calculatePopulation();
   const totalPopulation = population + accumulatedSity;
 
   return (
