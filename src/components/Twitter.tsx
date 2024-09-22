@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSignPersonalMessage, useCurrentAccount } from "@mysten/dapp-kit";
 import ClaimReward from "./ClaimReward"; // Import the ClaimReward component
 import ClaimReference from "./ClaimReference";
@@ -10,7 +10,7 @@ const Twitter = ({
 }) => {
   const [screenName, setScreenName] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [hasLikedTweet, setHasLikedTweet] = useState<boolean>(false); // Track if the tweet is liked
+  const [, setHasLikedTweet] = useState<boolean>(false); // Track if the tweet is liked
   const [bindingStatus, setBindingStatus] = useState<string>("Not Bound"); // Track binding status
   const [boundWallet, setBoundWallet] = useState<string | null>(null); // Track the wallet if already bound
   const [isAlreadyBound, setIsAlreadyBound] = useState<boolean>(false); // To track if Twitter is bound
@@ -25,8 +25,6 @@ const Twitter = ({
   ); // Hashed message from backend
   const [refNumber, setRefNumber] = useState<number | null>(null); // State for reference number
 
-  const tweetId = "1834908891349406060"; // Replace with the ID of the tweet you want to check
-  const tweetLink = `https://twitter.com/i/web/status/${tweetId}`; // Link to the tweet https://twitter.com/i/web/status/1834908891349406060
   const [usedRefs, setUsedRefs] = useState<string[]>([]);
   const [newUsedRefs, setNewUsedRefs] = useState<string[]>([]);
 
