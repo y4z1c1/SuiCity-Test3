@@ -166,6 +166,7 @@
 }
 
 .reference-system-button {
+  color: #000000;
   background-color: rgb(187, 255, 71); /* Semi-transparent background */
   cursor: pointer;
   align-self: center; /* Center the button horizontally */
@@ -184,6 +185,7 @@
 }
 
 .claim-ref-button {
+  color: #000000;
   background-color: rgb(71, 200, 255); /* Semi-transparent background */
   cursor: pointer;
   align-self: center; /* Center the button horizontally */
@@ -768,7 +770,7 @@
 
 .buildingType button {
   background-color: rgb(255, 255, 255); /* Semi-transparent background */
-
+  color: black;
   align-self: center; /* Center the button horizontally */
   margin-top: auto; /* Push the button to the bottom */
   margin-bottom: 4%;
@@ -845,7 +847,7 @@
 
 .accumulated button {
   background-color: rgb(255, 187, 71); /* Semi-transparent background */
-
+  color: black;
   align-self: center; /* Center the button horizontally */
   margin-top: auto; /* Push the button to the bottom */
   margin-bottom: 4%;
@@ -942,7 +944,7 @@
 
 .population button {
   background-color: rgb(118, 136, 255); /* Semi-transparent background */
-
+  color: #000000;
   align-self: center; /* Center the button horizontally */
   margin-top: auto; /* Push the button to the bottom */
   margin-bottom: 4%;
@@ -1579,6 +1581,10 @@ p,
 }
 
 @media (max-width: 768px) {
+  .buildingType.expanded h2 {
+    font-size: 100%;
+  }
+
   .claim-reward {
     width: 80%;
   }
@@ -1761,6 +1767,11 @@ p,
   }
   .additional-info p {
     font-size: 50% !important;
+  }
+
+  .buildingType.expanded {
+    min-height: 80%;
+    max-height: 100%;
   }
 }
 
