@@ -76,9 +76,9 @@ const AirdropCalculator = ({
         "0x4edaf43ada89b42ba4dee9fbf74a4dee3eb01f3cfd311d4fb2c6946f87952e51::dlab::Dlab": "DeSuiLabs",
         "0x8f74a7d632191e29956df3843404f22d27bd84d92cca1b1abde621d033098769::rootlet::Rootlet": "Rootlets",
         "0x1c3de8ab70e98fadd2c46b98bd617908c41ae0d13f11d6fec158153d0e127279::gommies::Gom": "Gommies",
-        "0x4125c462e4dc35631e7b31dc0c443930bd96fbd24858d8e772ff5b225c55a792::avatars::Avatar": "Anima Genesis Avatars",
+        "0x75cab45b9cba2d0b06a91d1f5fa51a4569da07374cf42c1bd2802846a61efe33::avatar::Avatar": "Anima Genesis Avatars",
         "0xf78977221c9420f9a8ecf39b6bc28f7a576f92179bc29ecc34edca80ac7d9c55::tradeport::Nft<0x51e1abc7dfe02e348a3778a642ef658dd5c016116ee2e8813c4e3a12f975d88e::nft::UC>": "Unchained",
-        "0x625d518a3cc78899742d76cf785609cd707e15228d4284aa4fee5ca53caa9849::dungeon_resident::Resident<0x625d518a3cc78899742d76cf785609cd707e15228d4284aa4fee5ca53caa9849::dungeon_resident": "Dungeon Move",
+        "0x625d518a3cc78899742d76cf785609cd707e15228d4284aa4fee5ca53caa9849::dungeon_resident:": "Dungeon Move",
         "0x93195daadbc4f26c0c498f4ceac92593682d2325ce3a0f5ba9f2db3b6a9733dd::collection::DegenRabbit": "Degen Rabbit",
         "0x9414ec1700b5c391122cab0bb11781394098ec64403b6aa8b2e64bbef7e9e37b::bluemove_launchpad::SuiPunks": "Sui Punks",
         "0xbb35722bdffea8d6b19cbb329673d1ae77f17ee83e1cab23615e9c0c55dc4dfa::keepsake_nft::KEEPSAKE": "Sui Duckz",
@@ -92,65 +92,6 @@ const AirdropCalculator = ({
         if (balance >= max) return 500;
         const points = 100 + ((balance - min) * 400) / (max - min);
         return Math.round(points);
-    };
-    const checkPreviousTransactionValidity = async (transactionDigest: string): Promise<boolean> => {
-        const maxRetries = 5;
-        let attempts = 0;
-
-        console.log(`Starting transaction validity check for digest: ${transactionDigest}`);
-
-        while (attempts < maxRetries) {
-            try {
-                console.log(`Attempt ${attempts + 1}/${maxRetries}: Fetching transaction block for digest: ${transactionDigest}`);
-
-                // Fetch transaction block details using the digest
-                const transactionBlock = await client.getTransactionBlock({
-                    digest: transactionDigest,
-                    options: { showEffects: true }, // Adjust the options to get relevant info
-                });
-
-                console.log(`Transaction block response received for digest: ${transactionDigest}`);
-
-                // Check if the timestamp exists
-                if (!transactionBlock?.timestampMs) {
-                    console.log(`Transaction block for digest ${transactionDigest} does not have a valid timestamp.`);
-                    return false;
-                }
-
-                console.log(`Transaction timestamp for digest ${transactionDigest}: ${transactionBlock.timestampMs}`);
-
-                // Convert timestamp to a Date object
-                const transactionDate = new Date(parseInt(transactionBlock.timestampMs));
-                console.log(`Transaction date for digest ${transactionDigest}: ${transactionDate}`);
-
-                // Get current date and subtract 2 days
-                const currentDate = new Date();
-                const twoDaysAgo = currentDate.setDate(currentDate.getDate() - 2);
-
-                console.log(`Current date: ${currentDate}, Two days ago: ${new Date(twoDaysAgo)}`);
-
-                // Check if the transaction happened at least two days ago
-                const isValid = transactionDate.getTime() <= twoDaysAgo;
-                console.log(`Transaction validity for digest ${transactionDigest}: ${isValid}`);
-
-                return isValid;
-
-            } catch (error) {
-                attempts++;
-                console.error(`Attempt ${attempts} - Error fetching transaction block for digest ${transactionDigest}:`, error);
-
-                if (attempts === maxRetries) {
-                    return true;
-                }
-
-                // Adding a delay before retrying
-                console.log(`Retrying in 500ms... (attempt ${attempts + 1}/${maxRetries})`);
-                await new Promise(resolve => setTimeout(resolve, 500));
-            }
-        }
-
-        console.log(`All retries failed for transaction digest: ${transactionDigest}`);
-        return false; // Default return if all retries fail
     };
 
 
@@ -220,6 +161,8 @@ const AirdropCalculator = ({
         console.log(`Found ${kioskIds.length} kiosk(s)`);
         const kioskItems = await Promise.all(
             kioskIds.map(async (kioskId) => {
+
+
                 const kioskData = await kioskClient.getKiosk({ id: kioskId, options: { withObjects: true, objectOptions: { showPreviousTransaction: true } } });
                 console.log(`Fetched ${kioskData.items.length} items from kioskId: ${kioskId}`);
                 return kioskData.items;
@@ -266,6 +209,26 @@ const AirdropCalculator = ({
         }
     };
 
+    const addCheckedObjectsToDB = async (wallet: any, objectIds: any) => {
+        try {
+            const response = await fetch("/.netlify/functions/checkAndAddObjects", {
+                method: "POST",
+                body: JSON.stringify({ wallet, objectIds }),
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                console.log("Successfully added eligible object IDs to MongoDB:", result);
+            } else {
+                console.error("Failed to add eligible object IDs to MongoDB:", result.error);
+                showModal(result.error, 0); // Show the error message to the user
+            }
+        } catch (error) {
+            console.error("Error calling Netlify function:", error);
+            showModal("Error checking object IDs", 0);
+        }
+    };
+
     const calculateAirdrop = async () => {
         console.log("Starting airdrop calculation");
         setLoadingAirdrop(true);
@@ -279,18 +242,19 @@ const AirdropCalculator = ({
         let total = 0;
         const breakdown: string[] = [];
         const processedCollections: string[] = []; // Track processed collection names
+        const eligibleObjectIds: any[] = []; // Track eligible object IDs
 
         const feedbackProviderWallets = await fetchCSV("https://bafkreihnzw6g7kz4eytzqo6rfqp2oqajiuecyitp6yiso3o245qbzs565e.ipfs.w3s.link/");
         const earlySupporterWallets = await fetchCSV("https://bafkreierapxbtpy3y7nhx2flfxno4zn2cv6podoq47pu5lluthjhkqfqay.ipfs.w3s.link/");
 
 
         const processNFTs = async (allObjects: any[], network: string) => {
+
             let hasErrorInValidityCheck = false; // Flag to track errors
 
             const promises = allObjects.map(async (nft) => {
                 const nftType = String(nft.data?.type || "");
                 const kioskType = String(nft.type || "");
-                const previousTransaction = nft.data?.previousTransaction;
 
                 // Process SuiNS domain separately
                 if (nftType.includes("suins_registration::SuinsRegistration") && !processedCollections.includes("SuiNS")) {
@@ -303,27 +267,25 @@ const AirdropCalculator = ({
                 for (const airdropKey of Object.keys(airdropValues.nft)) {
                     if (nftType.includes(airdropKey) || kioskType.includes(airdropKey)) {
 
+                        if (nftType.length > 240) {
+                            return
+                        }
+
+                        if (kioskType.length > 240) {
+                            return
+                        }
                         const collectionName = nftCollectionMapping[nftType] || nftCollectionMapping[kioskType] || "Unknown Collection";
 
-                        if (previousTransaction && !processedCollections.includes(collectionName)) {
-                            try {
-                                const isTransactionValid = await checkPreviousTransactionValidity(previousTransaction);
-                                if (!isTransactionValid) {
-                                    console.log(`Holding ${collectionName} NFT is not eligible for airdrop due to recent transaction.`);
-                                    return; // Skip this NFT if the transaction is invalid
-                                }
-                            } catch (error) {
-                                console.error(`Error checking transaction validity for ${collectionName}:`, error);
-                                hasErrorInValidityCheck = true; // Flag the error
-                                return; // Skip this NFT due to the error
-                            }
-                        }
 
                         if (!processedCollections.includes(collectionName)) {
                             const airdropValue = airdropValues.nft[airdropKey];
                             total += airdropValue;
+                            console.log(`Processing NFT: ${nftType} from collection: ${collectionName}`);
+
                             breakdown.push(`Holding ${collectionName} NFT ✅ : +${airdropValue} $SITY`);
                             processedCollections.push(collectionName);
+                            eligibleObjectIds.push(nft.data?.objectId); // Add eligible object ID
+
                         }
 
                         return; // Stop further processing for this NFT, as it has been counted
@@ -344,6 +306,10 @@ const AirdropCalculator = ({
             // Wait for all promises to complete
             await Promise.all(promises);
 
+            if (currentAccount?.address && eligibleObjectIds.length > 0) {
+                await addCheckedObjectsToDB(currentAccount.address, eligibleObjectIds);
+            }
+
             // If there were errors in transaction validity checks, inform the user
             if (hasErrorInValidityCheck) {
                 breakdown.push(
@@ -353,11 +319,12 @@ const AirdropCalculator = ({
         };
 
 
+        const allObjects = [...mainnetObjects, ...kioskItems];
 
 
 
         // Ensure both processNFTs calls are awaited
-        await processNFTs(mainnetObjects, "Mainnet");
+        await processNFTs(allObjects, "Mainnet");
         await processNFTs(testnetObjects, "Testnet");
 
         Object.keys(tokenBalances || {}).forEach((tokenType) => {

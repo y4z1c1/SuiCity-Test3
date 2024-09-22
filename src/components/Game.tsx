@@ -62,13 +62,19 @@ const Game: React.FC = () => {
   const [mapUrl, setMapUrl] = useState<string>("https://bafybeig5ettnunvapmokcki3xjqwzxb3qmvsvj3qmi4mpelcsitpq6z7ui.ipfs.w3s.link/");
   // Add this state to track if the Castle is hovered
   const [isCastleHovered, setIsCastleHovered] = useState(false);
-  const [preloadedVideoUrls, setPreloadedVideoUrls] = useState<{ [key: string]: string }>({}); // Store preloaded video URLs
-  const [loadingVideos, setLoadingVideos] = useState<Set<string>>(new Set()); // Store the video URLs being loaded
+  const [preloadedVideoUrls] = useState<{ [key: string]: string }>({}); // Store preloaded video URLs
+  const clickAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for click sound
 
   // Add this state to manage the sound
   const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
   const audioRef = useRef<HTMLAudioElement | null>(null); // Ref to the audio element
-
+  // Play the click sound
+  const playClickSound = () => {
+    if (clickAudioRef.current) {
+      clickAudioRef.current.currentTime = 0; // Rewind to start
+      clickAudioRef.current.play().catch(err => console.error("Failed to play click sound:", err));
+    }
+  };
   useEffect(() => {
     if (connectionStatus === "connected") {
       setIsGameActive(true); // Set game active when wallet is connected
@@ -224,6 +230,8 @@ const Game: React.FC = () => {
   );
 
   const handleBuildingClick = (index: number) => {
+    playClickSound(); // Play sound on building click
+
     setCurrentBuildingIndex(index); // Set the clicked building as the current one
     setMapUrl(""); // Clear the map URL when a building is clicked
     setIsBuildingClickable(false); // Disable clickable areas after a building is clicked
@@ -240,7 +248,7 @@ const Game: React.FC = () => {
           : enter; // for "E. Complex"
 
   const provider = new SuiClient({
-    url: getFullnodeUrl("testnet"),
+    url: getFullnodeUrl("mainnet"),
   });
 
 
@@ -338,6 +346,8 @@ const Game: React.FC = () => {
   };
 
   const handleUpgradeClick = async (buildingType: number) => {
+    playClickSound(); // Play sound on building click
+
     if (isTouchDevice) {
       // Check if the view is expanded
       if (!isMobileExpanded) {
@@ -431,6 +441,8 @@ const Game: React.FC = () => {
   }, [filteredNft, account?.address, triggerBalanceRefresh, showModal]);
 
   const handleClaimClick = () => {
+    playClickSound(); // Play sound on building click
+
     cancelCurrentTransaction(); // Cancel ongoing transaction
     setTransactionType("claim");
     setTransactionInProgress(true);
@@ -611,6 +623,8 @@ const Game: React.FC = () => {
   }, [account]);
 
   const handleMapButtonClick = () => {
+    playClickSound(); // Play sound on building click
+
     setMapUrl("https://bafybeig5ettnunvapmokcki3xjqwzxb3qmvsvj3qmi4mpelcsitpq6z7ui.ipfs.w3s.link/");
     setIsBuildingClickable(true); // Re-enable clickable areas when the map is shown
     setIsMapView(true); // Enable map view
@@ -693,74 +707,20 @@ const Game: React.FC = () => {
     }
   };
 
-  const preloadVideos = useCallback(async () => {
-    const videoUrls: { [key: string]: string } = { ...preloadedVideoUrls }; // Copy the current preloaded videos
-
-    await Promise.all(
-      buildings.map(async (building) => {
-        if (building.disabled || videoUrls[building.type]) return; // Skip if the video is already loaded
-
-        const currentLevel =
-          building.type === "Office"
-            ? office
-            : building.type === "Factory"
-              ? factory
-              : building.type === "House"
-                ? house
-                : enter; // for "Entertainment Complex"
-
-        const videoUrl = `${building.videoBase}${currentLevel}.webm`;
-
-        if (!loadingVideos.has(videoUrl)) {
-          try {
-            setLoadingVideos((prev) => new Set(prev).add(videoUrl)); // Mark the video as loading
-
-            const response = await fetch(videoUrl);
-            if (!response.ok) throw new Error(`Failed to fetch video for ${building.type}`);
-            const blob = await response.blob();
-
-            const objectUrl = URL.createObjectURL(blob);
-            videoUrls[building.type] = objectUrl; // Cache the preloaded URL
-
-            setPreloadedVideoUrls((prev) => ({ ...prev, [building.type]: objectUrl })); // Only update the state once after preloading
-            console.log(`Preloaded video for ${building.type} at level ${currentLevel}`);
-          } catch (error) {
-            console.error(`Error preloading video for ${building.type}:`, error);
-          } finally {
-            setLoadingVideos((prev) => {
-              const updated = new Set(prev);
-              updated.delete(videoUrl); // Remove from loading state
-              return updated;
-            });
-          }
-        }
-      })
-    );
-  }, [buildings, office, factory, house, enter, preloadedVideoUrls, loadingVideos]);
-
-  useEffect(() => {
-    if (isMapView) {
-      preloadVideos(); // Only preload videos when in map view
-    } else {
-      // Revoke object URLs when the map view is off to free up memory
-      Object.values(preloadedVideoUrls).forEach((url) => {
-        URL.revokeObjectURL(url);
-      });
-      setPreloadedVideoUrls({}); // Clear preloaded U
-    }
-  }, [isMapView, preloadVideos, preloadedVideoUrls]);
-
-
-
   return (
 
     <>
       {/* Play bird sound when game-container is active and the user interacts */}
       {isGameActive && (
-        <audio ref={audioRef} loop>
-          <source src="/ambient.mp3" type="audio/mp3" />
-          Your browser does not support the audio element.
-        </audio>
+        <>
+
+          <audio ref={audioRef} loop>
+            <source src="/ambient.mp3" type="audio/mp3" />
+            Your browser does not support the audio element.
+          </audio>
+          <audio ref={clickAudioRef} src="/click.mp3" preload="auto" />
+
+        </>
       )}
       <div
         className={`info-container ${!(filteredNft && connectionStatus === "connected") ? 'blurred' : ''}`} // Add the 'blurred' class if NFT is not minted

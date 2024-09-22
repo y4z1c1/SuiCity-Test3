@@ -21,7 +21,7 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
-    <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
+    <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
       <WalletProvider autoConnect={true} theme={cityTheme}>
         <StrictMode>
           <App />

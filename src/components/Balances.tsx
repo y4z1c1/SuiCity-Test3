@@ -18,7 +18,7 @@ const Balances: React.FC<BalancesProps> = ({
   const [suiBalance, setSuiBalance] = useState<number>(0);
 
   const provider = new SuiClient({
-    url: getFullnodeUrl("testnet"),
+    url: getFullnodeUrl("mainnet"),
   });
 
   const fetchBalances = useCallback(async () => {

@@ -68,7 +68,7 @@ const NftSpecs: React.FC<NftSpecsProps> = ({ nft, officeLevel, factoryLevel, hou
 
         {nft && nft.objectId ? (
           <a
-            href={`https://suiscan.xyz/testnet/object/${nft.objectId}`}
+            href={`https://suiscan.xyz/mainnet/object/${nft.objectId}`}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -7,7 +7,7 @@ export const airdropValues = {
     "0x4edaf43ada89b42ba4dee9fbf74a4dee3eb01f3cfd311d4fb2c6946f87952e51::dlab::Dlab": 300,
     "0x8f74a7d632191e29956df3843404f22d27bd84d92cca1b1abde621d033098769::rootlet::Rootlet": 300,
     "0x1c3de8ab70e98fadd2c46b98bd617908c41ae0d13f11d6fec158153d0e127279::gommies::Gom": 300,
-    "0x4125c462e4dc35631e7b31dc0c443930bd96fbd24858d8e772ff5b225c55a792::avatars::Avatar": 300,
+    "0x75cab45b9cba2d0b06a91d1f5fa51a4569da07374cf42c1bd2802846a61efe33::avatar::Avatar": 300,
     "0xf78977221c9420f9a8ecf39b6bc28f7a576f92179bc29ecc34edca80ac7d9c55::tradeport::Nft<0x51e1abc7dfe02e348a3778a642ef658dd5c016116ee2e8813c4e3a12f975d88e::nft::UC>": 300,
     "0x625d518a3cc78899742d76cf785609cd707e15228d4284aa4fee5ca53caa9849::dungeon_resident::Resident<0x625d518a3cc78899742d76cf785609cd707e15228d4284aa4fee5ca53caa9849::dungeon_resident": 300,
     "0x93195daadbc4f26c0c498f4ceac92593682d2325ce3a0f5ba9f2db3b6a9733dd::collection::DegenRabbit": 300,
