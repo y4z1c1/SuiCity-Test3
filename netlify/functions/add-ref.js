@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { getStore } from "@netlify/blobs";
 
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
@@ -15,10 +16,9 @@ export const handler = async (event) => {
     }
 
     await client.connect();
-    const database = client.db("twitter_bindings"); // Adjust your MongoDB database name
-    const collection = database.collection("bindings"); // Adjust your MongoDB collection
+    const database = client.db("twitter_bindings");
+    const collection = database.collection("bindings");
 
-    // Find the reference owner's info
     const existingOwner = await collection.findOne({
       walletAddress: refOwnerWallet,
     });
@@ -30,7 +30,6 @@ export const handler = async (event) => {
       };
     }
 
-    // Add the claimer's address to the usedRefs array if it's not already present
     if (!existingOwner.usedRefs) {
       existingOwner.usedRefs = [];
     }
@@ -40,6 +39,12 @@ export const handler = async (event) => {
         { walletAddress: refOwnerWallet },
         { $push: { usedRefs: claimerWallet } }
       );
+
+      // Store reference updates in Netlify Blobs
+      const refStore = getStore("ref_data");
+      await refStore.setJSON(refOwnerWallet, {
+        usedRefs: [...existingOwner.usedRefs, claimerWallet],
+      });
     }
 
     return {
@@ -47,10 +52,10 @@ export const handler = async (event) => {
       body: JSON.stringify({ message: "Reference successfully updated" }),
     };
   } catch (error) {
-    console.error("Error updating reference owner info:", error);
+    console.error("Error updating reference:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Failed to update reference owner info" }),
+      body: JSON.stringify({ error: "Failed to update reference" }),
     };
   } finally {
     await client.close();

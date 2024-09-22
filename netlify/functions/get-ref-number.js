@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { getStore } from "@netlify/blobs";
 
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
@@ -14,34 +15,35 @@ export const handler = async (event) => {
       };
     }
 
-    console.log("Wallet Address received:", walletAddress);
-
     await client.connect();
     const database = client.db("twitter_bindings");
     const collection = database.collection("bindings");
 
-    // Log to check if the connection and collection are correct
-    console.log("Connected to MongoDB and using collection 'bindings'");
-
-    // Find the user by wallet address
     const binding = await collection.findOne({ walletAddress });
 
     if (!binding) {
-      console.log(`No binding found for wallet address: ${walletAddress}`);
+      // Check Netlify Blobs if MongoDB doesn't have the binding
+      const refStore = getStore("ref_data");
+      const blobBinding = await refStore.get(walletAddress);
+
+      if (!blobBinding) {
+        return {
+          statusCode: 404,
+          body: JSON.stringify({ error: "Binding not found" }),
+        };
+      }
+
       return {
-        statusCode: 404,
-        body: JSON.stringify({ error: "Binding not found" }),
+        statusCode: 200,
+        body: JSON.stringify({ refNumber: JSON.parse(blobBinding).refNumber }),
       };
     }
-
-    console.log("Binding found:", binding);
 
     return {
       statusCode: 200,
       body: JSON.stringify({ refNumber: binding.refNumber }),
     };
   } catch (error) {
-    console.error("Error fetching reference number:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Failed to fetch reference number" }),

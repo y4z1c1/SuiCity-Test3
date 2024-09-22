@@ -1,7 +1,8 @@
 import { MongoClient } from "mongodb";
+import { getStore } from "@netlify/blobs";
 
 const uri = process.env.MONGODB_URI;
-let client; // Declare client outside to reuse it across requests
+let client;
 
 const getMongoClient = async () => {
   if (!client) {
@@ -12,8 +13,6 @@ const getMongoClient = async () => {
 };
 
 export const handler = async (event) => {
-  let clientInstance;
-
   try {
     const { walletAddress } = JSON.parse(event.body);
 
@@ -24,50 +23,40 @@ export const handler = async (event) => {
       };
     }
 
-    clientInstance = await getMongoClient(); // Reuse or create a new connection
+    const clientInstance = await getMongoClient();
     const database = clientInstance.db("twitter_bindings");
     const collection = database.collection("bindings");
 
-    // Fetch the user's reference binding data
     const binding = await collection.findOne({ walletAddress });
 
     if (!binding) {
+      // Check Netlify Blobs if MongoDB doesn't have the binding
+      const refStore = getStore("ref_data");
+      const blobBinding = await refStore.get(walletAddress);
+
+      if (!blobBinding) {
+        return {
+          statusCode: 404,
+          body: JSON.stringify({ error: "No reference found for this wallet" }),
+        };
+      }
+
       return {
-        statusCode: 404,
-        body: JSON.stringify({ error: "No reference found for this wallet" }),
+        statusCode: 200,
+        body: JSON.stringify({ usedRefs: JSON.parse(blobBinding).usedRefs }),
       };
     }
 
-    // Track the last check timestamp (if it exists)
-    const lastCheck = binding.lastCheck || new Date(0); // Default to Unix epoch if no check was made
     const usedRefs = binding.usedRefs || [];
-
-    // Fetch only new references (filter those added after the last check)
-    const newRefs = usedRefs.filter(
-      (ref) => new Date(ref.timestamp) > new Date(lastCheck)
-    );
-
-    // Update the last check timestamp to now
-    const updatedTimestamp = new Date();
-
-    await collection.updateOne(
-      { walletAddress },
-      { $set: { lastCheck: updatedTimestamp } }
-    );
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ newRefs, usedRefs }),
+      body: JSON.stringify({ usedRefs }),
     };
   } catch (error) {
-    console.error("Error fetching usedRefs:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Failed to fetch usedRefs" }),
+      body: JSON.stringify({ error: "Failed to fetch used references" }),
     };
-  } finally {
-    // No need to close the connection since it's reused
-    // If you need to close it explicitly, make sure to do it properly
-    // await clientInstance.close();
   }
 };

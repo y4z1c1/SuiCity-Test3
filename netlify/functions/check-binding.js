@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { getStore } from "@netlify/blobs";
 
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
@@ -18,16 +19,29 @@ export const handler = async (event, context) => {
     const database = client.db("twitter_bindings");
     const collection = database.collection("bindings");
 
-    // Check if the Twitter ID is already bound
+    // Check MongoDB for the Twitter ID
     const existingBinding = await collection.findOne({ twitterId });
 
     if (existingBinding) {
       return {
         statusCode: 200,
-
         body: JSON.stringify({
           isBound: true,
-          walletAddress: existingBinding.walletAddress, // Return the bound wallet address
+          walletAddress: existingBinding.walletAddress,
+        }),
+      };
+    }
+
+    // Check Netlify Blobs for the binding
+    const bindingStore = getStore("twitter_bindings");
+    const blobBinding = await bindingStore.get(twitterId);
+
+    if (blobBinding) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          isBound: true,
+          walletAddress: JSON.parse(blobBinding).walletAddress,
         }),
       };
     }
@@ -39,7 +53,6 @@ export const handler = async (event, context) => {
       }),
     };
   } catch (error) {
-    console.error("Error checking binding:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Failed to check binding" }),

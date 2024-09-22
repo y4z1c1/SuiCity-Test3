@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { getStore } from "@netlify/blobs";
 
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
@@ -7,18 +8,10 @@ export const handler = async (event, context) => {
   try {
     console.log("Received event:", event);
 
-    // Parse the incoming request body
     const body = JSON.parse(event.body);
-    console.log("Parsed body:", body);
-
     const { walletAddress, nftData } = body;
 
-    // Check for missing fields
     if (!walletAddress || !nftData) {
-      console.log("Missing fields:", {
-        walletAddress,
-        nftData,
-      });
       return {
         statusCode: 400,
         body: JSON.stringify({ error: "Missing required fields" }),
@@ -32,9 +25,7 @@ export const handler = async (event, context) => {
     const database = client.db("twitter_bindings");
     const collection = database.collection("bindings");
 
-    // Find the binding associated with the walletAddress
     const binding = await collection.findOne({ walletAddress });
-    console.log("Existing binding for wallet:", binding);
 
     if (!binding) {
       return {
@@ -45,13 +36,15 @@ export const handler = async (event, context) => {
       };
     }
 
-    // Update the binding document with the new NFT data
+    // Update MongoDB with new NFT data
     const updateResult = await collection.updateOne(
       { walletAddress },
       { $set: { nft: nftData } }
     );
 
-    console.log("Update result:", updateResult);
+    // Store NFT data in Netlify Blobs
+    const nftStore = getStore("nft_data");
+    await nftStore.setJSON(walletAddress, { nftData });
 
     return {
       statusCode: 200,
@@ -62,10 +55,10 @@ export const handler = async (event, context) => {
       }),
     };
   } catch (error) {
-    console.error("Error updating binding with NFT data:", error);
+    console.error("Error updating NFT data:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Failed to update binding with NFT data" }),
+      body: JSON.stringify({ error: "Failed to update NFT data" }),
     };
   } finally {
     console.log("Closing MongoDB connection");

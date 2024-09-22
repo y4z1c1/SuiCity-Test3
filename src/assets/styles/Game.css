@@ -12,7 +12,6 @@
   box-shadow: 10px 20px 0px rgba(0, 0, 0, 0.4);
   position: relative;
   box-sizing: border-box;
-  overflow: auto;
   background-size: 100%; /* Zoom in the background */
   background-position: center;
   transition: background-position 0.5s ease-in-out; /* Smooth movement */
@@ -1260,11 +1259,39 @@ p,
 
 .buildingPos {
   position: absolute;
+  user-select: none; /* Prevent text or element selection */
+  -webkit-user-select: none; /* For Safari */
+  -moz-user-select: none; /* For Firefox */
+  -ms-user-select: none; /* For Internet Explorer */
 }
 
 .buildingPos:hover {
   filter: brightness(100%) drop-shadow(0 0 50px rgba(255, 255, 255, 0.4)); /* Increase brightness and apply feather effect */
   z-index: 10; /* Bring the hovered building to the top */
+}
+.castle-coming-soon-text {
+  position: absolute;
+  font-family: "Kanit", "Helvetica";
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
+
+  /* Border */
+  border-radius: 0px 0px 12px 12px; /* Rounded corners for a playful, friendly look */
+
+  /* Outer shadow for 3D effect */
+  box-shadow: 5px 5px 0px #000000,
+    /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+  padding: 2px 4px;
+  border-radius: 5px;
+  z-index: 1000;
+  font-size: 100%;
+  pointer-events: none; /* Prevents interference with hover */
 }
 
 .darken-overlay {

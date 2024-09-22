@@ -60,6 +60,29 @@ const Game: React.FC = () => {
   const [house, setHouse] = useState<number>(0);
   const [enter, setEnter] = useState<number>(0);
   const [mapUrl, setMapUrl] = useState<string>("https://bafybeig5ettnunvapmokcki3xjqwzxb3qmvsvj3qmi4mpelcsitpq6z7ui.ipfs.w3s.link/");
+  // Add this state to track if the Castle is hovered
+  const [isCastleHovered, setIsCastleHovered] = useState(false);
+
+  // Add this state to manage the sound
+  const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
+  const audioRef = useRef<HTMLAudioElement | null>(null); // Ref to the audio element
+
+  useEffect(() => {
+    if (connectionStatus === "connected") {
+      setIsGameActive(true); // Set game active when wallet is connected
+    } else {
+      setIsGameActive(false); // Stop the game when the wallet is disconnected
+    }
+  }, [connectionStatus]);
+
+  // Function to handle hover state for the Castle
+  const handleMouseEnterCastle = () => {
+    setIsCastleHovered(true);
+  };
+
+  const handleMouseLeaveCastle = () => {
+    setIsCastleHovered(false);
+  };
 
   const mintBackgroundUrl = useMemo(
     () =>
@@ -637,6 +660,7 @@ const Game: React.FC = () => {
       office: adjustPosition(9.84, 50),
       factory: adjustPosition(9.84, 10),
       entertainment: adjustPosition(33.83, 10.08),
+      castle: adjustPosition(50, 28),
     };
   }, [scaleFactor, containerSize]);
 
@@ -652,11 +676,25 @@ const Game: React.FC = () => {
     setIsHovered(false);
   };
 
+  // Play audio on user interaction (e.g., clicking on the game)
+  const handlePlaySound = () => {
+    if (audioRef.current) {
+      audioRef.current.play().catch((err) => console.error("Failed to play audio:", err));
+    }
+  };
+
 
 
   return (
-    <>
 
+    <>
+      {/* Play bird sound when game-container is active and the user interacts */}
+      {isGameActive && (
+        <audio ref={audioRef} loop>
+          <source src="/ambient.mp3" type="audio/mp3" />
+          Your browser does not support the audio element.
+        </audio>
+      )}
       <div
         className={`info-container ${!(filteredNft && connectionStatus === "connected") ? 'blurred' : ''}`} // Add the 'blurred' class if NFT is not minted
       >
@@ -743,6 +781,7 @@ const Game: React.FC = () => {
   ${(connectionStatus !== "connected" || !filteredNft ? 'blurred' : '')} 
   ${(storedSignature || airdropAmount > 0) ? 'mystic' : ''}`}
         >
+
 
 
           {storedSignature && airdropAmount > 0 && (
@@ -862,7 +901,10 @@ const Game: React.FC = () => {
                             zIndex: 100,
 
                           }}
-                          onClick={() => handleBuildingClick(0)}
+                          onClick={() => {
+                            handleBuildingClick(0);
+                            handlePlaySound()
+                          }}
                           onMouseEnter={handleMouseEnterBuilding}
                           onMouseLeave={handleMouseLeaveBuilding}
                         />
@@ -900,10 +942,55 @@ const Game: React.FC = () => {
                             zIndex: 100,
 
                           }}
-                          onClick={() => handleBuildingClick(1)}
+                          onClick={() => {
+                            handleBuildingClick(1);
+                            handlePlaySound()
+                          }}
                           onMouseEnter={handleMouseEnterBuilding}
                           onMouseLeave={handleMouseLeaveBuilding}
                         />
+                      </div>
+
+                      <div
+                        className="castlePos"
+                        style={{
+                          position: "absolute",
+                          top: adjustedBuildingPositions.castle.top,
+                          left: adjustedBuildingPositions.castle.left,
+                          width: `${scaleFactor * 512}px`,
+                          height: `${scaleFactor * 512}px`,
+
+                        }
+
+                        }
+                      >
+
+                        <div
+                          className="castlePos"
+
+                          style={{
+                            position: "absolute",
+                            top: "30%", // center the clickable area vertically
+                            left: "30%", // center the clickable area horizontally
+                            width: "40%", // 30% width of the image
+                            height: "40%", // 30% height of the image
+                            zIndex: 100,
+
+
+                          }}
+                          onMouseEnter={handleMouseEnterCastle}
+                          onMouseLeave={handleMouseLeaveCastle}
+
+                        />
+
+                        {/* "Coming soon..." text */}
+                        {isCastleHovered && (
+                          <div className="castle-coming-soon-text">
+                            <p>🏰 Coming soon...</p>
+                          </div>
+                        )}
+
+
                       </div>
 
                       {/* Entertainment Complex */}
@@ -937,8 +1024,10 @@ const Game: React.FC = () => {
                             cursor: "pointer",
                             zIndex: 100,
                           }}
-                          onClick={() => handleBuildingClick(3)}
-                          onMouseEnter={handleMouseEnterBuilding}
+                          onClick={() => {
+                            handleBuildingClick(3);
+                            handlePlaySound()
+                          }} onMouseEnter={handleMouseEnterBuilding}
                           onMouseLeave={handleMouseLeaveBuilding}
                         />
                       </div>
