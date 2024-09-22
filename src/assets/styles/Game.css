@@ -1631,6 +1631,11 @@ p,
   .nft-specs {
     width: 22%;
   }
+
+  .nft-info p {
+    line-height: 1.5;
+    margin: 0.25%;
+  }
 }
 
 @media (max-width: 600px) {
@@ -1661,7 +1666,6 @@ p,
   .nft-title {
     left: 0%;
     width: 40%;
-    border-radius: 0px 0px 12px 0px;
   }
   .upper-div h2 {
     font-size: 120%;
@@ -1670,7 +1674,6 @@ p,
   .balance-columns {
     right: 0%;
     width: 30%;
-    border-radius: 0px 0px 0px 12px;
   }
 
   .accumulated {
@@ -1713,7 +1716,6 @@ p,
   .nft-specs {
     right: 2%;
     width: 30%;
-    border-radius: 12px 0px 0px 12px;
   }
 
   .coin-icon {
@@ -1752,6 +1754,13 @@ p,
   .mint-button {
     font-size: 120% !important;
     margin-top: 5% !important;
+  }
+
+  .additional-info {
+    padding: 2%;
+  }
+  .additional-info p {
+    font-size: 50% !important;
   }
 }
 

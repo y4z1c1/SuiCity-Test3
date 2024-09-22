@@ -153,60 +153,17 @@ const Game: React.FC = () => {
     []
   );
 
-  const [backgroundPosition, setBackgroundPosition] = useState({
+  const [backgroundPosition,] = useState({
     x: 50,
     y: 50,
   });
   const [mousePosition,] = useState({ x: 50, y: 50 });
   const [isTouchDevice, setIsTouchDevice] = useState(false); // To detect if the device is touch-enabled
-  const touchStartRef = useRef<{ x: number; y: number } | null>(null); // To store initial touch position
 
   useEffect(() => {
     const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
     setIsTouchDevice(isTouch);
   }, []);
-
-  // Function to handle touch start and store initial position
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault(); // Prevent default touch behavior (scrolling)
-    const { clientX, clientY } = e.touches[0];
-    touchStartRef.current = { x: clientX, y: clientY };
-  };
-
-  // Function to handle touch movement
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault(); // Prevent default touch behavior (scrolling)
-    const { clientX, clientY } = e.touches[0];
-    const { width, height } = e.currentTarget.getBoundingClientRect();
-
-    if (!touchStartRef.current) return;
-
-    const touchStartX = touchStartRef.current.x;
-    const touchStartY = touchStartRef.current.y;
-
-    const deltaX = clientX - touchStartX;
-    const deltaY = clientY - touchStartY;
-
-    const moveXPercent = (deltaX / width) * 100;
-    const moveYPercent = (deltaY / height) * 100;
-
-    setBackgroundPosition((prevPos) => {
-      let newX = prevPos.x - moveXPercent;
-      let newY = prevPos.y - moveYPercent;
-
-      newX = Math.max(0, Math.min(newX, 100));
-      newY = Math.max(0, Math.min(newY, 100));
-
-      return { x: newX, y: newY };
-    });
-
-    touchStartRef.current = { x: clientX, y: clientY };
-  };
-
-  // Function to handle touch end (optional reset or cleanup)
-  const handleTouchEnd = () => {
-    touchStartRef.current = null; // Reset the reference when the touch ends
-  };
 
   // Inside your Game component
   const [modalMessage, setModalMessage] = useState<string | null>(null);
@@ -539,7 +496,7 @@ const Game: React.FC = () => {
     setTimeout(() => {
       console.log("MINT SUCCESSFUL, awaiting new data...");
       refreshNft();
-      showModal("✅ Upgrade successful!", 1); // Show success message in the modal
+      showModal("✅ Mint successful!", 1); // Show success message in the modal
 
       fetchAirdropData();
       setTransactionType(null);
@@ -735,9 +692,6 @@ const Game: React.FC = () => {
       <div
         className={`game-container`} // Add the 'blurred' class if NFT is not minted
         ref={containerRef}
-        onTouchStart={isTouchDevice ? handleTouchStart : undefined}
-        onTouchMove={isTouchDevice ? handleTouchMove : undefined}
-        onTouchEnd={isTouchDevice ? handleTouchEnd : undefined}
         style={{
           backgroundImage: isMapView // If mapUrl is set, use it as the background
             ? `url(${mapUrl})`
