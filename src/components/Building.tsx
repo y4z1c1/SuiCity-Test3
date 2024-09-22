@@ -567,6 +567,7 @@ const Building: React.FC<BuildingProps> = ({
         }}
       />
 
+
     </>
   );
 };

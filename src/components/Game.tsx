@@ -62,7 +62,8 @@ const Game: React.FC = () => {
   const [mapUrl, setMapUrl] = useState<string>("https://bafybeig5ettnunvapmokcki3xjqwzxb3qmvsvj3qmi4mpelcsitpq6z7ui.ipfs.w3s.link/");
   // Add this state to track if the Castle is hovered
   const [isCastleHovered, setIsCastleHovered] = useState(false);
-  const [preloadedVideoUrls, setPreloadedVideoUrls] = useState<{ [key: string]: string }>({});
+  const [preloadedVideoUrls, setPreloadedVideoUrls] = useState<{ [key: string]: string }>({}); // Store preloaded video URLs
+  const [loadingVideos, setLoadingVideos] = useState<Set<string>>(new Set()); // Store the video URLs being loaded
 
   // Add this state to manage the sound
   const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
@@ -693,11 +694,11 @@ const Game: React.FC = () => {
   };
 
   const preloadVideos = useCallback(async () => {
-    const videoUrls: { [key: string]: string } = {};
+    const videoUrls: { [key: string]: string } = { ...preloadedVideoUrls }; // Copy the current preloaded videos
 
     await Promise.all(
       buildings.map(async (building) => {
-        if (building.disabled) return;
+        if (building.disabled || videoUrls[building.type]) return; // Skip if the video is already loaded
 
         const currentLevel =
           building.type === "Office"
@@ -710,39 +711,47 @@ const Game: React.FC = () => {
 
         const videoUrl = `${building.videoBase}${currentLevel}.webm`;
 
-        try {
-          // Fetch the video data as a blob
-          const response = await fetch(videoUrl);
-          if (!response.ok) {
-            throw new Error(`Failed to fetch video for ${building.type}`);
+        if (!loadingVideos.has(videoUrl)) {
+          // Check if this video is currently loading to avoid redundant fetches
+          try {
+            setLoadingVideos((prev) => new Set(prev).add(videoUrl)); // Mark the video as loading
+            const response = await fetch(videoUrl);
+
+            if (!response.ok) throw new Error(`Failed to fetch video for ${building.type}`);
+            const blob = await response.blob();
+
+            // Create an object URL
+            const objectUrl = URL.createObjectURL(blob);
+            videoUrls[building.type] = objectUrl; // Cache the preloaded URL
+
+            console.log(`Preloaded video for ${building.type} at level ${currentLevel}`);
+          } catch (error) {
+            console.error(`Error preloading video for ${building.type}:`, error);
+          } finally {
+            setLoadingVideos((prev) => {
+              const updated = new Set(prev);
+              updated.delete(videoUrl); // Remove from loading state
+              return updated;
+            });
           }
-          const blob = await response.blob();
-
-          // Create an object URL
-          const objectUrl = URL.createObjectURL(blob);
-          videoUrls[building.type] = objectUrl;
-
-          console.log(`Preloaded video for ${building.type} at level ${currentLevel}`);
-        } catch (error) {
-          console.error(`Error preloading video for ${building.type}:`, error);
         }
       })
     );
 
     // Update the state with preloaded video URLs
     setPreloadedVideoUrls(videoUrls);
-  }, [buildings, office, factory, house, enter]);
+  }, [buildings, office, factory, house, enter, preloadedVideoUrls, loadingVideos]);
 
 
   useEffect(() => {
     if (isMapView) {
-      preloadVideos();
+      preloadVideos(); // Only preload videos when in map view
     } else {
-      // Revoke object URLs when map view is off to free up memory
+      // Revoke object URLs when the map view is off to free up memory
       Object.values(preloadedVideoUrls).forEach((url) => {
         URL.revokeObjectURL(url);
       });
-      setPreloadedVideoUrls({});
+      setPreloadedVideoUrls({}); // Clear preloaded URLs
     }
   }, [isMapView, preloadVideos, preloadedVideoUrls]);
 
