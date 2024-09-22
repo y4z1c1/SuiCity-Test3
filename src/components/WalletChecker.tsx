@@ -344,7 +344,7 @@ const WalletChecker = ({
         <div className="wallet-checker">
             {!accessToken || !screenName ? (
                 <>
-                    <p style={{ fontSize: "16px" }}>To connect Twitter account is required for checking social media tasks and elimination of sybil accounts.</p>
+                    <p style={{ fontSize: "16px" }}>Connecting a Twitter account is required to check social media tasks and prevent sybil accounts.</p>
                     <button onClick={handleTwitterLogin}>Login with Twitter</button>
                 </>
             ) : (
