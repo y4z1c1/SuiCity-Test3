@@ -62,6 +62,7 @@ const Game: React.FC = () => {
   const [mapUrl, setMapUrl] = useState<string>("https://bafybeig5ettnunvapmokcki3xjqwzxb3qmvsvj3qmi4mpelcsitpq6z7ui.ipfs.w3s.link/");
   // Add this state to track if the Castle is hovered
   const [isCastleHovered, setIsCastleHovered] = useState(false);
+  const [preloadedVideoUrls, setPreloadedVideoUrls] = useState<{ [key: string]: string }>({});
 
   // Add this state to manage the sound
   const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
@@ -134,7 +135,9 @@ const Game: React.FC = () => {
         buildingUrl:
           "https://bafybeicz5hchwhdfde2pjeo3tbndppqfa7npyyauwi4rjio3edutqok7w4.ipfs.w3s.link/",
         posUrl:
-          "https://bafybeig5vgubjuwhqreshajj2cmb2nfpug6aq7imjpbduhjvmta2cj5374.ipfs.w3s.link/"
+          "https://bafybeig5vgubjuwhqreshajj2cmb2nfpug6aq7imjpbduhjvmta2cj5374.ipfs.w3s.link/",
+        videoBase:
+          "https://bafybeianb2ja544u4lw3ncdeprtd3vn6pdngu7ekhn43qlx45c3essl4cq.ipfs.w3s.link/",
 
       },
       {
@@ -144,7 +147,9 @@ const Game: React.FC = () => {
         buildingUrl:
           "https://bafybeieb6jtila7flzlkybvl36wdrokz37v4nsjbw33itragrpdtl6o36a.ipfs.w3s.link/",
         posUrl:
-          "https://bafybeihe5sssbkonsvpo6ggzejbt4j7s6lyydu4sx42xemaxja7ifsohtu.ipfs.w3s.link/"
+          "https://bafybeihe5sssbkonsvpo6ggzejbt4j7s6lyydu4sx42xemaxja7ifsohtu.ipfs.w3s.link/",
+        videoBase:
+          "https://bafybeigckd2yoq6vkdcgrrvhtoonfyxsef5ehpqu7fcijitz3gwlnw5lcy.ipfs.w3s.link/"
 
       },
       {
@@ -154,7 +159,9 @@ const Game: React.FC = () => {
         buildingUrl:
           "https://bafybeidwyrjf7ivqm76mg2wg3jbwtvo4sifuxkbrar3xzwn7xkugkbiqke.ipfs.w3s.link/",
         posUrl:
-          "https://bafybeid7a7hu6e6izwdu2ocx5vb6v6uojwfa6u2wed5jzyfxt5ku7minwy.ipfs.w3s.link/"
+          "https://bafybeid7a7hu6e6izwdu2ocx5vb6v6uojwfa6u2wed5jzyfxt5ku7minwy.ipfs.w3s.link/",
+        videoBase:
+          "https://bafybeiawqfyyd3m6kck2c63wu5mjednb262asjgqwd24jsy7o7ytuyd4sq.ipfs.w3s.link/"
 
       },
       {
@@ -164,7 +171,9 @@ const Game: React.FC = () => {
         buildingUrl:
           "https://bafybeibyvpq4sr33flefgewlxhvfyhgqdd5kcycaz2xortm6uqqrp6ahfa.ipfs.w3s.link/",
         posUrl:
-          "https://bafybeiagsoqg2h4rh2xhgbsmybiszerwvhbip3u2iyyzn6baqfoykforpa.ipfs.w3s.link/"
+          "https://bafybeiagsoqg2h4rh2xhgbsmybiszerwvhbip3u2iyyzn6baqfoykforpa.ipfs.w3s.link/",
+        videoBase:
+          "https://bafybeien27gmpaxgavzbxl3x4mvoutrre2p4qdate4qj2m56gktriecakm.ipfs.w3s.link/"
 
       },
       {
@@ -353,12 +362,12 @@ const Game: React.FC = () => {
 
     const newLevel =
       buildingType === 0
-        ? office + 1
+        ? Number(office) + 1
         : buildingType === 1
-          ? factory + 1
+          ? Number(factory) + 1
           : buildingType === 2
-            ? house + 1
-            : enter + 1;
+            ? Number(house) + 1
+            : Number(enter) + 1;
 
     const newImageUrl = `${buildings[buildingType].imageBaseUrl}/${newLevel}.webp`;
     const newBuildingUrl = `${buildings[buildingType].buildingUrl}/${newLevel}.webp`;
@@ -683,6 +692,54 @@ const Game: React.FC = () => {
     }
   };
 
+  const preloadVideos = useCallback(async () => {
+    const videoUrls: { [key: string]: string } = {};
+
+    for (const building of buildings) {
+      // Skip the Castle as it doesn't have a video
+      if (building.disabled) continue;
+
+      // Determine the current level for each building
+      const currentLevel =
+        building.type === "Office"
+          ? office
+          : building.type === "Factory"
+            ? factory
+            : building.type === "House"
+              ? house
+              : enter; // for "Entertainment Complex"
+
+      // Generate video URL
+      const videoUrl = `${building.videoBase}${currentLevel}.webm`;
+
+      try {
+        // Fetch the video data as a blob
+        const response = await fetch(videoUrl);
+        const blob = await response.blob();
+
+        // Create an object URL
+        const objectUrl = URL.createObjectURL(blob);
+        videoUrls[building.type] = objectUrl;
+      } catch (error) {
+        console.error(`Error preloading video for ${building.type}:`, error);
+      }
+    }
+
+    // Update the state with preloaded video URLs
+    setPreloadedVideoUrls(videoUrls);
+  }, [buildings, office, factory, house, enter]);
+
+  useEffect(() => {
+    if (isMapView) {
+      preloadVideos();
+    } else {
+      // Revoke object URLs when map view is off to free up memory
+      Object.values(preloadedVideoUrls).forEach((url) => {
+        URL.revokeObjectURL(url);
+      });
+      setPreloadedVideoUrls({});
+    }
+  }, [isMapView, preloadVideos]);
 
 
   return (
@@ -1073,6 +1130,8 @@ const Game: React.FC = () => {
                         isTouchDevice={false}
                         onUpgradeClick={handleUpgradeClick}
                         onClaimClick={handleClaimClick}
+                        preloadedVideoUrl={preloadedVideoUrls[currentBuilding.type]} // Pass the preloaded video URL
+
                       />
                     </>
                   )}
