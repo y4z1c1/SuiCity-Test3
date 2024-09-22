@@ -6,9 +6,10 @@ interface ModalProps {
   message: string;
   onClose: () => void;
   bgColor: 0 | 1 | 2; // Accept a new prop to control background color
+
 }
 
-const Modal: React.FC<ModalProps> = ({ show, message, onClose, bgColor }) => {
+const Modal: React.FC<ModalProps> = ({ show, message, onClose, bgColor, }) => {
   const [isVisible, setIsVisible] = useState(show); // Track visibility
   const [isFadingIn, setIsFadingIn] = useState(false); // Track fading state
 
@@ -36,9 +37,8 @@ const Modal: React.FC<ModalProps> = ({ show, message, onClose, bgColor }) => {
 
   return (
     <div
-      className={`modal-backdrop ${getBackgroundClass()} ${
-        isFadingIn ? "fade-in" : "fade-out"
-      }`}
+      className={`modal-backdrop ${getBackgroundClass()} ${isFadingIn ? "fade-in" : "fade-out"
+        }`}
     >
       <div className={`modal-content ${isFadingIn ? "fade-in" : "fade-out"}`}>
         <p>{message}</p>

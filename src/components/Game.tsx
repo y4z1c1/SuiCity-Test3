@@ -1,6 +1,5 @@
 import "../assets/styles/Game.css";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import Mint from "./Mint";
 import Balances from "./Balances"; // Import the new Balances component
 import Accumulation from "./Accumulation"; // Import the new Balances component
 import Building from "./Building"; // Import the Building component
@@ -10,10 +9,24 @@ import { useCurrentWallet, useCurrentAccount } from "@mysten/dapp-kit";
 import Modal from "./Modal"; // Import the new Modal component
 import NftSpecs from "./NftSpecs";
 import Population from "./Population";
-import TwitterLogin from "./Twitter";
+import NftTech from "./NftTech";
+import Reference from "./Reference";
+import WalletChecker from "./WalletChecker";
+import ClaimReward from "./ClaimReward";
+
 
 const Game: React.FC = () => {
+
   const { connectionStatus } = useCurrentWallet();
+
+  useEffect(() => {
+    if (connectionStatus === "connected") {
+      document.body.classList.remove("disconnected"); // Set background for connected wallet
+    } else {
+      document.body.classList.add("disconnected"); // Set background for disconnected wallet
+    }
+  }, [connectionStatus]);
+
   const account = useCurrentAccount();
 
   const [filteredNft, setFilteredNft] = useState<any>(null); // Storing only a single filtered NFT
@@ -37,6 +50,16 @@ const Game: React.FC = () => {
   const [bgColor, setBgColor] = useState<0 | 1 | 2>(0); // Default to red (0)
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState<number>(0); // Track current building in the carousel
   const [refreshBalances, setRefreshBalances] = useState(false); // State to trigger balance refresh
+  const [, setIsBuildingClickable] = useState<boolean>(true); // Manage clickable areas
+  const [isMapView, setIsMapView] = useState(true); // Track if map view is active
+  // State for tracking airdrop claim data
+  const [storedSignature, setStoredSignature] = useState<string | null>(null);
+  const [airdropAmount, setAirdropAmount] = useState<number>(0);
+  const [office, setOffice] = useState<number>(0);
+  const [factory, setFactory] = useState<number>(0);
+  const [house, setHouse] = useState<number>(0);
+  const [enter, setEnter] = useState<number>(0);
+  const [mapUrl, setMapUrl] = useState<string>("https://bafybeig5ettnunvapmokcki3xjqwzxb3qmvsvj3qmi4mpelcsitpq6z7ui.ipfs.w3s.link/");
 
   const mintBackgroundUrl = useMemo(
     () =>
@@ -44,39 +67,87 @@ const Game: React.FC = () => {
     []
   );
 
+  const fetchAirdropData = useCallback(() => {
+    // Fetch data from localStorage when the component mounts
+    const signature = localStorage.getItem("airdrop_signature");
+    const airdrop = localStorage.getItem("total_airdrop");
+
+    if (signature) {
+      setStoredSignature(signature);
+    } else {
+      setStoredSignature(null); // Ensure signature is cleared if not found
+    }
+
+    if (airdrop) {
+      setAirdropAmount(parseInt(airdrop));
+    } else {
+      setAirdropAmount(0); // Ensure airdrop amount is cleared if not found
+    }
+  }, []);
+
+
+  // Added useEffect to check local storage when the component mounts and when connectionStatus changes
+  useEffect(() => {
+    fetchAirdropData(); // Fetch airdrop data on mount
+  }, [fetchAirdropData]);
+
+  useEffect(() => {
+    // Also run the fetch when the wallet connection status changes
+    if (connectionStatus === "connected") {
+      fetchAirdropData();
+    }
+  }, [connectionStatus, fetchAirdropData]);
+
+
+
+  const originalBackgroundSize = { width: 1280, height: 1280 }; // Original map size
+
   const buildings = useMemo(
     () => [
       {
-        type: "R. Office",
-        field: "residental_office",
+        type: "Office",
         imageBaseUrl:
-          "https://bafybeicirp2yeyxcsta4y4ch4vqslapizvrowwi7enepqvq3s4gncpuwlm.ipfs.w3s.link/",
+          "https://bafybeiat3x2wrv3b2vqjprvdutvbxnpw2g32flsnogfnwlmmfydjqgtyea.ipfs.w3s.link/",
         buildingUrl:
           "https://bafybeicz5hchwhdfde2pjeo3tbndppqfa7npyyauwi4rjio3edutqok7w4.ipfs.w3s.link/",
+        posUrl:
+          "https://bafybeig5vgubjuwhqreshajj2cmb2nfpug6aq7imjpbduhjvmta2cj5374.ipfs.w3s.link/"
+
       },
       {
         type: "Factory",
-        field: "factory",
         imageBaseUrl:
-          "https://bafybeih6ncjg3sqkm5jhot7m6brgmub255gdlys6l36lrur5bxgfenswx4.ipfs.w3s.link/",
+          "https://bafybeie3jnj2qolzprowinmupykm4q3t77utkyejolase4uu2iwgp7qdf4.ipfs.w3s.link/",
         buildingUrl:
           "https://bafybeieb6jtila7flzlkybvl36wdrokz37v4nsjbw33itragrpdtl6o36a.ipfs.w3s.link/",
+        posUrl:
+          "https://bafybeihe5sssbkonsvpo6ggzejbt4j7s6lyydu4sx42xemaxja7ifsohtu.ipfs.w3s.link/"
+
       },
       {
         type: "House",
-        field: "house",
         imageBaseUrl:
-          "https://bafybeiemoqvgqghpcikmbizqfsh6ujod4m5yuvv3k5lpz43333sjqki7oe.ipfs.w3s.link/",
+          "https://bafybeiamjbdidb4ynhpbjl42npcmasrq4m6oussd5icrcijziurgiq237e.ipfs.w3s.link/",
         buildingUrl:
           "https://bafybeidwyrjf7ivqm76mg2wg3jbwtvo4sifuxkbrar3xzwn7xkugkbiqke.ipfs.w3s.link/",
+        posUrl:
+          "https://bafybeid7a7hu6e6izwdu2ocx5vb6v6uojwfa6u2wed5jzyfxt5ku7minwy.ipfs.w3s.link/"
+
       },
       {
-        type: "E. Complex",
-        field: "entertainment_complex",
+        type: "Entertainment Complex",
         imageBaseUrl:
-          "https://bafybeifussnaorucnonp6bfpfa3nlum5wvgi7wfrv5usd6h2ubbsv5yizm.ipfs.w3s.link/",
+          "https://bafybeihdl2hkkro6gncq2nu522i7meuvsmjiks6ve3k7mgskglco6cjqai.ipfs.w3s.link/",
         buildingUrl:
           "https://bafybeibyvpq4sr33flefgewlxhvfyhgqdd5kcycaz2xortm6uqqrp6ahfa.ipfs.w3s.link/",
+        posUrl:
+          "https://bafybeiagsoqg2h4rh2xhgbsmybiszerwvhbip3u2iyyzn6baqfoykforpa.ipfs.w3s.link/"
+
+      },
+      {
+        type: "Castle",
+
+        disabled: true,
       },
     ],
     []
@@ -86,7 +157,7 @@ const Game: React.FC = () => {
     x: 50,
     y: 50,
   });
-  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+  const [mousePosition,] = useState({ x: 50, y: 50 });
   const [isTouchDevice, setIsTouchDevice] = useState(false); // To detect if the device is touch-enabled
   const touchStartRef = useRef<{ x: number; y: number } | null>(null); // To store initial touch position
 
@@ -94,33 +165,6 @@ const Game: React.FC = () => {
     const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
     setIsTouchDevice(isTouch);
   }, []);
-  // Function to handle mouse movement
-  const DAMPING_FACTOR = 0.005;
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { clientX, clientY, currentTarget } = e;
-    const { width, height } = currentTarget.getBoundingClientRect();
-
-    // Calculate the top 10% and bottom 20% of the element's height
-    const topBoundary = height * 0.1;
-    const bottomBoundary = height * 0.85;
-
-    // Check if the mouse is within the active area (not within top 10% or bottom 20%)
-    if (clientY < topBoundary || clientY > bottomBoundary) {
-      return; // Do nothing if the mouse is outside the active area
-    }
-
-    const mouseXPercent = (clientX / width) * 100;
-    const mouseYPercent = (clientY / height) * 100;
-
-    // Reduce sensitivity by applying a damping factor
-    setMousePosition((prevPos) => {
-      const newX = prevPos.x + (mouseXPercent - prevPos.x) * DAMPING_FACTOR;
-      const newY = prevPos.y + (mouseYPercent - prevPos.y) * DAMPING_FACTOR;
-
-      return { x: newX, y: newY };
-    });
-  };
 
   // Function to handle touch start and store initial position
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -189,19 +233,26 @@ const Game: React.FC = () => {
     [buildings, currentBuildingIndex]
   );
 
+  const handleBuildingClick = (index: number) => {
+    setCurrentBuildingIndex(index); // Set the clicked building as the current one
+    setMapUrl(""); // Clear the map URL when a building is clicked
+    setIsBuildingClickable(false); // Disable clickable areas after a building is clicked
+    setIsMapView(false); // Enable map view
+    setIsHovered(false); // Reset hover state
+  };
+  const currentLevel =
+    currentBuilding.type === "Office"
+      ? office
+      : currentBuilding.type === "Factory"
+        ? factory
+        : currentBuilding.type === "House"
+          ? house
+          : enter; // for "E. Complex"
+
   const provider = new SuiClient({
     url: getFullnodeUrl("testnet"),
   });
 
-  const handleNextBuilding = () => {
-    setCurrentBuildingIndex((prevIndex) => (prevIndex + 1) % buildings.length);
-  };
-
-  const handlePreviousBuilding = () => {
-    setCurrentBuildingIndex((prevIndex) =>
-      prevIndex === 0 ? buildings.length - 1 : prevIndex - 1
-    );
-  };
 
   // Helper to cancel any ongoing transaction
   const cancelCurrentTransaction = () => {
@@ -248,23 +299,6 @@ const Game: React.FC = () => {
     }
   }, []);
 
-  const calculateCountdown = (nft: any) => {
-    const houseLevel = nft.content.fields?.house || 0;
-    const entertainmentComplexLevel =
-      nft.content.fields?.entertainment_complex || 0;
-    const maxTime = calculateMaxAccumulation(
-      houseLevel,
-      entertainmentComplexLevel
-    );
-    console.log("Max Accumulation:", maxTime);
-    const currentTime = Date.now();
-    const lastClaimedTimestamp = nft.content.fields?.last_claimed;
-    const elapsedTime = currentTime - lastClaimedTimestamp;
-    const remainingTime = maxTime - elapsedTime;
-
-    return remainingTime > 0 ? remainingTime : 0;
-  };
-
   const calculateFactoryBonusCountdown = (nft: any) => {
     const currentTime = Date.now();
     const lastDailyBonus = nft.content.fields?.last_daily_bonus;
@@ -277,28 +311,20 @@ const Game: React.FC = () => {
   };
 
   const startCountdownInterval = (nft: any) => {
-    console.log("Starting countdown interval...");
     if (countdownIntervalRef.current)
       clearInterval(countdownIntervalRef.current);
 
     countdownIntervalRef.current = setInterval(() => {
-      const newCountdown = calculateCountdown(nft);
       const newFactoryBonusCountdown = calculateFactoryBonusCountdown(nft);
 
-      console.log("Updated countdown:", newCountdown);
-      console.log("Updated factory bonus countdown:", newFactoryBonusCountdown);
-
-      setCountdown(newCountdown);
       setFactoryBonusCountdown(newFactoryBonusCountdown);
     }, 1000); // Update every second
   };
 
   useEffect(() => {
-    console.log("Checking if countdown and accumulation can start...");
     if (filteredNft && gameData && !isLoading && !isAwaitingBlockchain) {
       console.log("Starting accumulation and countdown...");
       const nft = filteredNft;
-      startAccumulation(nft);
       startCountdownInterval(nft);
 
       return () => {
@@ -316,7 +342,12 @@ const Game: React.FC = () => {
     isTransactionInProgress,
   ]);
 
-  const handleUpgradeClick = (buildingType: number) => {
+  const preloadImage = (url: string) => {
+    const img = new Image();
+    img.src = url;
+  };
+
+  const handleUpgradeClick = async (buildingType: number) => {
     if (isTouchDevice) {
       // Check if the view is expanded
       if (!isMobileExpanded) {
@@ -339,7 +370,75 @@ const Game: React.FC = () => {
       setTransactionInProgress(true);
       console.log("UPGRADE CLICKED", buildingType);
     }
+
+    const newLevel =
+      buildingType === 0
+        ? office + 1
+        : buildingType === 1
+          ? factory + 1
+          : buildingType === 2
+            ? house + 1
+            : enter + 1;
+
+    const newImageUrl = `${buildings[buildingType].imageBaseUrl}/${newLevel}.webp`;
+    const newBuildingUrl = `${buildings[buildingType].buildingUrl}/${newLevel}.webp`;
+    const newPosUrl = `${buildings[buildingType].posUrl}/${newLevel}.png`;
+
+    // Preload new images
+    preloadImage(newImageUrl);
+    preloadImage(newBuildingUrl);
+    preloadImage(newPosUrl);
+
+    console.log("Loading new building images for upgraded level", newLevel);
+
   };
+
+
+  const handleAirdropClaimSuccess = useCallback(async () => {
+    showModal("✅ Airdrop claimed successfully!", 1);
+
+    // Clear airdrop data from localStorage
+    localStorage.removeItem("airdrop_signature");
+    localStorage.removeItem("total_airdrop");
+
+    setStoredSignature(null); // Remove signature from state
+    setAirdropAmount(0); // Set airdrop amount to 0
+
+    setTimeout(() => {
+      triggerBalanceRefresh(); // Trigger balance refresh after 2 seconds
+    }, 2000);
+
+    // Check if the NFT has already been added to the database by checking localStorage
+    const storedNftId = localStorage.getItem("added_nft_id");
+
+    // Only add to the database if it hasn't been added before
+    if (filteredNft?.objectId && storedNftId !== filteredNft.objectId) {
+      try {
+        const response = await fetch("/.netlify/functions/add-nft", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            walletAddress: account?.address, // The current wallet address
+            nftData: filteredNft.objectId, // Add actual NFT data
+          }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          console.log("NFT data successfully added to database.");
+
+          // Store the NFT ID in local storage to prevent future redundant additions
+          localStorage.setItem("added_nft_id", filteredNft.objectId);
+        } else {
+          console.error("Failed to add NFT data:", data.error);
+        }
+      } catch (error) {
+        console.error("Error adding NFT data:", error);
+      }
+    }
+  }, [filteredNft, account?.address, triggerBalanceRefresh, showModal]);
 
   const handleClaimClick = () => {
     cancelCurrentTransaction(); // Cancel ongoing transaction
@@ -348,17 +447,76 @@ const Game: React.FC = () => {
 
     // Proceed with claim logic...
   };
+  const handleUpgradeSuccess = async () => {
+    console.log("UPGRADE SUCCESSFUL, awaiting new data...");
 
-  const handleUpgradeSuccess = () => {
-    setTimeout(() => {
-      console.log("UPGRADE SUCCESSFUL, awaiting new data...");
-      setTransactionType(null);
-      setIsAwaitingBlockchain(true);
-      refreshNft();
-      triggerBalanceRefresh(); // Trigger balance refresh
+    // Store the previous levels before refreshing NFT data
+    const previousLevels = {
+      office,
+      factory,
+      house,
+      enter,
+    };
+
+    setTransactionType(null);
+    setIsAwaitingBlockchain(true);
+
+    const retryLimit = 10; // Set a retry limit
+    let retryCount = 0; // Counter for retries
+
+    // Function to refresh levels and check if they have increased
+    const waitForLevelChange = async () => {
+      await refreshNft(); // Refresh the NFT data
+      const newLevels = {
+        office,
+        factory,
+        house,
+        enter,
+      };
+
+      console.log("Checking for level change...");
+      console.log("Previous levels:", previousLevels);
+      console.log("New levels:", newLevels);
+
+      // Check if any of the levels have increased
+      return (
+        newLevels.office > previousLevels.office ||
+        newLevels.factory > previousLevels.factory ||
+        newLevels.house > previousLevels.house ||
+        newLevels.enter > previousLevels.enter
+      );
+    };
+
+    // Keep refreshing until the levels increase or retry limit is reached
+    let levelIncreased = false;
+    while (!levelIncreased && retryCount < retryLimit) {
+      levelIncreased = await waitForLevelChange();
+      retryCount++;
+
+      if (!levelIncreased) {
+        console.log(`No level increase detected, retrying... (${retryCount}/${retryLimit})`);
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds before trying again
+      }
+    }
+
+    if (!levelIncreased) {
+      console.warn("Reached retry limit without detecting a level increase.");
+      // You can add logic here to handle the failure case, e.g., show a message to the user
+      setIsAwaitingBlockchain(false);
       setTransactionInProgress(false);
-    }, 2000); // 2000 milliseconds = 2 seconds
+      return;
+    }
+
+    console.log("Level increased successfully.");
+
+    // Trigger balance refresh and end transaction
+    triggerBalanceRefresh(); // Trigger balance refresh
+    setTransactionInProgress(false);
+    setIsAwaitingBlockchain(false); // Re-enable interactions
   };
+
+
+
 
   const handleClaimSuccess = () => {
     setTimeout(() => {
@@ -381,6 +539,9 @@ const Game: React.FC = () => {
     setTimeout(() => {
       console.log("MINT SUCCESSFUL, awaiting new data...");
       refreshNft();
+      showModal("✅ Upgrade successful!", 1); // Show success message in the modal
+
+      fetchAirdropData();
       setTransactionType(null);
       setIsAwaitingBlockchain(true);
       triggerBalanceRefresh(); // Trigger balance refresh
@@ -388,7 +549,6 @@ const Game: React.FC = () => {
     }, 2000); // 2000 milliseconds
   };
 
-  // Helper to refresh NFTs
   const refreshNft = useCallback(async () => {
     console.log("Refreshing NFTs...");
     try {
@@ -399,9 +559,7 @@ const Game: React.FC = () => {
       while (hasMore) {
         const object = await provider.getOwnedObjects({
           owner: String(account?.address),
-          cursor:
-            lastObject?.data?.[lastObject.data.length - 1]?.data?.objectId ||
-            null,
+          cursor: lastObject?.data?.[lastObject.data.length - 1]?.data?.objectId || null,
           options: { showType: true, showContent: true },
         });
 
@@ -417,9 +575,23 @@ const Game: React.FC = () => {
       const nft = allObjects.find(
         (nft) => String(nft.data?.type) === `${ADDRESSES.NFT_TYPE}`
       );
+
       console.log("Filtered NFT found:", nft?.data);
 
       setFilteredNft(nft?.data || null);
+      if (nft?.data) {
+        const fields = nft.data.content.fields;
+
+        if (fields.buildings) {
+          setOffice(fields.buildings[0]);
+          setFactory(fields.buildings[1]);
+          setHouse(fields.buildings[2]);
+          setEnter(fields.buildings[3]);
+        }
+
+
+      }
+
       setIsLoading(false); // Mark loading as complete once NFT is fetched
       setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
     } catch (error) {
@@ -428,6 +600,7 @@ const Game: React.FC = () => {
       setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
     }
   }, [account?.address]);
+
 
   // Re-fetch NFTs and balances when account changes
   useEffect(() => {
@@ -441,238 +614,466 @@ const Game: React.FC = () => {
     }
   }, [account?.address, refreshNft, fetchGameData, handleBalancesUpdate]);
 
-  const calculateAccumulatedSity = useCallback(
-    (nft: any) => {
-      if (!nft || !gameData) return 0;
-
-      // Fetch relevant fields from the NFT data
-      const lastAccumulatedTimestamp =
-        nft.content.fields?.last_accumulated || 0;
-      const lastClaimedTimestamp = nft.content.fields?.last_claimed || 0;
-      const residentialOfficeLevel = nft.content.fields?.residental_office || 0;
-      const houseLevel = nft.content.fields?.house || 0;
-      const entertainmentComplexLevel =
-        nft.content.fields?.entertainment_complex || 0;
-
-      // Get current time and calculate time elapsed
-      const currentTime = Date.now();
-      const elapsedTime = currentTime - lastAccumulatedTimestamp;
-      const elapsedTimeFromClaim = currentTime - lastClaimedTimestamp;
-
-      // Calculate the maximum accumulation period based on house and entertainment levels
-      const maxAccumulationPeriod = calculateMaxAccumulation(
-        houseLevel,
-        entertainmentComplexLevel
-      );
-
-      console.log("Max accumulation period:", maxAccumulationPeriod);
-
-      // Calculate the effective elapsed time by limiting to the max accumulation period
-      let effectiveElapsedTime;
-
-      if (elapsedTimeFromClaim <= maxAccumulationPeriod) {
-        effectiveElapsedTime = elapsedTime;
-      } else {
-        effectiveElapsedTime =
-          maxAccumulationPeriod -
-          (lastAccumulatedTimestamp - lastClaimedTimestamp);
-      }
-
-      console.log("Effective elapsed time:", effectiveElapsedTime);
-
-      // If no effective time has passed, return 0
-      if (effectiveElapsedTime <= 0) return 0;
-
-      // Fetch the accumulation speed based on the residential office level
-      const accumulationPerHour =
-        gameData.accumulation_speeds[residentialOfficeLevel];
-
-      // Calculate the accumulated SITY based on effective elapsed time (in hours)
-      const accumulatedSityMs =
-        effectiveElapsedTime * accumulationPerHour * gameData.speed;
-
-      const accumulatedSity = accumulatedSityMs / 3600000;
-
-      // Log and return accumulated SITY (adjust division by 100 as needed)
-      console.log("Accumulated SITY:", accumulatedSity);
-      return accumulatedSity / 1000;
-    },
-    [gameData]
-  );
-
-  // Function to calculate the maximum accumulation period
-  const calculateMaxAccumulation = useCallback(
-    (houseLevel: number, entertainmentLevel: number): number => {
-      const totalLevel =
-        parseInt(houseLevel.toString()) +
-        parseInt(entertainmentLevel.toString());
-      // Base accumulation period is 3 hours
-      if (totalLevel === 0) {
-        return (3 * 3600 * 1000) / gameData.speed;
-      } else if (totalLevel <= 7) {
-        return ((3 + totalLevel) * 3600 * 1000) / gameData.speed;
-      }
-
-      // Adds 2 hours per level after level 7
-      return ((10 + 2 * (totalLevel - 7)) * 3600 * 1000) / gameData.speed;
-    },
-    [gameData]
-  );
-
-  const startAccumulation = (nft: any) => {
-    if (!nft || isTransactionInProgress) return;
-
-    console.log("Starting accumulation...");
-
-    // Clear the previous accumulation interval if it exists
-    if (accumulationIntervalRef.current)
-      clearInterval(accumulationIntervalRef.current);
-
-    // Start a new accumulation interval
-    accumulationIntervalRef.current = setInterval(() => {
-      const newlyAccumulatedSity = calculateAccumulatedSity(nft);
-      console.log("Updated accumulated SITY:", newlyAccumulatedSity);
-      setAccumulatedSity(newlyAccumulatedSity);
-    }, 100); // Update every second
-  };
-
   useEffect(() => {
     refreshNft();
     triggerBalanceRefresh(); // Trigger balance refresh
     fetchGameData();
   }, [account]);
 
-  return (
-    <div
-      className="game-container"
-      onMouseMove={isTouchDevice ? undefined : handleMouseMove}
-      onTouchStart={isTouchDevice ? handleTouchStart : undefined}
-      onTouchMove={isTouchDevice ? handleTouchMove : undefined}
-      onTouchEnd={isTouchDevice ? handleTouchEnd : undefined}
-      style={{
-        backgroundImage:
-          connectionStatus === "connected" && filteredNft?.content?.fields
-            ? // Apply the background for NFT-loaded state
-              `url(${currentBuilding.imageBaseUrl}/${
-                filteredNft.content.fields[currentBuilding.field]
-              }.webp)`
-            : `url(${mintBackgroundUrl})`, // Use the minting background when filteredNft is null
-        backgroundPosition:
-          connectionStatus === "connected" && filteredNft?.content?.fields
-            ? isTouchDevice
-              ? `${backgroundPosition.x}% ${backgroundPosition.y}%`
-              : `${mousePosition.x}% ${mousePosition.y}%`
-            : "50% 25%", // Fixed position in case of minting
-        backgroundSize:
-          connectionStatus === "connected" && filteredNft?.content?.fields
-            ? "cover" // Full coverage when NFT is loaded
-            : "cover", // Fixed size for minting background
-        backgroundColor:
-          connectionStatus !== "connected" || isLoading || filteredNft === null
-            ? "white"
-            : "transparent",
-        transition: "filter 0.3s ease-in-out", // Smooth transition for blur
-      }}
-    >
-      <TwitterLogin />
+  const handleMapButtonClick = () => {
+    setMapUrl("https://bafybeig5ettnunvapmokcki3xjqwzxb3qmvsvj3qmi4mpelcsitpq6z7ui.ipfs.w3s.link/");
+    setIsBuildingClickable(true); // Re-enable clickable areas when the map is shown
+    setIsMapView(true); // Enable map view
+  };
 
-      <Modal
-        show={isModalOpen}
-        message={modalMessage || ""}
-        onClose={handleCloseModal}
-        bgColor={bgColor} // Pass the bgColor prop
-      />
-      {/* Check if the wallet is connected */}
-      {connectionStatus === "connected" ? (
-        <>
-          {isLoading ? (
-            <p>Loading your NFTs and game data...</p>
-          ) : filteredNft ? (
+  const containerRef = useRef<HTMLDivElement | null>(null); // To reference the game container
+
+  const [containerSize, setContainerSize] = useState({
+    width: 1280,
+    height: 720,
+  });
+
+  const scaleFactor = useMemo(() => {
+    const widthRatio = containerSize.width / originalBackgroundSize.width;
+    const heightRatio = containerSize.height / originalBackgroundSize.height;
+
+    // Use the larger ratio to mimic "background-size: cover"
+    return Math.max(widthRatio, heightRatio);
+  }, [containerSize.width, containerSize.height]);
+
+  // Function to handle resizing and update container size
+  const updateContainerSize = () => {
+    if (containerRef.current) {
+      const { width, height } = containerRef.current.getBoundingClientRect();
+      setContainerSize({ width, height });
+      console.log("Container size updated:", width, height);
+    }
+  };
+
+
+
+  // Add a resize event listener
+  useEffect(() => {
+    window.addEventListener("resize", updateContainerSize);
+    updateContainerSize(); // Initial size calculation
+
+    return () => {
+      window.removeEventListener("resize", updateContainerSize);
+    };
+  }, []);
+  // Adjust top and left positions according to the container size and scale factor
+  const adjustedBuildingPositions = useMemo(() => {
+    const bgWidth = originalBackgroundSize.width * scaleFactor;
+    const bgHeight = originalBackgroundSize.height * scaleFactor;
+
+    const overflowX = (bgWidth - containerSize.width) / 2; // Horizontal overflow in pixels
+    const overflowY = (bgHeight - containerSize.height) / 2; // Vertical overflow in pixels
+
+    // Helper function to calculate adjusted positions
+    const adjustPosition = (topPercent: number, leftPercent: number) => ({
+      top: `${((topPercent / 100) * bgHeight - overflowY) / containerSize.height * 100}%`,
+      left: `${((leftPercent / 100) * bgWidth - overflowX) / containerSize.width * 100}%`,
+    });
+
+    return {
+      house: adjustPosition(34.06, 48.98),
+      office: adjustPosition(9.84, 50),
+      factory: adjustPosition(9.84, 10),
+      entertainment: adjustPosition(33.83, 10.08),
+    };
+  }, [scaleFactor, containerSize]);
+
+  // Add this state to track if a building is hovered
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Function to handle hover state for buildings
+  const handleMouseEnterBuilding = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeaveBuilding = () => {
+    setIsHovered(false);
+  };
+
+
+
+  return (
+    <>
+
+      <div
+        className={`info-container ${!(filteredNft && connectionStatus === "connected") ? 'blurred' : ''}`} // Add the 'blurred' class if NFT is not minted
+      >
+        <NftTech
+          nft={filteredNft}
+          officeLevel={office}
+          factoryLevel={factory}
+          houseLevel={house}
+          enterLevel={enter}
+        />
+
+        <Reference nft={filteredNft} showModal={showModal} officeLevel={office}
+          factoryLevel={factory}
+          houseLevel={house}
+          enterLevel={enter} />
+      </div>
+
+      <div
+        className={`social-container ${!(filteredNft && connectionStatus === "connected") ? 'blurred' : ''}`} // Add the 'blurred' class if NFT is not minted
+      >
+
+        <div className="leaderboard">
+
+          <h2>🏆 Leaderboard</h2>
+
+
+          <p>
+            Coming soon...
+          </p>
+        </div>
+      </div>
+
+      <div
+        className={`game-container`} // Add the 'blurred' class if NFT is not minted
+        ref={containerRef}
+        onTouchStart={isTouchDevice ? handleTouchStart : undefined}
+        onTouchMove={isTouchDevice ? handleTouchMove : undefined}
+        onTouchEnd={isTouchDevice ? handleTouchEnd : undefined}
+        style={{
+          backgroundImage: isMapView // If mapUrl is set, use it as the background
+            ? `url(${mapUrl})`
+            : connectionStatus === "connected" && filteredNft?.content?.fields
+              ? `url(${currentBuilding.imageBaseUrl}/${currentLevel}.webp)`
+              : `url(${mintBackgroundUrl})`, // Use mint background as fallback
+
+          backgroundPosition:
+            connectionStatus === "connected" && filteredNft?.content?.fields
+              ? isTouchDevice
+                ? `${backgroundPosition.x}% ${backgroundPosition.y}%`
+                : `${mousePosition.x}% ${mousePosition.y}%`
+              : "50% 25%", // Fixed position in case of minting
+          backgroundSize:
+            connectionStatus === "connected" && filteredNft?.content?.fields
+              ? "cover" // Full coverage when NFT is loaded
+              : "cover", // Fixed size for minting background
+          backgroundColor:
+            connectionStatus !== "connected" ||
+              isLoading ||
+              filteredNft === null
+              ? "white"
+              : "transparent",
+          transition: "filter 0.3s ease-in-out", // Smooth transition for blur
+        }}
+      >
+        <Modal
+          show={isModalOpen}
+          message={modalMessage || ""}
+          onClose={handleCloseModal}
+          bgColor={bgColor} // Pass the bgColor prop
+        />
+
+        {/* Mint Section - Only show if not minted and connected */}
+        {connectionStatus === "connected" && !filteredNft && (
+          <div className="mint">
+            <WalletChecker showModal={showModal} onMintSuccess={handleMintSuccess} />
+          </div>
+        )}
+
+        {/* Please connect wallet section */}
+        {connectionStatus !== "connected" && (
+          <div className="pleaseConnect">
+            <h2>🔗 Please connect your wallet...</h2>
+          </div>
+        )}
+
+        <div className={`game-container-wrapper 
+  ${(connectionStatus !== "connected" || !filteredNft ? 'blurred' : '')} 
+  ${(storedSignature || airdropAmount > 0) ? 'mystic' : ''}`}
+        >
+
+
+          {storedSignature && airdropAmount > 0 && (
+            <ClaimReward
+              mySignature={storedSignature}
+              hashedMessage={`Airdrop reward claim for wallet ${account?.address}`}
+              amount={airdropAmount}
+              showModal={showModal}
+              onClaimSuccessful={handleAirdropClaimSuccess}
+            />
+          )}
+
+
+
+          {/* Check if the wallet is connected */}
+          {connectionStatus === "connected" && (
             <>
-              <div className="upper-div">
-                {/* Connect Button and Connected Status */}
-                {connectionStatus === "connected" ? (
-                  <>
+              {isLoading ? (
+                <p>Loading your NFTs and game data...</p>
+              ) : filteredNft && (
+
+
+                <>
+
+
+                  <div className="upper-div">
                     <Balances
                       onBalancesUpdate={handleBalancesUpdate}
                       refreshTrigger={refreshBalances}
                     />
 
-                    <div className="nft-title">
-                      {filteredNft ? (
-                        <h2>{filteredNft.content.fields.name}</h2>
-                      ) : null}
-                    </div>
 
                     {/* New NftSpecs component */}
-                    <NftSpecs filteredNft={filteredNft} gameData={gameData} />
-                  </>
-                ) : (
-                  <></>
-                )}
-              </div>
+                    <NftSpecs
+                      officeLevel={office}
+                      factoryLevel={factory}
+                      houseLevel={house}
+                      enterLevel={enter}
+                      gameData={gameData}
+                    />
+                  </div>
 
-              {/* Left Arrow */}
-              <button onClick={handlePreviousBuilding} className="arrow-left">
-                &#8592;
-              </button>
-              <Building
-                currentBuilding={currentBuilding}
-                filteredNft={filteredNft}
-                gameData={gameData}
-                buildingIndex={currentBuildingIndex}
-                suiBalance={suiBalance}
-                sityBalance={sityBalance}
-                factoryBonusCountdown={factoryBonusCountdown}
-                isTransactionInProgress={isTransactionInProgress}
-                onClaimSuccess={handleClaimSuccess}
-                onClaimError={handleError}
-                onUpgradeSuccess={handleUpgradeSuccess}
-                onUpgradeError={handleError}
-                showModal={showModal}
-                isTouchDevice={false}
-                onUpgradeClick={handleUpgradeClick}
-                onClaimClick={handleClaimClick}
-              />
-              <Accumulation
-                nft={filteredNft}
-                gameData={gameData}
-                isTransactionInProgress={isTransactionInProgress}
-                onAccumulatedSityUpdate={setAccumulatedSity} // Updates the state in Game.tsx
-                onCountdownUpdate={setCountdown} // Updates the countdown in Game.tsx
-                showModal={showModal} // Modal handling
-                onClaimSuccess={handleClaimSuccess} // Claim success callback
-                onClaimError={handleError} // Claim error callback
-                suiBalance={suiBalance} // Pass SUI balance
-              />
+                  {isMapView && (
+                    <>
+                      {/* House */}
+                      <div
+                        className="buildingPos"
+                        style={{
+                          position: "absolute",
+                          top: adjustedBuildingPositions.house.top,
+                          left: adjustedBuildingPositions.house.left,
+                          width: `${scaleFactor * 512}px`,
+                          height: `${scaleFactor * 512}px`,
 
-              <Population
-                filteredNft={filteredNft}
-                accumulatedSity={accumulatedSity}
-                sityBalance={sityBalance}
-              />
 
-              {/* Right Arrow */}
-              <button onClick={handleNextBuilding} className="arrow-right">
-                &#8594;
-              </button>
+                        }
+
+                        }
+                      >
+                        <img
+                          src={`${buildings[2].posUrl}/${house}.png`}
+                          alt="House"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                          }}
+
+                        />
+                        <div
+                          className="buildingPos"
+
+                          style={{
+                            position: "absolute",
+                            top: "30%", // center the clickable area vertically
+                            left: "30%", // center the clickable area horizontally
+                            width: "40%", // 30% width of the image
+                            height: "40%", // 30% height of the image
+                            cursor: "pointer",
+                            zIndex: 100,
+
+                          }}
+                          onClick={() => handleBuildingClick(2)}
+                          onMouseEnter={handleMouseEnterBuilding}
+                          onMouseLeave={handleMouseLeaveBuilding}
+                        />
+                      </div>
+
+                      {/* Office */}
+                      <div
+                        className="buildingPos"
+
+                        style={{
+                          position: "absolute",
+                          top: adjustedBuildingPositions.office.top,
+                          left: adjustedBuildingPositions.office.left,
+                          width: `${scaleFactor * 512}px`,
+                          height: `${scaleFactor * 512}px`,
+                        }}
+                      >
+                        <img
+                          src={`${buildings[0].posUrl}/${office}.png`}
+                          alt="Office"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                          }}
+
+                        />
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "30%", // center the clickable area vertically
+                            left: "30%", // center the clickable area horizontally
+                            width: "40%", // 30% width of the image
+                            height: "40%", // 30% height of the image
+                            cursor: "pointer",
+                            zIndex: 100,
+
+                          }}
+                          onClick={() => handleBuildingClick(0)}
+                          onMouseEnter={handleMouseEnterBuilding}
+                          onMouseLeave={handleMouseLeaveBuilding}
+                        />
+                      </div>
+
+                      {/* Factory */}
+                      <div
+                        className="buildingPos"
+
+                        style={{
+                          position: "absolute",
+                          top: adjustedBuildingPositions.factory.top,
+                          left: adjustedBuildingPositions.factory.left,
+                          width: `${scaleFactor * 512}px`,
+                          height: `${scaleFactor * 512}px`,
+                        }}
+                      >
+                        <img
+                          src={`${buildings[1].posUrl}/${factory}.png`}
+                          alt="Factory"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                          }}
+
+                        />
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "30%", // center the clickable area vertically
+                            left: "30%", // center the clickable area horizontally
+                            width: "40%", // 30% width of the image
+                            height: "40%", // 30% height of the image
+                            cursor: "pointer",
+                            zIndex: 100,
+
+                          }}
+                          onClick={() => handleBuildingClick(1)}
+                          onMouseEnter={handleMouseEnterBuilding}
+                          onMouseLeave={handleMouseLeaveBuilding}
+                        />
+                      </div>
+
+                      {/* Entertainment Complex */}
+                      <div
+                        className="buildingPos"
+
+                        style={{
+                          position: "absolute",
+                          top: adjustedBuildingPositions.entertainment.top,
+                          left: adjustedBuildingPositions.entertainment.left,
+                          width: `${scaleFactor * 512}px`,
+                          height: `${scaleFactor * 512}px`,
+                        }}
+                      >
+                        <img
+                          src={`${buildings[3].posUrl}/${enter}.png`}
+                          alt="Entertainment Complex"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                          }}
+
+                        />
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "30%", // center the clickable area vertically
+                            left: "30%", // center the clickable area horizontally
+                            width: "40%", // 30% width of the image
+                            height: "40%", // 30% height of the image
+                            cursor: "pointer",
+                            zIndex: 100,
+                          }}
+                          onClick={() => handleBuildingClick(3)}
+                          onMouseEnter={handleMouseEnterBuilding}
+                          onMouseLeave={handleMouseLeaveBuilding}
+                        />
+                      </div>
+
+                      {/* Add a darken overlay when a building is hovered */}
+                      <div className={`darken-overlay ${isHovered ? 'visible' : ''}`}></div>
+                      <div className={`darken-overlay-2 ${(storedSignature || airdropAmount > 0) && filteredNft ? 'visible' : ''}`}></div>
+
+
+                    </>
+                  )}
+
+
+
+                  {/* Map Button as an image */}
+                  {!isMapView && (
+                    <button onClick={handleMapButtonClick} className="map-button">
+                      🗺️ Show Map
+                    </button>
+                  )}
+
+
+                  {!isMapView && (
+                    <>
+                      <Building
+                        nft={filteredNft}
+                        currentBuilding={currentBuilding}
+                        officeLevel={office}
+                        factoryLevel={factory}
+                        houseLevel={house}
+                        enterLevel={enter}
+                        gameData={gameData}
+                        buildingIndex={currentBuildingIndex}
+                        suiBalance={suiBalance}
+                        sityBalance={sityBalance}
+                        factoryBonusCountdown={factoryBonusCountdown}
+                        isTransactionInProgress={isTransactionInProgress}
+                        onClaimSuccess={handleClaimSuccess}
+                        onClaimError={handleError}
+                        onUpgradeSuccess={handleUpgradeSuccess}
+                        onUpgradeError={handleError}
+                        showModal={showModal}
+                        isTouchDevice={false}
+                        onUpgradeClick={handleUpgradeClick}
+                        onClaimClick={handleClaimClick}
+                      />
+                    </>
+                  )}
+
+                  <Accumulation
+                    nft={filteredNft}
+                    gameData={gameData}
+                    isTransactionInProgress={isTransactionInProgress}
+                    onAccumulatedSityUpdate={setAccumulatedSity}
+                    onCountdownUpdate={setCountdown}
+                    showModal={showModal}
+                    onClaimSuccess={handleClaimSuccess}
+                    onClaimError={handleError}
+                    suiBalance={suiBalance}
+                    officeLevel={office}
+                    factoryLevel={factory}
+                    houseLevel={house}
+                    enterLevel={enter}
+                  />
+
+                  <Population
+                    filteredNft={filteredNft}
+                    accumulatedSity={accumulatedSity}
+                    sityBalance={sityBalance}
+                    officeLevel={office}
+                    factoryLevel={factory}
+                    houseLevel={house}
+                    enterLevel={enter}
+                  />
+
+                </>
+
+              )
+
+              }
             </>
-          ) : (
-            <div className="mint">
-              <Mint
-                onMintSuccessful={handleMintSuccess}
-                showModal={showModal} // Pass showModal as a prop here
-                suiBalance={suiBalance} // Pass SUI balance
-              />
-            </div>
           )}
-        </>
-      ) : (
-        <div className="pleaseConnect">
-          <h2>Please connect your wallet</h2>
+
         </div>
-      )}
-    </div>
+
+
+      </div>
+
+    </>
   );
 };
 

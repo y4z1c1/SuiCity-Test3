@@ -93,7 +93,7 @@
   font-weight: 500 !important;
   font-size: 80% !important;
   color: rgba(27, 27, 27, 1) !important;
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25) !important; /* Slight 3D effect with a shadow */
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25) !important; /* Slight 3D effect with a shadow */
   padding: 1% 2% !important;
   box-sizing: border-box !important;
   transition: all 0.1s ease-in-out;
@@ -108,7 +108,7 @@
 
 .AccountDropdownMenu_menuContainer__div2ql1 {
   background-color: #ffffff !important; /* Dark brown background color */
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25) !important; /* Slight 3D effect with a shadow */
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25) !important; /* Slight 3D effect with a shadow */
 }
 
 .connectButton {
@@ -128,7 +128,7 @@
 
 .ConnectModal_content__gz8z92 {
   background-color: #ffffff !important; /* Dark brown background color */
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25) !important; /* Slight 3D effect with a shadow */
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25) !important; /* Slight 3D effect with a shadow */
 }
 .AccountDropdownMenu_menuItem__div2ql3,
 .Heading__1aa835k0,

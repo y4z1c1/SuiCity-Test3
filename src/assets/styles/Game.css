@@ -5,7 +5,7 @@
   border-radius: 8px;
   margin: 0 auto;
   display: flex;
-  width: 60%;
+  width: 50%;
   height: 85vh;
   flex-direction: column;
   align-items: center;
@@ -13,11 +13,295 @@
   position: relative;
   box-sizing: border-box;
   overflow: hidden;
-  background-size: 110%; /* Zoom in the background */
+  background-size: 100%; /* Zoom in the background */
   background-position: center;
   transition: background-position 0.5s ease-in-out; /* Smooth movement */
   margin-bottom: 1vh;
   margin-top: 1vh;
+  z-index: 1;
+}
+
+.game-container-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.game-container-wrapper.blurred {
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+}
+
+.info-container {
+  background-color: rgba(0, 0, 0, 0.788);
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  display: flex;
+  width: 20%;
+  height: 85vh;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 10px 20px 0px rgba(0, 0, 0, 0.4);
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-size: 100%; /* Zoom in the background */
+  background-position: center;
+  transition: background-position 0.5s ease-in-out; /* Smooth movement */
+  margin-bottom: 1vh;
+  margin-top: 1vh;
+  position: absolute;
+  left: 2%;
+  padding: 1%;
+  font-family: "Kanit", Helvetica;
+  background-image: url("https://bafkreic67li6paqk45yflj6dhm63fcfmzne36jbstyhznvwpwt5bsywuai.ipfs.w3s.link/");
+  background-size: cover;
+}
+
+.leaderboard {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
+
+  /* Border */
+
+  /* Outer shadow for 3D effect */
+  box-shadow: 5px 5px 0px #000000,
+    /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+  border-radius: 8px;
+  padding: 5%;
+  box-sizing: border-box;
+  width: 90%;
+  margin-top: 5%;
+  height: 95%;
+  width: 90%;
+  text-align: center;
+}
+
+.leaderboard h2 {
+  font-family: "Kanit", Helvetica;
+  margin: 0 q;
+  color: rgb(255, 255, 255); /* White text color */
+  font-size: 150%;
+  text-shadow: black 1px 1px 2px; /* Add a subtle shadow */
+
+  letter-spacing: 1px;
+}
+
+.leaderboard p {
+  font-family: "Kanit", Helvetica;
+  color: rgb(255, 255, 255);
+  font-size: 80%;
+  text-align: justify; /* Center text within the div */
+  margin: 0;
+  margin-bottom: 12px;
+  text-align: center;
+  margin-top: 100%;
+}
+
+.nft-info {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
+
+  /* Border */
+
+  /* Outer shadow for 3D effect */
+  box-shadow: 5px 5px 0px #000000,
+    /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+  border-radius: 8px;
+  padding: 5%;
+  box-sizing: border-box;
+  width: 95%;
+}
+
+.nft-info h2 {
+  font-family: "Kanit", Helvetica;
+  margin: 0 q;
+  color: rgb(255, 255, 255); /* White text color */
+  font-size: 150%;
+  text-shadow: black 1px 1px 2px; /* Add a subtle shadow */
+
+  letter-spacing: 1px;
+}
+
+.nft-info p {
+  font-family: "Kanit", Helvetica;
+  color: rgb(195, 195, 195);
+  font-size: 80%;
+  text-align: justify; /* Center text within the div */
+  margin: 0;
+  margin-bottom: 12px;
+}
+
+.nft-info a {
+  font-family: "Kanit", Helvetica;
+  color: rgb(195, 195, 195);
+  font-size: 80%;
+  font-weight: normal;
+  margin: 0;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+.reference-system {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
+  margin-top: 20%;
+  /* Border */
+
+  /* Outer shadow for 3D effect */
+  box-shadow: 5px 5px 0px #000000,
+    /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+  border-radius: 8px;
+  padding: 5%;
+  box-sizing: border-box;
+  width: 95%;
+}
+
+.reference-system-button {
+  background-color: rgb(187, 255, 71); /* Semi-transparent background */
+  cursor: pointer;
+  align-self: center; /* Center the button horizontally */
+  margin-top: auto; /* Push the button to the bottom */
+  margin-bottom: 4%;
+  width: 90%;
+  margin-left: 5%;
+  border-radius: 2px;
+  border: none;
+  box-sizing: border-box;
+  padding: 1%;
+  font-weight: 500;
+  font-size: 140%;
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
+}
+
+.claim-ref-button {
+  background-color: rgb(71, 200, 255); /* Semi-transparent background */
+  cursor: pointer;
+  align-self: center; /* Center the button horizontally */
+  margin-top: auto; /* Push the button to the bottom */
+  margin-bottom: 4%;
+  width: 90%;
+  margin-left: 5%;
+  border-radius: 2px;
+  border: none;
+  box-sizing: border-box;
+  padding: 1%;
+  font-weight: 500;
+  font-size: 120%;
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
+  margin-top: 5%;
+}
+
+.reference-system-button:disabled {
+  cursor: text; /* Change cursor to text for selection */
+  color: #000000;
+  user-select: text; /* Allow text selection */
+}
+
+.reference-system-button:disabled:hover {
+  cursor: text;
+  transform: translateY(0px);
+}
+
+.reference-system-button:hover {
+  cursor: pointer;
+  transform: translateY(3px);
+}
+
+.reference-system p {
+  color: rgb(255, 255, 255);
+  font-size: 80%;
+  text-align: justify; /* Center text within the div */
+  margin: 0;
+  margin-bottom: 12px;
+  width: 90%;
+  margin-left: 5%;
+}
+
+.reference-system h3 {
+  font-weight: 300;
+  color: rgb(255, 255, 255);
+  font-size: 100%;
+  text-align: left; /* Center text within the div */
+  margin: 0;
+  margin-bottom: 12px;
+  margin-top: 24px;
+  width: 90%;
+  margin-left: 5%;
+  text-decoration: none;
+  list-style: none;
+}
+
+.reference-system li {
+  font-weight: 100;
+  color: rgb(255, 255, 255);
+  font-size: 80%;
+  text-align: justify; /* Center text within the div */
+  margin: 0;
+  padding: 0;
+  width: 90%;
+  margin-left: 5%;
+  text-decoration: none;
+  list-style: square;
+  list-style-position: inside;
+}
+
+.ref {
+  margin-top: 5%;
+}
+.blurred {
+  filter: blur(10px);
+  pointer-events: none; /* Disable interaction while blurred */
+}
+
+.ref input {
+  all: unset;
+
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
+  border-radius: 8px;
+  padding: 2%;
+  box-sizing: border-box;
+  width: 90%;
+  margin-left: 5%;
+  margin-top: 5%;
+  font-weight: 200;
+  text-align: center;
+}
+
+.social-container {
+  background-color: white;
+  color: rgb(0, 0, 0, 0.8);
+  border-radius: 8px;
+  display: flex;
+  width: 20%;
+  height: 85vh;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 10px 20px 0px rgba(0, 0, 0, 0.4);
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-size: 100%; /* Zoom in the background */
+  background-position: center;
+  transition: background-position 0.5s ease-in-out; /* Smooth movement */
+  margin-bottom: 1vh;
+  margin-top: 1vh;
+  position: absolute;
+  right: 2%;
+  background-size: cover;
+
+  background-image: url("https://bafkreifaqwkmvsgljlcwqxyhp2ve6sdxrnfc3fch7nku6ac7hwwgfft2hy.ipfs.w3s.link/");
 }
 
 .game-container h2 {
@@ -47,51 +331,23 @@
   z-index: 1;
 }
 
-.nft-title {
-  position: absolute;
-  left: 2%;
-  top: 0%;
-  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
-  width: 20%;
-
-  /* Border */
-  border-radius: 0px 0px 12px 12px; /* Rounded corners for a playful, friendly look */
-
-  /* Box Shadow */
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
-  backdrop-filter: blur(10px); /* Apply the blur effect */
-  -webkit-backdrop-filter: blur(10px); /* For Safari */
-
-  /* Padding and Spacing */
-  text-align: center; /* Center text within the div */
-
-  /* Transition for hover effect */
-  transition: transform 0.2s ease-in-out;
-  padding: 1%;
-}
-
-.nft-title h2 {
-  color: rgb(0, 0, 0);
-  font-size: 150%;
-
-  text-align: center;
-  margin: 0;
-}
-
 .nft-specs {
   position: absolute;
   right: 2%;
   top: 0%;
-  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
-  width: 14%;
+  width: 25%;
+
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
 
   /* Border */
   border-radius: 0px 0px 12px 12px; /* Rounded corners for a playful, friendly look */
 
-  /* Box Shadow */
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
-  backdrop-filter: blur(10px); /* Apply the blur effect */
-  -webkit-backdrop-filter: blur(10px); /* For Safari */
+  /* Outer shadow for 3D effect */
+  box-shadow: 5px 5px 0px #000000,
+    /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
 
   /* Padding and Spacing */
   text-align: justify; /* Center text within the div */
@@ -127,7 +383,7 @@
   margin-left: 5px; /* Space between text and icon */
 }
 .nft-specs p {
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
   font-size: 80%;
 
   text-align: justify; /* Center text within the div */
@@ -136,19 +392,22 @@
 
 .nft-specs h2 {
   font-size: 120%;
+  color: rgb(255, 255, 255); /* White text color */
+  text-shadow: black 1px 1px 2px; /* Add a subtle shadow */
+  letter-spacing: 1px;
 }
 
-.balance-columns {
+.twitter {
   position: absolute;
-  right: 16.5%;
-  top: 0;
+  left: 0%;
+  top: 150%;
   font-size: 100%;
   background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
-  width: 20%;
+  width: 30%;
   color: rgb(29, 29, 29);
 
   /* Border */
-  border-radius: 0px 0px 0px 12px; /* Rounded corners for a playful, friendly look */
+  border-radius: 0px 12px 12px 0px; /* Rounded corners for a playful, friendly look */
 
   /* Box Shadow */
   box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
@@ -156,11 +415,83 @@
   -webkit-backdrop-filter: blur(10px); /* For Safari */
 
   /* Padding and Spacing */
+  text-align: left; /* Center text within the div */
+
+  /* Transition for hover effect */
+  transition: transform 0.2s ease-in-out;
+  padding: 1%;
+}
+.balance-columns {
+  position: absolute;
+  left: 2%;
+  top: 0;
+  font-size: 100%;
+  width: 20%;
+
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
+
+  /* Border */
+  border-radius: 0px 0px 12px 12px; /* Rounded corners for a playful, friendly look */
+
+  /* Outer shadow for 3D effect */
+  box-shadow: 5px 5px 0px #000000,
+    /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+  /* Border */
+
+  /* Padding and Spacing */
   text-align: center; /* Center text within the div */
 
   /* Transition for hover effect */
   transition: transform 0.2s ease-in-out;
   padding: 1%;
+}
+
+.claim-reward {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 100%;
+  width: 50%;
+  transform: translate(-50%, -50%);
+
+  /* Padding and Spacing */
+  text-align: center; /* Center text within the div */
+
+  /* Transition for hover effect */
+  transition: transform 0.2s ease-in-out;
+  padding: 1%;
+  z-index: 1000;
+}
+
+.claim-reward button {
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+  cursor: pointer;
+  align-self: center; /* Center the button horizontally */
+  margin-top: auto; /* Push the button to the bottom */
+  margin-bottom: 4%;
+  width: 100%;
+  margin-left: 5%;
+  border-radius: 8px;
+  border: none;
+  box-sizing: border-box;
+  padding: 2%;
+  font-weight: 500;
+  font-size: 200%;
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
+  margin-top: 5%;
+  color: white;
+  animation: glowPulse 2s ease-in-out infinite; /* Infinite animation for the glow */
+}
+
+.claim-reward button:hover {
+  cursor: pointer;
+  transform: translateY(3px);
 }
 .balance-bar {
   display: flex;
@@ -182,8 +513,8 @@
   height: 25px;
   position: relative;
   overflow: hidden;
-  background-color: rgb(255, 255, 255, 0.6);
-  box-shadow: 3px 3px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  background-color: rgb(255, 255, 255, 0.2);
+  box-shadow: 3px 3px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
 }
 
 .balance-bar-fill {
@@ -204,10 +535,10 @@
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgb(29, 29, 29);
   font-family: "Kanit", sans-serif;
   font-weight: 500;
   font-size: 90%;
+  text-shadow: black 1px 1px 2px; /* Add a subtle shadow */
 }
 
 .upper-div button {
@@ -247,7 +578,7 @@
 .arrow-left,
 .arrow-right {
   position: absolute;
-  top: 50%;
+  top: 70%;
   transform: translateY(-50%);
   background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
   backdrop-filter: blur(10px); /* Apply the blur effect */
@@ -271,16 +602,16 @@
 }
 
 .arrow-left {
-  left: 2%;
+  left: 12%;
 }
 
 .arrow-right {
-  right: 2%;
+  right: 12%;
 }
 
 .arrow-left:hover,
 .arrow-right:hover {
-  top: 51%;
+  top: 71%;
 }
 
 .buildingType {
@@ -289,38 +620,52 @@
   left: 50%;
   transform: translate(-50%);
 
-  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
-  color: rgb(29, 29, 29);
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
 
   /* Border */
   border-radius: 12px 12px 0px 0px; /* Rounded corners for a playful, friendly look */
 
-  /* Box Shadow */
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
-  backdrop-filter: blur(10px); /* Apply the blur effect */
-  -webkit-backdrop-filter: blur(10px); /* For Safari */
+  /* Outer shadow for 3D effect */
+  box-shadow: 5px 5px 0px #000000,
+    /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
   padding: 0.5%;
   width: 45%;
   text-align: center;
   min-height: 20%;
-  max-height: 24%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column; /* Use Flexbox to align content vertically */
   justify-content: space-between; /* Space between the content and the button */
   z-index: 10;
+  max-height: 40%; /* Initial collapsed height */
 
   transition: all 0.5s ease-in-out; /* Smooth transition */
 }
 
+.buildingType-top {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  border-radius: 8px;
+  padding: 1%;
+  margin: 2%;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 6%;
+}
+
 .buildingType.expanded {
-  min-height: 70%;
-  max-height: 80%;
+  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+  backdrop-filter: blur(15px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(15px); /* For Safari */
+  max-height: 90%; /* Set max height for expanded state */
+  min-height: 60%;
 }
 
 .buildingType.collapsed {
+  max-height: 40%; /* Set max height for collapsed state */
   min-height: 20%;
-  max-height: 24%;
 }
 /* Zoom the building images by 30% when in expanded view */
 .building-image img {
@@ -333,7 +678,7 @@
 }
 .level-arrow {
   font-size: 30px;
-  color: gray;
+  color: rgb(255, 255, 255);
   margin: 0 15px; /* Adjust spacing between images */
 }
 /* Level Text Styling */
@@ -344,7 +689,7 @@
 .details {
   font-family: "Kanit", sans-serif;
   font-size: 12px;
-  color: #0055b3;
+  color: #cbe3ff;
   text-decoration: none;
   font-weight: 300;
 }
@@ -356,10 +701,19 @@
   align-items: center;
   margin-bottom: 10px; /* Add space between images and benefit text */
 }
+.additional-info p {
+  margin: 0 !important;
+  color: white;
+}
+
+.level-text {
+  color: white;
+}
 
 .building-images {
   width: 100%;
   text-align: center;
+  margin-top: -10%;
 }
 .benefit-text {
   font-family: "Helvetica", sans-serif;
@@ -396,31 +750,36 @@
 }
 
 .buildingType h2 {
-  font-size: 250%;
-  white-space: nowrap;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: inline-block; /* Ensure the background fits the h2 text */
+  color: rgb(255, 255, 255); /* White text color */
+  font-size: 200%;
+  text-shadow: black 1px 1px 2px; /* Add a subtle shadow */
+  letter-spacing: 1px;
 }
 
 .buildingType p {
-  color: rgb(29, 29, 29);
+  color: white; /* White text color */
   margin: 0;
-  font-size: 100%;
-  line-height: 1.3;
+  font-size: 80%;
+  margin-bottom: 2%;
+  margin-top: 1%;
+  font-weight: 100;
 }
 
 .buildingType button {
+  background-color: rgb(255, 255, 255); /* Semi-transparent background */
+
   align-self: center; /* Center the button horizontally */
   margin-top: auto; /* Push the button to the bottom */
-  margin-bottom: 2%;
+  margin-bottom: 4%;
   width: 90%;
   border-radius: 2px;
   border: none;
   box-sizing: border-box;
   padding: 0.5%;
-  font-size: 120%;
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  font-weight: 500;
+  font-size: 140%;
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
   transition: all 0.1s ease-in-out;
 }
 
@@ -429,25 +788,54 @@
   transform: translateY(3px);
 }
 
+.map-button {
+  background-color: rgba(0, 47, 255, 0.6); /* Semi-transparent background */
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+  align-self: center; /* Center the button horizontally */
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  top: 2%;
+  width: 12%;
+  border-radius: 12px;
+  border: none;
+  box-sizing: border-box;
+  padding: 0.5%;
+  font-weight: 500;
+  font-size: 100%;
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+  color: white;
+  text-shadow: black 1px 1px 2px; /* Add a subtle shadow */
+}
+
+.map-button:hover {
+  cursor: pointer;
+  top: 2.5%;
+}
+
 .accumulated {
   position: absolute; /* Keep it absolutely positioned relative to the game container */
   bottom: 0%; /* Align it to the bottom */
   left: 2%; /* Adjust the horizontal positioning as needed */
-  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
-  color: rgb(29, 29, 29);
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
 
   /* Border */
   border-radius: 12px 12px 0px 0px; /* Rounded corners for a playful, friendly look */
 
-  /* Box Shadow */
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
-  backdrop-filter: blur(10px); /* Apply the blur effect */
-  -webkit-backdrop-filter: blur(10px); /* For Safari */
+  /* Outer shadow for 3D effect */
+  box-shadow: 5px 5px 0px #000000,
+    /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
   padding: 0.5%;
   text-align: center;
   width: 25%;
   min-height: 13%;
-  max-height: 18%;
+
   box-sizing: border-box;
   display: flex;
   flex-direction: column; /* Use Flexbox to align content vertically */
@@ -456,33 +844,49 @@
 }
 
 .accumulated button {
-  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+  background-color: rgb(255, 187, 71); /* Semi-transparent background */
 
   align-self: center; /* Center the button horizontally */
   margin-top: auto; /* Push the button to the bottom */
-  margin-bottom: 2%;
+  margin-bottom: 4%;
   width: 90%;
   border-radius: 2px;
   border: none;
   box-sizing: border-box;
   padding: 0.5%;
-  font-size: 120%;
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  font-weight: 500;
+  font-size: 140%;
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
   transition: all 0.1s ease-in-out;
 }
 
 .accumulated p {
-  color: rgb(29, 29, 29);
+  color: white; /* White text color */
+  font-size: 150%;
   margin: 0;
-  font-size: 100%;
+  font-size: 80%;
   line-height: 1.3;
+  margin-bottom: 4%;
+  margin-top: 2%;
+  letter-spacing: 1px;
+  font-weight: 100;
 }
 
 .accumulated h2 {
   display: inline-block; /* Ensure the background fits the h2 text */
-  font-weight: bold; /* Optional: Make the text bold */
-  color: rgb(29, 29, 29);
+  color: rgb(255, 187, 71); /* White text color */
   font-size: 180%;
+  text-shadow: black 1px 1px 2px; /* Add a subtle shadow */
+  letter-spacing: 1px;
+}
+
+.accumulated-top {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  border-radius: 8px;
+  padding: 2%;
+  margin: 2%;
+  justify-content: center;
+  align-items: center;
 }
 
 .accumulated button:hover {
@@ -494,21 +898,21 @@
   position: absolute;
   bottom: 0%;
   right: 2%;
-  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
-  backdrop-filter: blur(10px); /* Apply the blur effect */
-  -webkit-backdrop-filter: blur(10px); /* For Safari */
-  color: rgb(29, 29, 29);
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
 
   /* Border */
   border-radius: 12px 12px 0px 0px; /* Rounded corners for a playful, friendly look */
 
-  /* Box Shadow */
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  /* Outer shadow for 3D effect */
+  box-shadow: 5px 5px 0px #000000,
+    /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
   padding: 0.5%;
   text-align: center;
   width: 25%;
   min-height: 13%;
-  max-height: 18%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column; /* Use Flexbox to align content vertically */
@@ -516,24 +920,40 @@
   z-index: 9;
 }
 
+.population-top {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  border-radius: 8px;
+  padding: 2%;
+  margin: 2%;
+  justify-content: center;
+  align-items: center;
+}
+
 .population p {
-  color: rgb(29, 29, 29);
+  color: white; /* White text color */
+  font-size: 150%;
   margin: 0;
-  font-size: 100%;
+  font-size: 80%;
   line-height: 1.3;
+  margin-bottom: 4%;
+  margin-top: 2%;
+  font-weight: 100;
 }
 
 .population button {
+  background-color: rgb(118, 136, 255); /* Semi-transparent background */
+
   align-self: center; /* Center the button horizontally */
   margin-top: auto; /* Push the button to the bottom */
-  margin-bottom: 2%;
+  margin-bottom: 4%;
   width: 90%;
   border-radius: 2px;
   border: none;
   box-sizing: border-box;
   padding: 0.5%;
-  font-size: 120%;
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  font-weight: 500;
+  font-size: 140%;
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
   transition: all 0.1s ease-in-out;
 }
 
@@ -542,73 +962,240 @@
   transform: translate(0, 3px);
 }
 
-.population p {
-  color: rgb(29, 29, 29);
-  margin: 0;
-  font-size: 100%;
-  line-height: 1.3;
-}
-
 .population h2 {
   display: inline-block; /* Ensure the background fits the h2 text */
-  font-weight: bold; /* Optional: Make the text bold */
-  color: rgb(29, 29, 29);
-  font-size: 160%;
+  color: rgb(118, 136, 255); /* White text color */
+  font-size: 180%;
+  text-shadow: black 1px 1px 2px; /* Add a subtle shadow */
+
+  letter-spacing: 1px;
 }
 .pleaseConnect {
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto; /* Push the button to the bottom */
   border-radius: 2px;
   border: none;
   box-sizing: border-box;
-  padding: 1%;
-  font-size: 80%;
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
-  border-radius: 12px;
-  font-weight: 700;
-  color: rgb(26, 26, 26);
+  padding: 0.5%;
+  font-size: 100%;
   transition: all 0.1s ease-in-out;
-  letter-spacing: 1.5px;
-  backdrop-filter: blur(10px); /* Apply the blur effect */
-  -webkit-backdrop-filter: blur(10px); /* For Safari */
+  filter: none !important; /* Ensures it is not affected by the blur */
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://bafybeig7qsn63wuwko2v7fnar6g54m4tbql63jlovdm7cr4zyumtt5x4oy.ipfs.w3s.link/");
+  background-size: cover;
 }
 
-/* Game.css */
-.loading-spinner {
-  border: 8px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #4caf50;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1s linear infinite;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-@keyframes spin {
+@keyframes glowPulse {
   0% {
-    transform: rotate(0deg);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6),
+      0 0 10px rgba(255, 255, 255, 0.4), 0 0 15px rgba(173, 216, 230, 0.6);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+      0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(173, 216, 230, 0.8);
   }
   100% {
-    transform: rotate(360deg);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6),
+      0 0 10px rgba(255, 255, 255, 0.4), 0 0 15px rgba(173, 216, 230, 0.6);
   }
 }
 
-.loading-message {
+.pleaseConnect h2 {
+  font-size: 180%;
+  color: rgb(255, 255, 255);
+  font-weight: 500;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.6),
+    0 0 10px rgba(255, 255, 255, 0.4), 0 0 15px rgba(173, 216, 230, 0.6);
+  animation: glowPulse 2s ease-in-out infinite; /* Infinite animation for the glow */
+}
+
+.mint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto; /* Push the button to the bottom */
+  border-radius: 2px;
+  border: none;
+  box-sizing: border-box;
+  padding: 0.5%;
+  font-size: 100%;
+  transition: all 0.1s ease-in-out;
+  filter: none !important; /* Ensures it is not affected by the blur */
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://bafybeiarp4lnsvler7spr2uosi4bct7rnlsnbbctxwntv6dvrdoyycv3ze.ipfs.w3s.link/");
+  background-size: cover;
   text-align: center;
-  font-size: 18px;
-  color: #333;
-  margin-top: 20px;
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+}
+
+@keyframes glowPulse {
+  0% {
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.6),
+      0 0 4px rgba(255, 255, 255, 0.4), 0 0 15px rgba(173, 216, 230, 0.6);
+  }
+  50% {
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.8),
+      0 0 4px rgba(255, 255, 255, 0.6), 0 0 30px rgba(173, 216, 230, 0.8);
+  }
+  100% {
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.6),
+      0 0 4px rgba(255, 255, 255, 0.4), 0 0 15px rgba(173, 216, 230, 0.6);
+  }
+}
+
+.mint button {
+  background-color: rgb(29, 161, 242); /* Semi-transparent background */
+  cursor: pointer;
+  align-self: center; /* Center the button horizontally */
+  margin-top: auto; /* Push the button to the bottom */
+  border-radius: 2px;
+  border: none;
+  box-sizing: border-box;
+  padding: 0.5% 2%;
+  margin: 2%;
+  font-weight: 500;
+  font-size: 100%;
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
+  color: white;
+}
+
+.mint p {
+  margin: 0;
+}
+
+.mint-button {
+  background-color: rgb(255, 0, 0) !important;
+  padding: 1% 2% !important;
+  border-radius: 8px !important;
+  border: none;
+  box-sizing: border-box;
+  font-size: 150% !important;
+  color: rgb(255, 255, 255);
+  font-weight: 300 !important;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.6),
+    0 0 10px rgba(255, 255, 255, 0.4), 0 0 15px rgba(173, 216, 230, 0.6);
+  animation: glowPulse 2s ease-in-out infinite; /* Infinite animation for the glow */
+}
+
+.mint button:hover {
+  cursor: pointer;
+  transform: translateY(3px);
+}
+
+.airdrop-calculator {
+  background-color: rgba(255, 255, 255, 0.232);
+  border-radius: 2px;
+  padding: 1%;
+  margin: 2%;
+  box-sizing: border-box;
+  max-height: 150px; /* Set your desired maximum height */
+  overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+}
+
+.airdrop-calculator li {
+  list-style-type: none;
+  list-style-position: inside;
+  font-weight: 100;
+  font-size: 80%;
+  margin: 0;
+  padding: 0;
+}
+
+@keyframes goldGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.golden-text {
+  font-family: "Kanit", "Helvetica";
+  font-weight: 700;
+  font-size: 150%;
+  background: linear-gradient(
+    45deg,
+    #f3ec78,
+    #ff5e3e,
+    #f3ec78
+  ); /* golden shimmer colors */
+  background-size: 300% 300%;
+  animation: goldGradient 3s ease infinite;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.logout {
+  background-color: #0055b3 !important;
+  margin-top: 2% !important;
+  margin-bottom: 6% !important;
+}
+
+.task-button:disabled {
+  background-color: #545454 !important;
+  cursor: not-allowed !important;
+}
+
+.task-button {
+  width: 40%;
+  font-size: 100% !important;
+  margin-top: 0.5% !important;
+  margin-bottom: 0.5% !important;
+  font-weight: 300 !important;
+  text-align: justify;
+}
+
+.verify-button {
+  width: 60%;
+  font-size: 120% !important;
+  background-color: rgb(
+    96,
+    242,
+    29
+  ) !important; /* Semi-transparent background */
+  color: #000000 !important;
+}
+
+.verify-button:disabled {
+  font-size: 120% !important;
+  background-color: rgb(
+    98,
+    98,
+    98
+  ) !important; /* Semi-transparent background */
+  cursor: not-allowed !important;
+}
+
+/* Spinner */
+.spinner {
+  border: 3px solid rgba(0, 0, 0, 0.1); /* Light border */
+  border-left-color: #005eff; /* Primary color for the spinner */
+  border-radius: 50%; /* Circular shape */
+  width: 15px; /* Smaller size */
+  height: 15px; /* Smaller size */
+  animation: spin 1s linear infinite; /* Infinite rotation animation */
+  margin: 10px auto; /* Center the spinner */
+}
+
+/* Spin animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); /* Start at 0 degrees */
+  }
+  100% {
+    transform: rotate(360deg); /* Full rotation at 360 degrees */
+  }
 }
 
 .blurred-content {
@@ -627,43 +1214,12 @@
   z-index: 10;
 }
 
-.mint button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.905
-  ); /* Semi-transparent background */
-  border-radius: 2px;
-  border: none;
-  box-sizing: border-box;
-  padding: 1%;
-  font-size: 200%;
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
-  border-radius: 12px;
-  font-weight: 600;
-  color: rgb(26, 26, 26);
-  transition: all 0.1s ease-in-out;
-  letter-spacing: 1.5px;
-  z-index: 2;
-}
-
-.mint button:hover {
-  cursor: pointer;
-  top: 51%;
-}
-
 /* Apply Kanit for Titles (h1, h2, etc.) */
 .game-container h2,
 .buildingType h2,
 .accumulated h2,
 .population h2 {
   font-family: "Kanit", cursive;
-  font-weight: 500;
 }
 
 .game-container h3 {
@@ -681,26 +1237,113 @@ p,
   font-weight: 200;
 }
 .acc-icon {
-  filter: drop-shadow(2px 2px 10px rgba(0, 128, 0, 0.65));
+  filter: drop-shadow(2px 2px 10px rgba(0, 128, 0, 0.45));
 }
 
 .gear-icon {
-  filter: drop-shadow(1px 1px 5px rgba(255, 0, 0, 0.65));
+  filter: drop-shadow(1px 1px 5px rgba(255, 0, 0, 0.45));
 }
 
 .star-icon {
-  filter: drop-shadow(1px 1px 5px rgba(45, 157, 255, 0.65));
+  filter: drop-shadow(1px 1px 5px rgba(45, 157, 255, 0.45));
 }
 
 .coin-icon {
-  filter: drop-shadow(1px 1px 5px rgba(255, 255, 0, 0.65));
+  filter: drop-shadow(1px 1px 5px rgba(0, 0, 0, 0.45));
 }
 
 .people-icon {
-  filter: drop-shadow(1px 1px 5px rgba(0, 0, 255, 0.65));
+  filter: drop-shadow(1px 1px 5px rgba(0, 0, 255, 0.45));
+}
+
+.buildingPos {
+  position: absolute;
+}
+
+.buildingPos:hover {
+  filter: brightness(100%) drop-shadow(0 0 50px rgba(255, 255, 255, 0.4)); /* Increase brightness and apply feather effect */
+  z-index: 10; /* Bring the hovered building to the top */
+}
+
+.darken-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  pointer-events: none; /* Make the overlay unclickable */
+  backdrop-filter: blur(2px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(2px); /* For Safari */
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.5s ease; /* Smooth transition */
+}
+
+.darken-overlay.visible {
+  opacity: 1; /* Fully visible when hovered */
+}
+
+.darken-overlay-2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  pointer-events: none; /* Make the overlay unclickable */
+  backdrop-filter: blur(15px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(15px); /* For Safari */
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.5s ease; /* Smooth transition */
+  z-index: 99;
+}
+
+.darken-overlay-2.visible {
+  opacity: 1; /* Fully visible when hovered */
+}
+
+.info-text {
+  padding: 5% 5% 0% 5%;
+  text-align: center;
+  margin-bottom: 0%;
+}
+
+.wallet-checker {
+  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
+
+  /* Border */
+
+  /* Outer shadow for 3D effect */
+  box-shadow: 5px 5px 0px #000000,
+    /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(15px); /* For Safari */
+  border-radius: 8px;
+  padding: 5%;
+  box-sizing: border-box;
+  width: 60%;
+  font-family: "Kanit", "Helvetica", sans-serif;
 }
 
 @media (max-width: 1920px) {
+  .task-button {
+    width: 50%;
+  }
+  .building-images {
+    margin-top: -5%;
+  }
+  .map-button {
+    width: 20%;
+  }
+
+  .info-text {
+    padding: 0;
+    text-align: center;
+    margin-bottom: 0%;
+    font-size: 70% !important;
+  }
+
   .accumulated h2 {
     font-size: 130%;
   }
@@ -722,19 +1365,60 @@ p,
   }
 
   .nft-title {
-    width: 25%;
+    width: 80%;
   }
 
   .nft-specs {
-    width: 18%;
+    width: 20%;
   }
 
   .balance-columns {
     right: 20.5%;
   }
+
+  .claim-reward {
+    width: 60%;
+  }
+
+  .claim-reward button {
+    font-size: 150%;
+  }
+
+  .reference-system-button {
+    font-size: 120%;
+  }
+}
+
+@media (max-width: 1620px) {
+  .reference-system-button {
+    font-size: 100%;
+    padding: 0.5%;
+  }
+
+  .nft-info h2 {
+    font-size: 100%;
+  }
+
+  .nft-info a,
+  .nft-info p {
+    font-size: 60%;
+  }
+
+  .reference-system p {
+    font-size: 70%;
+  }
+
+  .reference-system {
+    margin-top: 10%;
+  }
 }
 
 @media (max-width: 1440px) {
+  .wallet-checker {
+    width: 80%;
+    padding: 2%;
+  }
+
   .buildingType h2 {
     font-size: 170%;
   }
@@ -774,12 +1458,77 @@ p,
   }
 }
 
-@media (max-width: 1024px) {
-  .game-container {
-    width: 85%;
-    background-size: 120%;
+@media (max-width: 1280px) {
+  .reference-system,
+  .nft-info {
+    width: 45%; /* Reduce width to fit them side by side */
+    margin: 0 2.5%; /* Add some spacing between them */
+  }
+  .nft-info h2 {
+    font-size: 140%;
   }
 
+  .info-container {
+    display: flex;
+    flex-direction: row; /* Align them side by side */
+    justify-content: space-between; /* Add spacing between the elements */
+    align-items: flex-start;
+  }
+  .claim-reward {
+    width: 50%;
+  }
+
+  .claim-reward button {
+    font-size: 180%;
+  }
+  .wallet-checker {
+    width: 60%;
+    padding: 2%;
+  }
+
+  .game-container {
+    width: 70%;
+  }
+
+  .info-container {
+    width: 70%;
+    top: 98%;
+    margin: auto;
+    left: 15%;
+    height: 50%;
+    background: url("https://bafybeid74k2yzpzr7gtu37iwntcbpa5gwx66a3gsbymqsbwxwscoied2ie.ipfs.w3s.link/");
+  }
+
+  .social-container {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .darken-overlay {
+    display: none;
+  }
+
+  .game-container {
+    width: 80%;
+  }
+  .info-container {
+    width: 80%;
+    top: 98%;
+    margin: auto;
+    left: 10%;
+    height: 50%;
+    background: url("https://bafybeid74k2yzpzr7gtu37iwntcbpa5gwx66a3gsbymqsbwxwscoied2ie.ipfs.w3s.link/");
+  }
+
+  .claim-reward {
+    width: 60%;
+  }
+
+  .wallet-checker {
+    width: 80%;
+    padding: 2%;
+  }
   .upper-div h2 {
     font-size: 150%;
   }
@@ -830,6 +1579,18 @@ p,
 }
 
 @media (max-width: 768px) {
+  .claim-reward {
+    width: 80%;
+  }
+
+  .nft-info h2 {
+    font-size: 120%;
+  }
+
+  .claim-ref-button {
+    font-size: 100%;
+  }
+
   .arrow-left,
   .arrow-right {
     font-size: 100%;
@@ -837,11 +1598,17 @@ p,
   }
 
   .game-container {
-    width: 95%;
-    background-size: 180%;
+    width: 100%;
     transition: background-position 0s ease-in-out; /* Smooth movement */
     touch-action: none; /* Prevent the default scroll/pinch/zoom behavior */
     overflow: hidden; /* Ensure no scrolling is allowed */
+  }
+
+  .info-container {
+    width: 100%;
+    top: 100%;
+    margin: auto;
+    left: 0%;
   }
 
   .balance-columns {
@@ -867,9 +1634,27 @@ p,
 }
 
 @media (max-width: 600px) {
+  .claim-reward button {
+    font-size: 150%;
+  }
+  .wallet-checker {
+    width: 90%;
+    padding: 1%;
+  }
+
+  .wallet-checker p {
+    font-size: 80%;
+  }
+
+  .golden-text {
+    font-size: 180%;
+  }
+  .wallet-checker h3 {
+    font-size: 80%;
+  }
+
   .game-container {
     width: 100%;
-    background-size: 200% !important;
     height: 85vh;
     margin-top: 1vh;
   }
@@ -884,7 +1669,7 @@ p,
 
   .balance-columns {
     right: 0%;
-    width: 40%;
+    width: 30%;
     border-radius: 0px 0px 0px 12px;
   }
 
@@ -926,18 +1711,63 @@ p,
   }
 
   .nft-specs {
-    right: 0%;
+    right: 2%;
     width: 30%;
-    top: 90px;
     border-radius: 12px 0px 0px 12px;
+  }
+
+  .coin-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .people-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .acc-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .gear-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .star-icon {
+    width: 20px !important;
+    height: 20px !important;
   }
 
   .nft-specs h2 {
     font-size: 80%;
   }
+
+  .pleaseConnect h2 {
+    font-size: 120%;
+  }
+
+  .mint-button {
+    font-size: 120% !important;
+    margin-top: 5% !important;
+  }
 }
 
 @media (max-width: 425px) {
+  .reference-system-button {
+    font-size: 80%;
+    padding: 0.5%;
+  }
+
+  .claim-ref-button {
+    font-size: 80%;
+  }
+
+  .mint-button {
+    font-size: 100% !important;
+  }
   .game-container {
     box-shadow: 4px 8px 0px rgba(0, 0, 0, 0.4);
   }
@@ -968,14 +1798,28 @@ p,
   }
 
   .mint button {
-    font-size: 150%;
+    font-size: 100%;
+  }
+
+  .task-button {
+    font-size: 80%;
+    width: 90%;
+  }
+
+  .wallet-checker {
+    width: 100%;
+    padding: 0%;
   }
 }
 
 @media (max-width: 425px) {
   .game-container {
-    height: 85vh;
+    height: 70vh;
     margin-top: 0vh;
+  }
+
+  .info-container {
+    top: 80%;
   }
 
   .arrow-left,
@@ -997,10 +1841,6 @@ p,
 
   .nft-specs p {
     font-size: 60%;
-  }
-
-  .nft-specs h2 {
-    font-size: 90%;
   }
 
   .buildingType button {

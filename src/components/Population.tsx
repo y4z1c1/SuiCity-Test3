@@ -4,12 +4,20 @@ interface PopulationProps {
   filteredNft: any; // The user's filtered NFT object
   accumulatedSity: number; // The accumulated SITY amount
   sityBalance: number; // The current SITY balance
+  officeLevel: number; // Level of the residential office
+  factoryLevel: number; // Level of the factory
+  houseLevel: number; // Level of the house
+  enterLevel: number; // Level of the entertainment complex
 }
 
 const Population: React.FC<PopulationProps> = ({
   filteredNft,
   accumulatedSity,
   sityBalance,
+  officeLevel,
+  factoryLevel,
+  houseLevel,
+  enterLevel,
 }) => {
   // Function to format the balance for readability
   const formatBalance = (balance: number) => {
@@ -31,14 +39,10 @@ const Population: React.FC<PopulationProps> = ({
       return population;
     };
 
-    const residentialOfficePopulation = calculateForBuilding(
-      nft.content.fields.residental_office
-    );
-    const housePopulation = calculateForBuilding(nft.content.fields.house);
-    const factoryPopulation = calculateForBuilding(nft.content.fields.factory);
-    const entertainmentPopulation = calculateForBuilding(
-      nft.content.fields.entertainment_complex
-    );
+    const residentialOfficePopulation = calculateForBuilding(officeLevel);
+    const housePopulation = calculateForBuilding(houseLevel);
+    const factoryPopulation = calculateForBuilding(factoryLevel);
+    const entertainmentPopulation = calculateForBuilding(enterLevel);
 
     return (
       residentialOfficePopulation +
@@ -54,20 +58,28 @@ const Population: React.FC<PopulationProps> = ({
 
   return (
     <div className="population">
-      <h2>
-        <img
-          src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/peop1.webp"
-          alt="people-icon"
-          className="people-icon"
-          style={{
-            width: "30px",
-            height: "30px",
-            marginRight: "5px",
-            transform: "translateY(5px)",
-          }}
-        />
-        {`Population: ${formatBalance(totalPopulation)}`}
-      </h2>
+      <div className="population-top">
+
+        <h2>
+          <img
+            src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/peop1.webp"
+            alt="people-icon"
+            className="people-icon"
+            style={{
+              width: "30px",
+              height: "30px",
+              marginRight: "5px",
+              transform: "translateY(5px)",
+            }}
+          />
+          {`${formatBalance(totalPopulation)}`}
+        </h2>
+
+      </div>
+
+      <p>
+        Population
+      </p>
 
       <button
         onClick={() => {
@@ -87,7 +99,7 @@ const Population: React.FC<PopulationProps> = ({
           window.open(twitterUrl, "_blank");
         }}
       >
-        Share it on Twitter
+        Share on Twitter
       </button>
     </div>
   );

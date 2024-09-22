@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Upgrade from "./Upgrade";
 import ClaimFactoryBonus from "./ClaimFactoryBonus";
 
 interface BuildingProps {
+  nft: any; // NFT object
   currentBuilding: any; // Information about the current building (type, field, etc.)
-  filteredNft: any; // The user's filtered NFT object
+  officeLevel: number; // Level of the residential office
+  factoryLevel: number; // Level of the factory
+  houseLevel: number; // Level of the house
+  enterLevel: number; // Level of the entertainment complex
   gameData: any; // Game data, including bonuses and accumulation speeds
   factoryBonusCountdown: number | null; // Countdown timer for factory bonus
   suiBalance: number; // User's SUI balance
@@ -22,8 +26,12 @@ interface BuildingProps {
 }
 
 const Building: React.FC<BuildingProps> = ({
+  nft,
   currentBuilding,
-  filteredNft,
+  officeLevel,
+  factoryLevel,
+  houseLevel,
+  enterLevel,
   gameData,
   factoryBonusCountdown,
   suiBalance,
@@ -39,31 +47,29 @@ const Building: React.FC<BuildingProps> = ({
   buildingIndex,
 }) => {
   const [isUpgradeInfoExpanded, setIsUpgradeInfoExpanded] = useState(false);
-  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+  const buildingRef = useRef<HTMLDivElement>(null);
+  const [isLoadingNewLevel, setIsLoadingNewLevel] = useState(false); // New state for image loading
 
-  const handleUpgradeHover = () => {
-    setIsUpgradeInfoExpanded(true);
-  };
 
-  const handleUpgradeLeave = () => {
-    setIsUpgradeInfoExpanded(false);
-  };
 
   const handleUpgradeClick = () => {
-    if (isTouchDevice) {
-      if (!isMobileExpanded) {
-        setIsMobileExpanded(true);
-        setIsUpgradeInfoExpanded(true);
-      } else {
-        setIsMobileExpanded(false);
-        setIsUpgradeInfoExpanded(false);
-        onUpgradeClick(buildingIndex);
-      }
-    } else {
-      setIsUpgradeInfoExpanded(false);
-      onUpgradeClick(buildingIndex);
-    }
+    setIsUpgradeInfoExpanded(true);
+    onUpgradeClick(buildingIndex);
   };
+
+  // Collapse when clicking outside the component
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (buildingRef.current && !buildingRef.current.contains(event.target as Node)) {
+        setIsUpgradeInfoExpanded(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [buildingRef]);
 
   const formatTime = (milliseconds: number) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -73,55 +79,100 @@ const Building: React.FC<BuildingProps> = ({
     return `${hours}h ${minutes}m ${seconds}s`;
   };
 
+  const handleUpgradeError = () => {
+    // Call the original onUpgradeSuccess callback
+    onUpgradeError();
+
+    // Wait 1 second before collapsing the expanded view
+    setTimeout(() => {
+      setIsUpgradeInfoExpanded(false);
+    }, 1000);
+  };
+
+  // Determine the current level based on the building type
+  const currentLevel =
+    currentBuilding.type === "Office"
+      ? Number(officeLevel)
+      : currentBuilding.type === "Factory"
+        ? Number(factoryLevel)
+        : currentBuilding.type === "House"
+          ? Number(houseLevel)
+          : Number(enterLevel);
+
+
+
+
+
+  const handleUpgradeSuccess = () => {
+    // Call the original onUpgradeSuccess callback
+
+    // Wait 1 second before collapsing the expanded view
+    setTimeout(() => {
+      setIsUpgradeInfoExpanded(false);
+    }, 500);
+
+    // Set loading state until new image is loaded
+    setIsLoadingNewLevel(true);
+
+
+    console.log("Loading new level...");
+
+    // Simulate loading new image (until it is fully loaded)
+    const img = new Image();
+    img.src = `${currentBuilding.buildingUrl}/${currentLevel + 1}.webp`;
+
+    img.onload = () => {
+      // Once the image is loaded, hide the loading screen
+      setIsLoadingNewLevel(false);
+
+
+    };
+
+    onUpgradeSuccess();
+
+
+  };
+
+
   return (
     <div
-      className={`buildingType ${
-        isTouchDevice
-          ? isMobileExpanded &&
-            filteredNft.content.fields[currentBuilding.field] < 7
-            ? "expanded"
-            : "collapsed"
-          : isUpgradeInfoExpanded &&
-            filteredNft.content.fields[currentBuilding.field] < 7
+      ref={buildingRef}
+
+      className={`buildingType ${isTouchDevice
+        ? currentLevel < 7
           ? "expanded"
           : "collapsed"
-      }`}
-      onMouseEnter={
-        !isTouchDevice && filteredNft.content.fields[currentBuilding.field] < 7
-          ? handleUpgradeHover
-          : undefined
-      }
-      onMouseLeave={
-        !isTouchDevice && filteredNft.content.fields[currentBuilding.field] < 7
-          ? handleUpgradeLeave
-          : undefined
-      }
-      onClick={handleUpgradeClick}
+        : isUpgradeInfoExpanded && currentLevel < 7
+          ? "expanded"
+          : "collapsed"
+        }`}
+
     >
-      <h2>{`${currentBuilding.type} Level: ${
-        filteredNft.content.fields[currentBuilding.field]
-      }`}</h2>
+
+      {/* Add a loading overlay when upgrading */}
+      {isLoadingNewLevel && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+          <p>Loading new level...</p>
+        </div>
+      )}
+      <div className="buildingType-top">
+        <h2>{`${currentBuilding.type} Level: ${currentLevel}`}</h2>
+
+      </div>
 
       {isUpgradeInfoExpanded && (
         <div className="additional-info">
-          <p style={{ fontSize: "12px" }}>
-            Upgrading will not only improve your building’s functionality but
-            will also change the metadata, appearance, and rarity of your NFT,
-            thanks to the power of dynamic NFTs.
-          </p>
+
           {/* Building Images */}
           <div className="building-images">
             <div className="building-image">
               <img
-                src={`${currentBuilding.buildingUrl}/${
-                  filteredNft.content.fields[currentBuilding.field]
-                }.webp`}
+                src={`${currentBuilding.buildingUrl}/${currentLevel}.webp`}
                 alt="Current Level"
                 className="building-image-zoom"
               />
-              <p className="level-text current-level">{`Level ${
-                filteredNft.content.fields[currentBuilding.field]
-              }`}</p>
+              <p className="level-text current-level">{`Level ${currentLevel}`}</p>
             </div>
 
             {/* Arrow Between Images */}
@@ -131,42 +182,36 @@ const Building: React.FC<BuildingProps> = ({
 
             <div className="building-image">
               <img
-                src={`${currentBuilding.buildingUrl}/${
-                  parseInt(filteredNft.content.fields[currentBuilding.field]) +
-                  1
-                }.webp`}
+                src={`${currentBuilding.buildingUrl}/${currentLevel + 1}.webp`}
                 alt="Next Level"
                 className="building-image-zoom"
               />
-              <p className="level-text next-level">{`Level ${
-                parseInt(filteredNft.content.fields[currentBuilding.field]) + 1
-              }`}</p>
+              <p className="level-text next-level">{`Level ${currentLevel + 1
+                }`}</p>
             </div>
           </div>
 
           {/* Upgrade Benefit Text */}
           <div className="upgrade-benefit">
-            {currentBuilding.type === "R. Office" && (
+            {currentBuilding.type === "Office" && (
               <>
-                <p style={{ color: "gray", fontSize: "14px" }}>
+                <p style={{ color: "lightgray", fontSize: "14px" }}>
                   Accumulation Speed:
                 </p>
                 <p
                   className="benefit-value"
-                  style={{ color: "gray", fontSize: "16px" }}
+                  style={{ color: "lightgray", fontSize: "16px" }}
                 >
-                  {`${
-                    gameData.accumulation_speeds[
-                      filteredNft.content.fields[currentBuilding.field]
-                    ] / 1000
-                  } $SITY/hour`}
+                  {`${gameData.accumulation_speeds[currentLevel] / 1000
+                    } $SITY/hour`}
                 </p>
 
                 <p
                   style={{
-                    color: "green",
+                    color: "lightgreen",
                     fontSize: "18px",
                     marginTop: "10px",
+                    marginBottom: "0px",
                   }}
                 >
                   Accumulation Speed (Next Level):
@@ -174,41 +219,49 @@ const Building: React.FC<BuildingProps> = ({
                 <p
                   className="benefit-value next-level"
                   style={{
-                    color: "green",
+                    color: "lightgreen",
                     fontSize: "20px",
                     fontWeight: "bold",
+                    marginTop: "10px",
+                    marginBottom: "0px",
                   }}
                 >
-                  {`${
-                    gameData.accumulation_speeds[
-                      parseInt(
-                        filteredNft.content.fields[currentBuilding.field]
-                      ) + 1
-                    ] / 1000
-                  } $SITY/hour`}
+                  {`${gameData.accumulation_speeds[currentLevel + 1] / 1000
+                    } $SITY/hour`}
+
                 </p>
+
+                <p className="info-text" >
+                  The Office level affects hourly $SITY earnings. Additionally, thanks to dNFT technology, upgrading your building will change the appearance, metadata, and rarity of your NFT.
+
+                </p>
+
+                <a
+                  target="_blank"
+                  className="details"
+                  href="https://docs.suicityp2e.com/buildings/office"
+                  style={{ color: "lightblue", fontSize: "14px", textDecoration: "underline" }}
+                >
+                  more details
+                </a>
               </>
             )}
 
             {currentBuilding.type === "Factory" && (
               <>
-                <p style={{ color: "gray", fontSize: "14px" }}>
+                <p style={{ color: "lightgray", fontSize: "14px" }}>
                   Factory Bonus:
                 </p>
                 <p
                   className="benefit-value"
-                  style={{ color: "gray", fontSize: "16px" }}
+                  style={{ color: "lightgray", fontSize: "16px" }}
                 >
-                  {`${
-                    gameData.factory_bonuses[
-                      filteredNft.content.fields[currentBuilding.field]
-                    ]
-                  }%`}
+                  {`${gameData.factory_bonuses[currentLevel]}%`}
                 </p>
 
                 <p
                   style={{
-                    color: "green",
+                    color: "lightgreen",
                     fontSize: "18px",
                     marginTop: "10px",
                   }}
@@ -218,38 +271,45 @@ const Building: React.FC<BuildingProps> = ({
                 <p
                   className="benefit-value next-level"
                   style={{
-                    color: "green",
+                    color: "lightgreen",
                     fontSize: "20px",
                     fontWeight: "bold",
                   }}
                 >
-                  {`${
-                    gameData.factory_bonuses[
-                      parseInt(
-                        filteredNft.content.fields[currentBuilding.field]
-                      ) + 1
-                    ]
-                  }%`}
+                  {`${gameData.factory_bonuses[currentLevel + 1]}%`}
                 </p>
+
+                <p className="info-text" >
+                  The Factory level affects percentage of daily revenue that can be collected. Additionally, thanks to dNFT technology, upgrading your building will change the appearance, metadata, and rarity of your NFT.
+
+                </p>
+
+                <a
+                  target="_blank"
+                  className="details"
+                  href="https://docs.suicityp2e.com/buildings/factory"
+                  style={{ color: "lightblue", fontSize: "14px", textDecoration: "underline" }}
+                >
+                  more details
+                </a>
               </>
             )}
 
-            {(currentBuilding.type === "House" ||
-              currentBuilding.type === "E. Complex") && (
+            {(currentBuilding.type === "House") && (
               <>
-                <p style={{ color: "gray", fontSize: "14px" }}>
+                <p style={{ color: "lightgray", fontSize: "14px" }}>
                   Amenity Points:
                 </p>
                 <p
                   className="benefit-value"
-                  style={{ color: "gray", fontSize: "16px" }}
+                  style={{ color: "lightgray", fontSize: "16px" }}
                 >
-                  {filteredNft.content.fields[currentBuilding.field]}
+                  {currentLevel}
                 </p>
 
                 <p
                   style={{
-                    color: "green",
+                    color: "lightgreen",
                     fontSize: "18px",
                     marginTop: "10px",
                   }}
@@ -259,23 +319,87 @@ const Building: React.FC<BuildingProps> = ({
                 <p
                   className="benefit-value next-level"
                   style={{
-                    color: "green",
+                    color: "lightgreen",
                     fontSize: "20px",
                     fontWeight: "bold",
                   }}
                 >
-                  {parseInt(filteredNft.content.fields[currentBuilding.field]) +
-                    1}
+                  {Number(currentLevel) + 1}
                 </p>
+
+                <p className="info-text" >
+                  The House level affects Amenity points, impacting the frequency at which the player is required to claim rewards. Additionally, thanks to dNFT technology, upgrading your building will change the appearance, metadata, and rarity of your NFT.
+
+                </p>
+
+                <a
+                  target="_blank"
+                  className="details"
+                  href="https://docs.suicityp2e.com/buildings/house"
+                  style={{ color: "lightblue", fontSize: "14px", textDecoration: "underline" }}
+                >
+                  more details
+                </a>
+
+
               </>
             )}
-            <a
-              target="_blank"
-              className="details"
-              href="https://docs.suicityp2e.com/"
-            >
-              more details
-            </a>
+
+            {(currentBuilding.type === "Entertainment Complex") && (
+              <>
+                <p style={{ color: "lightgray", fontSize: "14px" }}>
+                  Amenity Points:
+                </p>
+                <p
+                  className="benefit-value"
+                  style={{ color: "lightgray", fontSize: "16px" }}
+                >
+                  {currentLevel}
+                </p>
+
+                <p
+                  style={{
+                    color: "lightgreen",
+                    fontSize: "18px",
+                    marginTop: "10px",
+                  }}
+                >
+                  Amenity Points (Next Level):
+                </p>
+                <p
+                  className="benefit-value next-level"
+                  style={{
+                    color: "lightgreen",
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {Number(currentLevel) + 1}
+                </p>
+
+                <p className="info-text" >
+                  The Entertainment C. level affects Amenity points, impacting the frequency at which the player is required to claim rewards. Additionally, thanks to dNFT technology, upgrading your building will change the appearance, metadata, and rarity of your NFT.
+                </p>
+
+                <a
+                  target="_blank"
+                  className="details"
+                  href="https://docs.suicityp2e.com/buildings/entertainment-complex"
+                  style={{ color: "lightblue", fontSize: "14px", textDecoration: "underline" }}
+                >
+                  more details
+                </a>
+
+              </>
+            )}
+            <div
+              style={{
+
+                marginBottom: "6%",
+              }}>
+
+            </div>
+
           </div>
         </div>
       )}
@@ -284,10 +408,10 @@ const Building: React.FC<BuildingProps> = ({
       {currentBuilding.type === "Factory" ? (
         <div>
           {factoryBonusCountdown !== null && factoryBonusCountdown > 0 ? (
-            <p>{`${formatTime(factoryBonusCountdown)}`}</p>
+            <p>{`⌛︎ ${formatTime(factoryBonusCountdown)}`}</p>
           ) : (
             <ClaimFactoryBonus
-              nft={filteredNft}
+              nft={nft}
               onClick={onClaimClick}
               onClaimSuccess={onClaimSuccess}
               onError={onClaimError}
@@ -297,18 +421,22 @@ const Building: React.FC<BuildingProps> = ({
           )}
         </div>
       ) : null}
-
       <Upgrade
-        nft={filteredNft}
+        nft={nft}
         buildingType={buildingIndex}
-        onUpgradeSuccess={onUpgradeSuccess}
-        onClick={() => onUpgradeClick(buildingIndex)}
-        onError={onUpgradeError}
+        officeLevel={officeLevel}
+        factoryLevel={factoryLevel}
+        houseLevel={houseLevel}
+        enterLevel={enterLevel}
+        onUpgradeSuccess={handleUpgradeSuccess}
+        onClick={handleUpgradeClick}
+        onError={handleUpgradeError}
         gameData={gameData}
         showModal={showModal}
         suiBalance={suiBalance}
         sityBalance={sityBalance}
         isTouchDevice={isTouchDevice}
+        isExpanded={isUpgradeInfoExpanded}
       />
     </div>
   );

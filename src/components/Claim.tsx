@@ -34,9 +34,9 @@ const Claim = ({
   });
 
   const checkUserBalance = useCallback(() => {
-    if (suiBalance < 0.005) {
+    if (suiBalance < 0.01) {
       console.log("SUI ALERT!!! : :", suiBalance);
-      showModal("You need more SUI in order to pay gas.", 0);
+      showModal("❗️ You need more SUI in order to pay gas.", 0);
       throw new Error("You need more SUI in order to pay gas.");
     }
 
@@ -73,14 +73,14 @@ const Claim = ({
           onSuccess: () => {
             console.log("Claim successful");
             console.log("Claim successful! Your tokens have been claimed.");
-            showModal("Claim successful! Your tokens have been claimed.", 1); // Show success message in the modal
+            showModal("✅ Claim successful!", 1); // Show success message in the modal
 
             onClaimSuccess(); // Call onSuccess handler
           },
           onError: (error) => {
             console.error("Claim error", error);
             console.log("Error: Unable to claim tokens. Please try again.");
-            showModal(`Error: ${error}`, 0); // Show success message in the modal
+            showModal(`🚫 Error: ${error}`, 0); // Show success message in the modal
 
             onError(); // Call onError handler
           },
@@ -103,9 +103,8 @@ const Claim = ({
   return (
     <div className="flex flex-col gap-6">
       <button
-        className={`mx-auto px-5 py-3 border border-transparent text-base font-medium rounded-md text-white ${
-          isLoading ? "bg-gray-500" : "bg-indigo-600 hover:bg-indigo-700"
-        }`}
+        className={`mx-auto px-5 py-3 border border-transparent text-base font-medium rounded-md text-white ${isLoading ? "bg-gray-500" : "bg-indigo-600 hover:bg-indigo-700"
+          }`}
         disabled={isLoading} // Disable the button while processing
         onClick={() => {
           onClick(); // Call onClick to pause accumulation

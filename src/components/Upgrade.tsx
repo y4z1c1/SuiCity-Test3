@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ADDRESSES } from "../../addresses";
 import { Transaction, coinWithBalance } from "@mysten/sui/transactions";
 import {
@@ -9,19 +9,28 @@ import {
 import { MIST_PER_SUI } from "@mysten/sui/utils";
 
 const Upgrade = ({
-  nft,
   buildingType, // 0 for office, 1 for factory, 2 for house, 3 for entertainment_complex
+  officeLevel, // Level of the residential office
+  factoryLevel, // Level of the factory
+  houseLevel, // Level of the house
+  enterLevel, // Level of the entertainment complex
   onUpgradeSuccess,
   onClick,
   onError,
   gameData, // Pass the gameData object containing cost_multiplier and other values
   showModal, // Add showModal as a prop
-  isTouchDevice, // Add isTouchDevice as a prop
+  // Add isTouchDevice as a prop
   suiBalance, // Receive SUI balance as prop
   sityBalance, // Receive SITY balance as prop
+  nft, // Include the NFT object for transaction purposes
+  isExpanded, // New prop
+
 }: {
-  nft: any;
   buildingType: number;
+  officeLevel: number;
+  factoryLevel: number;
+  houseLevel: number;
+  enterLevel: number;
   onUpgradeSuccess: () => void;
   onClick: () => void;
   onError: () => void;
@@ -30,16 +39,20 @@ const Upgrade = ({
   gameData: any; // Add gameData as a prop
   showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
   isTouchDevice: boolean; // Define the type for isTouchDevice
+  nft: any;
+  isExpanded: boolean; // New prop
+
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const account = useCurrentAccount();
   const suiClient = useSuiClient();
-  const [clickCount, setClickCount] = useState(0);
+
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
     execute: async ({ bytes, signature }) =>
       suiClient.executeTransactionBlock({
         transactionBlock: bytes,
         signature,
+        requestType: "WaitForEffectsCert",
         options: {
           showRawEffects: true,
           showEffects: true,
@@ -48,26 +61,22 @@ const Upgrade = ({
       }),
   });
 
-  // Memoize currentLevel to avoid recalculating on every render
+  // Memoized current level based on building type
   const currentLevel = useMemo(() => {
-    if (!nft?.content?.fields) {
-      console.warn("nft or nft fields are not available yet");
-      return 0;
-    }
     switch (buildingType) {
       case 0:
-        return nft.content.fields.residental_office;
+        return officeLevel;
       case 1:
-        return nft.content.fields.factory;
+        return factoryLevel;
       case 2:
-        return nft.content.fields.house;
+        return houseLevel;
       case 3:
-        return nft.content.fields.entertainment_complex;
+        return enterLevel;
       default:
         console.log("Unknown building type");
         return 0;
     }
-  }, [nft, buildingType]);
+  }, [buildingType, officeLevel, factoryLevel, houseLevel, enterLevel]);
 
   // Memoized function to calculate the upgrade costs based on level and building type
   const getUpgradeCosts = useCallback(
@@ -116,21 +125,21 @@ const Upgrade = ({
     () => getUpgradeCosts(currentLevel),
     [currentLevel, getUpgradeCosts]
   );
+
   // Function to check user's balance before initiating transaction
-  // Check if the user has enough balance to upgrade
   const checkUserBalance = useCallback(() => {
-    if (suiBalance < 0.005) {
-      showModal("You need more SUI in order to pay gas.", 0);
+    if (suiBalance < 0.01) {
+      showModal("❗️ You need more SUI in order to pay gas.", 0);
       throw new Error("You need more SUI in order to pay gas.");
     }
 
     if (costs.sui > 0 && suiBalance * Number(MIST_PER_SUI) < costs.sui) {
-      showModal("Insufficient SUI balance.", 0);
+      showModal("❗️ Insufficient SUI balance.", 0);
       throw new Error("Insufficient SUI balance.");
     }
 
     if (costs.sity > 0 && sityBalance * 1000 < costs.sity) {
-      showModal("Insufficient SITY balance.", 0);
+      showModal("❗️ Insufficient SITY balance.", 0);
       throw new Error("Insufficient SITY balance.");
     }
 
@@ -143,17 +152,10 @@ const Upgrade = ({
       setIsProcessing(true); // Set processing state
       console.log("Processing your upgrade...");
 
-      if (!nft?.content?.fields) {
-        console.error(
-          "nft or nft fields are missing, cannot proceed with upgrade."
-        );
-        return;
-      }
-
       const costs = getUpgradeCosts(currentLevel);
 
       // Check if the user has sufficient balance before proceeding
-      await checkUserBalance(); // Throws error if balance is insufficient
+      checkUserBalance(); // Throws error if balance is insufficient
 
       const transactionBlock = new Transaction();
       transactionBlock.setSender(String(account?.address));
@@ -181,17 +183,12 @@ const Upgrade = ({
           {
             onSuccess: (result) => {
               console.log("Upgrade successful with SUI", result);
-              console.log("Upgrade successful! SUI used.");
-              showModal("Upgrade successful!", 1); // Show success message in the modal
-
+              showModal("✅ Upgrade successful!", 1); // Show success message in the modal
               onUpgradeSuccess();
               setIsProcessing(false); // Reset processing state after success
             },
             onError: (error) => {
               console.error("Upgrade error with SUI", error);
-              console.log("Error: Unable to process SUI transaction.");
-              showModal(`Error: ${error}`, 0); // Show success message in the modal
-
               setIsProcessing(false); // Reset processing state on error
               onError();
             },
@@ -205,7 +202,11 @@ const Upgrade = ({
         transactionBlock.moveCall({
           target: `${ADDRESSES.PACKAGE}::nft::upgrade_building_with_sity`,
           arguments: [
-            transactionBlock.object(nft.objectId),
+            transactionBlock.objectRef({
+              objectId: nft.objectId,
+              digest: nft.digest,
+              version: nft.version,
+            }),
             transactionBlock.object(ADDRESSES.GAME),
             transactionBlock.object(String(buildingType)),
             coinWithBalance({
@@ -221,17 +222,13 @@ const Upgrade = ({
           {
             onSuccess: () => {
               console.log("Upgrade successful with SITY");
-              console.log("Upgrade successful! SITY used.");
-              showModal("Upgrade successful!", 1); // Show success message in the modal
-
+              showModal("✅ Upgrade successful!", 1); // Show success message in the modal
               onUpgradeSuccess();
               setIsProcessing(false); // Reset processing state after success
             },
             onError: (error) => {
               console.error("Upgrade error with SITY", error);
-              console.log("Error: Unable to process SITY transaction.");
-              showModal(`Error: ${error}`, 0); // Show success message in the modal
-
+              showModal(`🚫 Error: ${error}`, 0); // Show error message in the modal
               setIsProcessing(false); // Reset processing state on error
               onError();
             },
@@ -240,12 +237,6 @@ const Upgrade = ({
       }
     } catch (error) {
       console.error("Upgrade Error:", error);
-      if (error instanceof Error) {
-        console.log(error.message || "Error occurred during the upgrade.");
-      } else {
-        console.log("Error occurred during the upgrade.");
-        showModal("Error occurred during the upgrade.", 0); // Show success message in the modal
-      }
       setIsProcessing(false); // Reset processing state on general error
       onError();
     }
@@ -260,56 +251,41 @@ const Upgrade = ({
     checkUserBalance, // Include the balance check logic in the dependencies
   ]);
 
-  // Update the message with current upgrade costs on each change
-  useEffect(() => {
-    const costs = getUpgradeCosts(currentLevel);
-    if (costs.sui > 0) {
-      console.log(
-        `Upgrade for ${(costs.sui / Number(MIST_PER_SUI)).toFixed(2)} SUI`
-      );
-    } else if (costs.sity > 0) {
-      console.log(`Upgrade for ${(costs.sity / 1000).toFixed(2)} SITY`);
-    } else {
-      console.log("No upgrades available");
-    }
-  }, [currentLevel, getUpgradeCosts]);
   const handleClick = () => {
-    setClickCount((prevCount) => prevCount + 1);
-    console.log("Click count:", clickCount);
-
-    console.log("Touch device:", isTouchDevice);
-    if (isTouchDevice) {
-      if (clickCount === 1) {
-        // Trigger upgrade on the second click for mobile devices
-        upgrade();
-        setClickCount(0); // Reset click count after triggering upgrade
-      }
+    if (isExpanded) {
+      // Perform the upgrade logic only if the building is already expanded
+      onClick();
+      upgrade(); // Call the upgrade function
+      console.log("Upgrade initiated...");
     } else {
-      upgrade(); // Directly trigger upgrade for non-touch devices
+      onClick();
+
+      // Do nothing except expanding the building
+      console.log("Building expanded, click again to upgrade.");
     }
   };
+
   return (
     <div>
       {currentLevel < 7 ? (
         <>
           <button
             onClick={() => {
-              onClick(); // Notify parent component to pause accumulation
               handleClick(); // Handle the upgrade logic
             }}
-            disabled={isProcessing || !nft?.content?.fields} // Disable button if processing or nft is not ready
+            disabled={isProcessing} // Disable button if processing
           >
             {isProcessing
               ? "Processing..."
-              : costs.sui > 0
-              ? `Upgrade for ${(costs.sui / Number(MIST_PER_SUI)).toFixed(
-                  2
-                )} $SUI`
-              : `Upgrade for ${(costs.sity / 1000).toFixed(2)} $SITY`}
+              : !isExpanded // If not expanded, show only "Upgrade"
+                ? "Upgrade"
+                : costs.sui > 0
+                  ? `Upgrade for ${(costs.sui / Number(MIST_PER_SUI)).toFixed(2)} $SUI`
+                  : `Upgrade for ${(costs.sity / 1000).toFixed(2)} $SITY`}
           </button>
         </>
       ) : (
-        <p>Max level reached</p> // Message when the level is maxed out
+        <p>Max level reached 🎉</p> // Message when the level is maxed out
       )}
     </div>
   );

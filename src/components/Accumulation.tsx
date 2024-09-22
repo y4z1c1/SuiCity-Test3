@@ -11,6 +11,10 @@ interface AccumulationProps {
   onClaimSuccess: () => void; // Callback when claim is successful
   onClaimError: () => void; // Callback when claim fails
   suiBalance: number; // Pass the user's SUI balance
+  officeLevel: number; // Level of the residential office
+  factoryLevel: number; // Level of the factory
+  houseLevel: number; // Level of the house
+  enterLevel: number; // Level of the entertainment complex
 }
 
 const Accumulation: React.FC<AccumulationProps> = ({
@@ -23,42 +27,67 @@ const Accumulation: React.FC<AccumulationProps> = ({
   onClaimSuccess,
   onClaimError,
   suiBalance,
+  officeLevel,
+  houseLevel,
+  enterLevel,
 }) => {
   const [accumulatedSity, setAccumulatedSity] = useState<number>(0);
   const [countdown, setCountdown] = useState<number | null>(null);
   const accumulationIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Function to calculate accumulated SITY based on NFT data and game speeds
-  const calculateAccumulatedSity = useCallback(() => {
-    if (!nft || !gameData) return 0;
+  const calculateAccumulatedSity = useCallback(
+    (nft: any) => {
+      if (!nft || !gameData) return 0;
 
-    const lastAccumulatedTimestamp = nft.content.fields?.last_accumulated || 0;
-    const residentialOfficeLevel = nft.content.fields?.residental_office || 0;
+      // Fetch relevant fields from the NFT data
+      const lastAccumulatedTimestamp =
+        nft.content.fields?.last_accumulated || 0;
+      const lastClaimedTimestamp = nft.content.fields?.last_claimed || 0;
 
-    const currentTime = Date.now();
-    const elapsedTime = currentTime - lastAccumulatedTimestamp;
+      // Get current time and calculate time elapsed
+      const currentTime = Date.now();
+      const elapsedTime = currentTime - lastAccumulatedTimestamp;
+      const elapsedTimeFromClaim = currentTime - lastClaimedTimestamp;
 
-    const accumulationPerHour =
-      gameData.accumulation_speeds[residentialOfficeLevel];
+      // Calculate the maximum accumulation period based on house and entertainment levels
+      const maxAccumulationPeriod = calculateMaxAccumulation(
+        houseLevel,
+        enterLevel
+      );
 
-    const accumulatedSityMs =
-      elapsedTime * accumulationPerHour * gameData.speed;
-    const accumulatedSity = accumulatedSityMs / 3600000;
+      // Calculate the effective elapsed time by limiting to the max accumulation period
+      let effectiveElapsedTime;
 
-    return accumulatedSity / 1000;
-  }, [nft, gameData]);
+      if (elapsedTimeFromClaim <= maxAccumulationPeriod) {
+        effectiveElapsedTime = elapsedTime;
+      } else {
+        effectiveElapsedTime =
+          maxAccumulationPeriod -
+          (lastAccumulatedTimestamp - lastClaimedTimestamp);
+      }
+
+      // If no effective time has passed, return 0
+      if (effectiveElapsedTime <= 0) return 0;
+
+      // Fetch the accumulation speed based on the residential office level
+      const accumulationPerHour = gameData.accumulation_speeds[officeLevel];
+
+      // Calculate the accumulated SITY based on effective elapsed time (in hours)
+      const accumulatedSityMs =
+        effectiveElapsedTime * accumulationPerHour * gameData.speed;
+
+      const accumulatedSity = accumulatedSityMs / 3600000;
+
+      // Log and return accumulated SITY (adjust division by 100 as needed)
+      return accumulatedSity / 1000;
+    },
+    [nft, gameData]
+  );
 
   // Function to calculate the countdown timer based on house and entertainment levels
   const calculateCountdown = useCallback(() => {
-    const houseLevel = nft.content.fields?.house || 0;
-    const entertainmentComplexLevel =
-      nft.content.fields?.entertainment_complex || 0;
-
-    const maxTime = calculateMaxAccumulation(
-      houseLevel,
-      entertainmentComplexLevel
-    );
+    const maxTime = calculateMaxAccumulation(houseLevel, enterLevel);
     const currentTime = Date.now();
     const lastClaimedTimestamp = nft.content.fields?.last_claimed;
     const elapsedTime = currentTime - lastClaimedTimestamp;
@@ -86,7 +115,7 @@ const Accumulation: React.FC<AccumulationProps> = ({
 
   // Function to start accumulation and countdown intervals
   const startAccumulationAndCountdown = useCallback(() => {
-    if (!nft || isTransactionInProgress) return;
+    if (!nft) return;
 
     if (accumulationIntervalRef.current)
       clearInterval(accumulationIntervalRef.current);
@@ -95,7 +124,7 @@ const Accumulation: React.FC<AccumulationProps> = ({
 
     // Start accumulation interval
     accumulationIntervalRef.current = setInterval(() => {
-      const newAccumulatedSity = calculateAccumulatedSity();
+      const newAccumulatedSity = calculateAccumulatedSity(nft);
       setAccumulatedSity(newAccumulatedSity);
       onAccumulatedSityUpdate(newAccumulatedSity);
     }, 100); // Update every second
@@ -139,33 +168,51 @@ const Accumulation: React.FC<AccumulationProps> = ({
     console.log("Claim button clicked");
   };
 
+  const formatBalance = (balance: number) => {
+    if (balance >= 1000) {
+      return (balance / 1000).toFixed(2) + "k";
+    }
+    return balance.toFixed(2);
+  };
+
   return (
     <div className="accumulated">
-      <h2>
-        <img
-          src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/coins1.webp"
-          alt="coin-icon"
-          className="coin-icon"
-          style={{
-            width: "30px",
-            height: "30px",
-            marginRight: "5px",
-            borderRadius: "50%",
-            transform: "translateY(5px)",
-          }}
-        />
-        {`${accumulatedSity.toFixed(2)} $SITY`}
-      </h2>
-      <p>{countdown ? formatTime(countdown) : "Full"}</p>
+      <div className="accumulated-top">
+
+        <h2>
+          <img
+            src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/coins1.webp"
+            alt="coin-icon"
+            className="coin-icon"
+            style={{
+              width: "30px",
+              height: "30px",
+              marginRight: "5px",
+              borderRadius: "50%",
+              transform: "translateY(5px)",
+            }}
+          />
+          {`${formatBalance(parseFloat((accumulatedSity + nft.content.fields.balance / 1000).toFixed(
+            2
+          )))} $SITY`}
+        </h2>
+      </div>
+      <p>{countdown ? `⌛︎ ${formatTime(countdown)}` : "Full, claim to restart accumulation"}</p>
       <Claim
         nft={nft}
         onClaimSuccess={onClaimSuccess}
-        onClick={handleClick} // Pass the click handler
+        onClick={handleClick}
         onError={onClaimError}
-        showModal={showModal} // Pass showModal as a prop here
-        suiBalance={suiBalance} // Pass the SUI balance
+        showModal={showModal}
+        suiBalance={suiBalance}
       />
+
+
+      <div className="accumulated-bottom">
+      </div>
+
     </div>
+
   );
 };
 

@@ -67,7 +67,7 @@ const ClaimFactoryBonus = ({
         {
           onSuccess: (result) => {
             console.log("Claim successful:", result);
-            console.log("Bonus claimed successfully!");
+            console.log("✅ Bonus claimed successfully!");
             showModal(`Bonus claimed successfully!`, 1); // Show success message in the modal
 
             onClaimSuccess();
@@ -75,7 +75,7 @@ const ClaimFactoryBonus = ({
           onError: (error) => {
             console.error("Claim failed:", error);
             console.log("Failed to claim bonus. Please try again.");
-            showModal(`Error: ${error}`, 0); // Show success message in the modal
+            showModal(`🚫 Error: ${error}`, 0); // Show success message in the modal
 
             onError();
           },

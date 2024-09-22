@@ -88,7 +88,7 @@ const Header: React.FC = () => {
           <li>
             <a href="https://docs.suicityp2e.com" target="_blank">
               {" "}
-              Docs
+              Guide
             </a>
           </li>
           <li>

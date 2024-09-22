@@ -6,6 +6,8 @@
   transition: all 0.1s ease-in-out; /* Smooth transition */
   box-sizing: border-box;
   height: 6vh;
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 .footer-icon {
@@ -195,6 +197,12 @@ ul {
 @media (max-width: 1440px) {
   .feedback-form {
     width: 60%;
+  }
+}
+
+@media (max-width: 1280px) {
+  .footer {
+    margin-top: 60vh;
   }
 }
 @media (max-width: 1024px) {

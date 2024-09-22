@@ -79,7 +79,7 @@ const Balances: React.FC<BalancesProps> = ({
           <div
             className="balance-amount"
             style={{
-              color: suiBalance < 0.005 ? "red" : "inherit", // Text will turn red if balance is below 0.005
+              color: suiBalance < 0.01 ? "red" : "inherit", // Text will turn red if balance is below 0.005
             }}
           >{`${formatBalance(suiBalance)}  $SUI`}</div>
         </div>

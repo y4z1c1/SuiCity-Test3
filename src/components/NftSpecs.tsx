@@ -1,21 +1,26 @@
 import React from "react";
 
 interface NftSpecsProps {
-  filteredNft: any; // The filtered NFT object
+  officeLevel: number; // Level of the residential office
+  factoryLevel: number; // Level of the factory
+  houseLevel: number; // Level of the house
+  enterLevel: number; // Level of the entertainment complex  gameData: any; // Game data, including bonuses and accumulation speeds
   gameData: any; // Game data, including bonuses and accumulation speeds
 }
 
-const NftSpecs: React.FC<NftSpecsProps> = ({ filteredNft, gameData }) => {
+const NftSpecs: React.FC<NftSpecsProps> = ({
+  officeLevel,
+  factoryLevel,
+  houseLevel,
+  enterLevel,
+  gameData,
+}) => {
   const accumulationSpeed =
-    gameData.accumulation_speeds[filteredNft.content.fields.residental_office] /
-    1000;
+    Number(gameData.accumulation_speeds[officeLevel]) / 1000;
 
-  const factoryBonus =
-    gameData.factory_bonuses[filteredNft.content.fields.factory];
+  const factoryBonus = gameData.factory_bonuses[factoryLevel];
 
-  const amenityPoints =
-    parseInt(filteredNft.content.fields.house) +
-    parseInt(filteredNft.content.fields.entertainment_complex);
+  const amenityPoints = Number(houseLevel) + Number(enterLevel);
 
   return (
     <div className="nft-specs">

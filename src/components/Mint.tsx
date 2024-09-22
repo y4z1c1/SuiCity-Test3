@@ -6,11 +6,9 @@ import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 const Mint = ({
   onMintSuccessful, // Add onMintSuccessful prop
   showModal,
-  suiBalance,
 }: {
   showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
   onMintSuccessful: () => void;
-  suiBalance: number;
 }) => {
   const suiClient = useSuiClient();
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
@@ -26,19 +24,9 @@ const Mint = ({
       }),
   });
 
-  const checkUserBalance = useCallback(() => {
-    if (suiBalance < 0.005) {
-      showModal("You need more SUI in order to pay gas.", 0);
-      throw new Error("You should have more SUI in order to pay gas.");
-    }
-
-    return true;
-  }, [suiBalance, showModal]);
-
   const mint = useCallback(async () => {
     try {
       const transactionBlock = new Transaction();
-      await checkUserBalance(); // Check user balance before proceeding
       transactionBlock.moveCall({
         target: `${ADDRESSES.PACKAGE}::nft::build_city`,
         arguments: [
@@ -59,7 +47,7 @@ const Mint = ({
           },
           onError: (error) => {
             console.error("Mint error:", error);
-            showModal(`Error: ${error}`, 0); // Show success message in the modal
+            showModal(`🚫 Error: ${error}`, 0); // Show success message in the modal
           },
         }
       );
@@ -68,7 +56,7 @@ const Mint = ({
     }
   }, [signAndExecute, onMintSuccessful]);
 
-  const reset = useCallback(() => {}, []);
+  const reset = useCallback(() => { }, []);
 
   useEffect(() => {
     reset();
@@ -77,11 +65,13 @@ const Mint = ({
   return (
     <div className="flex flex-col gap-6">
       <button
-        className="mx-auto px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+        className="mint-button"
         onClick={mint}
       >
-        Build your SuiCity
+        🏙️ Free Mint your SuiCity
       </button>
+
+      <p>You will be able to claim your tokens after minting.</p>
     </div>
   );
 };

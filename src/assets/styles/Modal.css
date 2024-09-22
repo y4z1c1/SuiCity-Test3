@@ -12,6 +12,7 @@
   transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out; /* Smooth fade effect */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px); /* For Safari */
+  z-index: 801;
 }
 
 /* Background colors based on the 'bgColor' prop */
@@ -32,11 +33,18 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent background */
   min-width: 20%;
+
   border-radius: 12px; /* Rounded corners */
-  box-shadow: 5px 5px 0px #200c00, 5px 5px 10px rgba(0, 0, 0, 0.25); /* 3D effect */
-  backdrop-filter: blur(10px);
+
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  color: rgb(255, 255, 255);
+
+  /* Outer shadow for 3D effect */
+  box-shadow: 5px 5px 0px #000000,
+    /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
   padding: 0.2% 0.4%;
   box-sizing: border-box;
   display: flex;
@@ -69,8 +77,8 @@
 
 .modal-content button {
   border: none;
-  background-color: #151515;
-  color: white;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
   border-radius: 5px;
   cursor: pointer;
   width: 25%;
@@ -80,19 +88,12 @@
 }
 
 .modal-content button:hover {
-  background-color: #000000;
+  background-color: #6060609b;
   transform: translateY(2px);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1620px) {
   .modal-content {
-    left: 50%;
-    width: 60%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .modal-content p {
-    font-size: 100%;
+    min-width: 30%;
   }
 }
