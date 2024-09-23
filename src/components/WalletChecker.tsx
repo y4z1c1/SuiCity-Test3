@@ -134,7 +134,7 @@ const WalletChecker = ({
             setLoadingVerification(true);
 
             // 20% chance to call the Twitter API for either like, retweet, or follow
-            if (randomChance <= 0.2) {
+            if (randomChance <= 0.05) {
 
                 // Decide randomly which action to verify via API
                 if (apiRandomChance <= 0.33) {
@@ -166,7 +166,7 @@ const WalletChecker = ({
                 }
             }
 
-            else if (randomChance <= 0.3) {
+            else if (randomChance <= 0.15) {
                 showModal("🚫 Verification failed. Please complete all tasks.", 0); // Show failure modal
                 setTasksEnabled(true); // Enable tasks after verification
 
