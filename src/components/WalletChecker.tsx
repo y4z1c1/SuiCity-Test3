@@ -405,7 +405,7 @@ const WalletChecker = ({
                                 disabled={!tasksEnabled}
 
                                 onClick={() => {
-                                    const tweetText = `I have just claimed ${totalAirdrop} $SITY airdrop! Freemint your @SuiCityP2E NFT and dive into the game! Check your allocated starting $SITY airdrop and start earning & building $SITY. 🏙️ play.suicityp2e.com`;
+                                    const tweetText = `I have just claimed ${totalAirdrop} $SITY airdrop! Freemint your @SuiCityP2E NFT and dive into the game! Check your allocated starting $SITY airdrop and start earning & building $SITY. 🏙️ %0A%0Aplay.suicityp2e.com`;
                                     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=https://twitter.com/SuiCityP2E/status/${tweetId}`;
 
                                     window.open(tweetUrl, '_blank');
