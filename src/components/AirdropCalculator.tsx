@@ -358,6 +358,12 @@ const AirdropCalculator = ({
         total += suiActivityBonus;
         breakdown.push(`SUI Activity ✅ : +${suiActivityBonus} $SITY`);
 
+        // Cap the total airdrop to 20,000 if it exceeds that value
+        if (total > 20000) {
+            total = 20000;
+        }
+
+
         setAirdropBreakdown(breakdown);
         setTotalAirdrop(total);
         localStorage.setItem("total_airdrop", String(total));
