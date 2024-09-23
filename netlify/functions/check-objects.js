@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 
-export const handler = async (event, context) => {
+export const handler = async (event) => {
   const MONGODB_URI = process.env.MONGODB_URI;
   const DATABASE_NAME = "EligibleObjects";
   const COLLECTION_NAME = "objects";
@@ -22,38 +22,33 @@ export const handler = async (event, context) => {
     const db = client.db(DATABASE_NAME);
     const collection = db.collection(COLLECTION_NAME);
 
-    // Check if any objectId is already associated with a different wallet
+    // Check if the objectIds exist in the database and belong to another wallet
+    const conflictingObjects = [];
+    const ownedObjects = [];
+
     const existingEntries = await collection
       .find({ objectIds: { $in: objectIds } })
       .toArray();
 
-    if (existingEntries.length > 0) {
-      // Check if any of the found entries belong to a different wallet
-      const conflictingWallets = existingEntries.filter(
-        (entry) => entry.wallet !== wallet
-      );
+    existingEntries.forEach((entry) => {
+      entry.objectIds.forEach((objectId) => {
+        if (objectIds.includes(objectId)) {
+          if (entry.wallet !== wallet) {
+            conflictingObjects.push(objectId);
+          } else {
+            ownedObjects.push(objectId);
+          }
+        }
+      });
+    });
 
-      if (conflictingWallets.length > 0) {
-        // Conflict found, return error
-        await client.close();
-        return {
-          statusCode: 403,
-          body: JSON.stringify({
-            error: "Some objects are already claimed by a different wallet.",
-            conflictingWallets: conflictingWallets.map((entry) => entry.wallet),
-          }),
-        };
-      }
-    }
-
-    // Close the connection
     await client.close();
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message:
-          "No conflicting objects found. Objects are eligible for addition.",
+        conflictingObjects,
+        ownedObjects,
       }),
     };
   } catch (error) {

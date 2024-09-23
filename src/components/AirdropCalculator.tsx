@@ -241,7 +241,7 @@ const AirdropCalculator = ({
                         if (kioskType.length > 240) {
                             return
                         }
-                        const collectionName = nftCollectionMapping[nftType] || nftCollectionMapping[kioskType] || "Unknown Collection";
+                        const collectionName = nftCollectionMapping[nftType] || nftCollectionMapping[kioskType] || "";
 
                         // Call check-objects Netlify function to verify if the object is used by another wallet
                         const checkResponse = await fetch("/.netlify/functions/check-objects", {
@@ -252,9 +252,19 @@ const AirdropCalculator = ({
                             }),
                         });
 
+                        if (processedCollections.includes(collectionName)) {
+                            return
+                        }
+
                         const checkResult = await checkResponse.json();
-                        if (checkResponse.status !== 200 || checkResult.conflictingWallets?.length > 0) {
-                            console.error(`Skipping object ${nft.data?.objectId}, as it's used by another wallet.`);
+                        if (checkResponse.status !== 200) {
+                            console.error("Error checking object ownership");
+                            return; // Skip this object due to an error
+                        }
+
+                        // If the object belongs to another wallet, skip it
+                        if (checkResult.conflictingObjects.includes(nft.data?.objectId)) {
+                            console.log(`Skipping object ${nft.data?.objectId}, as it belongs to another wallet.`);
                             return; // Skip this object and don't count it
                         }
 
@@ -262,7 +272,7 @@ const AirdropCalculator = ({
                             const airdropValue = airdropValues.nft[airdropKey];
                             total += airdropValue;
 
-                            breakdown.push(`Holding ${collectionName} NFT ✅ : +${airdropValue} $SITY`);
+                            breakdown.push(`Holding ${collectionName || "NFT"} ✅ : +${airdropValue} $SITY`);
                             processedCollections.push(collectionName);
                             eligibleObjectIds.push(nft.data?.objectId); // Add eligible object ID
 
