@@ -36,6 +36,8 @@ const WalletChecker = ({
     };
 
 
+    const tweetLink = "1834908891349406060";
+
 
     // Mimic checking if liked
     const checkIfLikedTweetAPI = async () => {
@@ -403,7 +405,7 @@ const WalletChecker = ({
                                 className="task-button"
                                 disabled={!tasksEnabled}
 
-                                onClick={() => { window.open(`https://twitter.com/intent/tweet?text=Check%20this%20out!&url=https://twitter.com/SuiCityP2E/status/1834908891349406060`, '_blank'); setIsQuoted(true); }}
+                                onClick={() => { window.open(`https://twitter.com/intent/tweet?text=I%20have%2just%20claimed%20${totalAirdrop}%20$SITY%20airdrop!%20Freemint%20your%20@SuiCityP2E%20NFT%20and%20dive%20intp%20the%20game!%20Check%20your%20allocated%20starting%20$SITY%20airdrop%20and%20start%20earning%20&%20building%20$SITY.%20🏙️%20play.suicityp2e.com&url=https://twitter.com/SuiCityP2E/status/${tweetLink}`, '_blank'); setIsQuoted(true); }}
                             >
                                 ✍️ Quote the Tweet
                             </button>
@@ -411,7 +413,7 @@ const WalletChecker = ({
                                 className="task-button"
                                 disabled={!tasksEnabled}
 
-                                onClick={() => { window.open(`https://twitter.com/intent/like?tweet_id=1834908891349406060`, '_blank'); setIsLiked(true); }}
+                                onClick={() => { window.open(`https://twitter.com/intent/like?tweet_id=${tweetLink}`, '_blank'); setIsLiked(true); }}
                             >
                                 ❤️ Like the Tweet
                             </button>
@@ -419,7 +421,7 @@ const WalletChecker = ({
                                 className="task-button"
                                 disabled={!tasksEnabled}
 
-                                onClick={() => { window.open(`https://twitter.com/intent/retweet?tweet_id=1834908891349406060`, '_blank'); setIsRetweeted(true); }}
+                                onClick={() => { window.open(`https://twitter.com/intent/retweet?tweet_id=${tweetLink}`, '_blank'); setIsRetweeted(true); }}
                             >
                                 🔁 Retweet the Tweet
                             </button>
