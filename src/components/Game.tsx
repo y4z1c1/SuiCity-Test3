@@ -621,7 +621,7 @@ const Game: React.FC = () => {
 
       // Switch to an alternative RPC URL temporarily
       const provider = new SuiClient({
-        url: "https://sui-mainnet-endpoint.blockvision.org",
+        url: "https://sui-rpc.publicnode.com",
       });
 
       // Retry the request with the new RPC URL
