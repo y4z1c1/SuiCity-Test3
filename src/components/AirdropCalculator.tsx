@@ -83,6 +83,7 @@ const AirdropCalculator = ({
         "0x9414ec1700b5c391122cab0bb11781394098ec64403b6aa8b2e64bbef7e9e37b::bluemove_launchpad::SuiPunks": "Sui Punks",
         "0xbb35722bdffea8d6b19cbb329673d1ae77f17ee83e1cab23615e9c0c55dc4dfa::keepsake_nft::KEEPSAKE": "Sui Duckz",
         "0xf417417b1914266b634b3dc90050be9f28fb755e9d29f36d1892012e0ad6f816::novagen::Novagen": "Novagen",
+        "0x4125c462e4dc35631e7b31dc0c443930bd96fbd24858d8e772ff5b225c55a792::avatars::Avatar": "Cosmocadia"
 
     };
 
