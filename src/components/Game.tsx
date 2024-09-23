@@ -1138,7 +1138,7 @@ const Game: React.FC = () => {
 
                       {/* Add a darken overlay when a building is hovered */}
                       <div className={`darken-overlay ${isHovered ? 'visible' : ''}`}></div>
-                      <div className={`darken-overlay-2 ${(!hasNftInDb) && filteredNft ? 'visible' : ''}`}></div>
+                      <div className={`darken-overlay-2 ${(storedSignature || airdropAmount > 0) && filteredNft ? 'visible' : ''}`}></div>
 
 
                     </>
