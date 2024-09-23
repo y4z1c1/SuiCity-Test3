@@ -69,12 +69,7 @@ const Game: React.FC = () => {
   const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
   const audioRef = useRef<HTMLAudioElement | null>(null); // Ref to the audio element
   // Play the click sound
-  const playClickSound = () => {
-    if (clickAudioRef.current) {
-      clickAudioRef.current.currentTime = 0; // Rewind to start
-      clickAudioRef.current.play().catch(err => console.error("Failed to play click sound:", err));
-    }
-  };
+
   useEffect(() => {
     if (connectionStatus === "connected") {
       setIsGameActive(true); // Set game active when wallet is connected
@@ -230,7 +225,6 @@ const Game: React.FC = () => {
   );
 
   const handleBuildingClick = (index: number) => {
-    playClickSound(); // Play sound on building click
 
     setCurrentBuildingIndex(index); // Set the clicked building as the current one
     setMapUrl(""); // Clear the map URL when a building is clicked
@@ -255,7 +249,6 @@ const Game: React.FC = () => {
   // Helper to cancel any ongoing transaction
   const cancelCurrentTransaction = () => {
     if (transactionType) {
-      console.log(`Cancelling ${transactionType} transaction...`);
       setTransactionType(null);
       setTransactionInProgress(false);
     }
@@ -276,7 +269,6 @@ const Game: React.FC = () => {
 
   // Helper to fetch game data
   const fetchGameData = useCallback(async () => {
-    console.log("Fetching game data...");
     try {
       const gameDataResponse = await provider.getObject({
         id: ADDRESSES.GAME,
@@ -321,7 +313,6 @@ const Game: React.FC = () => {
 
   useEffect(() => {
     if (filteredNft && gameData && !isLoading && !isAwaitingBlockchain) {
-      console.log("Starting accumulation and countdown...");
       const nft = filteredNft;
       startCountdownInterval(nft);
 
@@ -346,7 +337,6 @@ const Game: React.FC = () => {
   };
 
   const handleUpgradeClick = async (buildingType: number) => {
-    playClickSound(); // Play sound on building click
 
     if (isTouchDevice) {
       // Check if the view is expanded
@@ -360,7 +350,6 @@ const Game: React.FC = () => {
         setIsUpgradeInfoExpanded(false);
         setTransactionType("upgrade");
         setTransactionInProgress(true);
-        console.log("UPGRADE CLICKED", buildingType);
         // Call upgrade function here
       }
     } else {
@@ -389,7 +378,6 @@ const Game: React.FC = () => {
     preloadImage(newBuildingUrl);
     preloadImage(newPosUrl);
 
-    console.log("Loading new building images for upgraded level", newLevel);
 
   };
 
@@ -427,7 +415,6 @@ const Game: React.FC = () => {
 
         const data = await response.json();
         if (data.success) {
-          console.log("NFT data successfully added to database.");
 
           // Store the NFT ID in local storage to prevent future redundant additions
           localStorage.setItem("added_nft_id", filteredNft.objectId);
@@ -441,7 +428,6 @@ const Game: React.FC = () => {
   }, [filteredNft, account?.address, triggerBalanceRefresh, showModal]);
 
   const handleClaimClick = () => {
-    playClickSound(); // Play sound on building click
 
     cancelCurrentTransaction(); // Cancel ongoing transaction
     setTransactionType("claim");
@@ -450,7 +436,6 @@ const Game: React.FC = () => {
     // Proceed with claim logic...
   };
   const handleUpgradeSuccess = async () => {
-    console.log("UPGRADE SUCCESSFUL, awaiting new data...");
 
     // Store the previous levels before refreshing NFT data
     const previousLevels = {
@@ -476,9 +461,6 @@ const Game: React.FC = () => {
         enter,
       };
 
-      console.log("Checking for level change...");
-      console.log("Previous levels:", previousLevels);
-      console.log("New levels:", newLevels);
 
       // Check if any of the levels have increased
       return (
@@ -523,14 +505,12 @@ const Game: React.FC = () => {
 
   const handleClaimSuccess = () => {
     setTimeout(() => {
-      console.log("CLAIM SUCCESSFUL, awaiting new data...");
       refreshNft();
       setTransactionType(null);
       setIsAwaitingBlockchain(true);
       triggerBalanceRefresh(); // Trigger balance refresh
       setTransactionInProgress(false);
     }, 2000); // 2000 milliseconds = 2 seconds
-    console.log("OUT");
   };
 
   const handleError = () => {
@@ -579,7 +559,7 @@ const Game: React.FC = () => {
         (nft) => String(nft.data?.type) === `${ADDRESSES.NFT_TYPE}`
       );
 
-      console.log("Filtered NFT found:", nft?.data);
+      console.log("NFT found:", nft?.data);
 
       setFilteredNft(nft?.data || null);
       if (nft?.data) {
@@ -624,7 +604,6 @@ const Game: React.FC = () => {
   }, [account]);
 
   const handleMapButtonClick = () => {
-    playClickSound(); // Play sound on building click
 
     setMapUrl("https://bafybeig5ettnunvapmokcki3xjqwzxb3qmvsvj3qmi4mpelcsitpq6z7ui.ipfs.w3s.link/");
     setIsBuildingClickable(true); // Re-enable clickable areas when the map is shown
@@ -651,7 +630,6 @@ const Game: React.FC = () => {
     if (containerRef.current) {
       const { width, height } = containerRef.current.getBoundingClientRect();
       setContainerSize({ width, height });
-      console.log("Container size updated:", width, height);
     }
   };
 

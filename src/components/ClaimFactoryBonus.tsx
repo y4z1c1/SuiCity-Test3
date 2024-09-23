@@ -48,7 +48,6 @@ const ClaimFactoryBonus = ({
       const transactionBlock = new Transaction();
 
       await checkUserBalance(); // Check user balance before proceeding
-      console.log("Claiming bonus for NFT:", nft.objectId);
       transactionBlock.moveCall({
         target: `${ADDRESSES.PACKAGE}::nft::claim_factory_bonus`,
         arguments: [
@@ -67,14 +66,12 @@ const ClaimFactoryBonus = ({
         {
           onSuccess: (result) => {
             console.log("Claim successful:", result);
-            console.log("✅ Bonus claimed successfully!");
-            showModal(`Bonus claimed successfully!`, 1); // Show success message in the modal
+            showModal(`✅ Bonus claimed successfully!`, 1); // Show success message in the modal
 
             onClaimSuccess();
           },
           onError: (error) => {
             console.error("Claim failed:", error);
-            console.log("Failed to claim bonus. Please try again.");
             showModal(`🚫 Error: ${error}`, 0); // Show success message in the modal
 
             onError();
@@ -83,7 +80,6 @@ const ClaimFactoryBonus = ({
       );
     } catch (error) {
       console.error("Claim Error:", error);
-      console.log("An error occurred. Please try again.");
 
       onError();
     } finally {

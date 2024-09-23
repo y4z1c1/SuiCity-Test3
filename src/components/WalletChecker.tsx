@@ -198,7 +198,6 @@ const WalletChecker = ({
         }
 
         const message = `Binding Twitter ID ${screenName} to wallet ${currentAccount.address}`;
-        console.log("Binding message:", message);
 
         // Sign the message
         signPersonalMessage(
@@ -207,7 +206,6 @@ const WalletChecker = ({
             },
             {
                 onSuccess: async (result) => {
-                    console.log("Signature:", result.signature);
 
                     // Send the signature and message to the backend
                     try {

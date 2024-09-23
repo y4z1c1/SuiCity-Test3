@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { ADDRESSES } from "../../addresses.ts"; // Import the addresses
 import { Transaction } from "@mysten/sui/transactions";
 import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
@@ -35,7 +35,6 @@ const Claim = ({
 
   const checkUserBalance = useCallback(() => {
     if (suiBalance < 0.01) {
-      console.log("SUI ALERT!!! : :", suiBalance);
       showModal("❗️ You need more SUI in order to pay gas.", 0);
       throw new Error("You need more SUI in order to pay gas.");
     }
@@ -47,12 +46,9 @@ const Claim = ({
   const claim = useCallback(async () => {
     try {
       setIsLoading(true); // Set loading state
-      console.log("Processing your claim...");
       await checkUserBalance(); // Check user balance before proceeding
 
       const transactionBlock = new Transaction();
-
-      console.log("Claiming tokens for NFT:", nft.objectId);
 
       transactionBlock.moveCall({
         target: `${ADDRESSES.PACKAGE}::nft::claim_sity`,
@@ -71,7 +67,6 @@ const Claim = ({
         { transaction: transactionBlock },
         {
           onSuccess: () => {
-            console.log("Claim successful");
             console.log("Claim successful! Your tokens have been claimed.");
             showModal("✅ Claim successful!", 1); // Show success message in the modal
 
@@ -79,7 +74,6 @@ const Claim = ({
           },
           onError: (error) => {
             console.error("Claim error", error);
-            console.log("Error: Unable to claim tokens. Please try again.");
             showModal(`🚫 Error: ${error}`, 0); // Show success message in the modal
 
             onError(); // Call onError handler
@@ -88,7 +82,6 @@ const Claim = ({
       );
     } catch (error) {
       console.error("Claim Error:", error);
-      console.log("Error: Unable to claim tokens. Please try again.");
 
       onError(); // Catch and handle any outer error
     } finally {
@@ -96,9 +89,7 @@ const Claim = ({
     }
   }, [nft, signAndExecute, onClaimSuccess, onError]);
 
-  useEffect(() => {
-    console.log("claim your accumulated tokens");
-  }, []);
+
 
   return (
     <div className="flex flex-col gap-6">

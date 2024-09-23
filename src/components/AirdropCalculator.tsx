@@ -86,8 +86,7 @@ const AirdropCalculator = ({
 
     };
 
-    const calculateAirdropForToken = (tokenType: string, balance: number, min: number, max: number) => {
-        console.log(`Calculating airdrop for token: ${tokenType}, balance: ${balance}`);
+    const calculateAirdropForToken = (_tokenType: string, balance: number, min: number, max: number) => {
         if (balance < min) return 0;
         if (balance >= max) return 500;
         const points = 100 + ((balance - min) * 400) / (max - min);
@@ -97,7 +96,6 @@ const AirdropCalculator = ({
 
 
     const calculateSuiActivityBonus = (totalObjects: number) => {
-        console.log(`Calculating SUI activity bonus, total objects: ${totalObjects}`);
         const maxBonus = 750;
         const maxObjects = 500;
         return totalObjects >= maxObjects ? maxBonus : Math.round((totalObjects / maxObjects) * maxBonus);
@@ -119,8 +117,6 @@ const AirdropCalculator = ({
                     limit: 50, // Fetch in batches to avoid hitting rate limits
                 });
 
-                console.log(`Fetched ${data.length} objects`);
-
                 // If no data is fetched, exit the loop to avoid unnecessary calls
                 if (data.length === 0) {
                     hasMore = false;
@@ -135,12 +131,10 @@ const AirdropCalculator = ({
             for (const obj of allObjects) {
                 const kioskId = obj?.data?.content?.fields?.kiosk;
                 if (kioskId) {
-                    console.log(`Fetching kiosk items for kioskId: ${kioskId}`);
                     const kioskItems = await kioskClient.getKiosk({
                         id: kioskId,
                         options: { withObjects: true, objectOptions: { showPreviousTransaction: true } },
                     });
-                    console.log(`Fetched ${kioskItems.items.length} kiosk items`);
                     allObjects.push(...kioskItems.items); // Add kiosk items to the object list
                 }
             }
@@ -156,15 +150,12 @@ const AirdropCalculator = ({
 
     const fetchAllKiosks = async () => {
         if (!currentAccount?.address) return [];
-        console.log(`Fetching kiosks for user: ${currentAccount.address}`);
         const { kioskIds } = await kioskClient.getOwnedKiosks({ address: currentAccount.address });
-        console.log(`Found ${kioskIds.length} kiosk(s)`);
         const kioskItems = await Promise.all(
             kioskIds.map(async (kioskId) => {
 
 
                 const kioskData = await kioskClient.getKiosk({ id: kioskId, options: { withObjects: true, objectOptions: { showPreviousTransaction: true } } });
-                console.log(`Fetched ${kioskData.items.length} items from kioskId: ${kioskId}`);
                 return kioskData.items;
             })
         );
@@ -173,7 +164,6 @@ const AirdropCalculator = ({
 
     const fetchTokenBalances = async () => {
         if (!currentAccount?.address) return;
-        console.log(`Fetching token balances for user: ${currentAccount.address}`);
 
         try {
             const tokenBalances: { [key: string]: number } = {};
@@ -184,7 +174,6 @@ const AirdropCalculator = ({
                         coinType: tokenType,
                     });
                     const balance = parseInt(tokenBalance.totalBalance) || 0;
-                    console.log(`Fetched balance for ${tokenType}: ${balance}`);
                     tokenBalances[tokenType] = balance;
                 })
             );
@@ -197,11 +186,9 @@ const AirdropCalculator = ({
 
     const fetchCSV = async (url: string): Promise<string[]> => {
         try {
-            console.log(`Fetching CSV from ${url}`);
             const response = await fetch(url);
             const csvText = await response.text();
             const walletAddresses = csvText.split("\n").map(line => line.trim());
-            console.log(`Fetched ${walletAddresses.length} wallet addresses from CSV`);
             return walletAddresses;
         } catch (error) {
             console.error(`Error fetching CSV from ${url}:`, error);
@@ -211,7 +198,6 @@ const AirdropCalculator = ({
 
 
     const calculateAirdrop = async () => {
-        console.log("Starting airdrop calculation");
         setLoadingAirdrop(true);
 
         const [mainnetObjects, testnetObjects, kioskItems, tokenBalances] = await Promise.all([
@@ -268,14 +254,13 @@ const AirdropCalculator = ({
 
                         const checkResult = await checkResponse.json();
                         if (checkResponse.status !== 200 || checkResult.conflictingWallets?.length > 0) {
-                            console.log(`Skipping object ${nft.data?.objectId}, as it's used by another wallet.`);
+                            console.error(`Skipping object ${nft.data?.objectId}, as it's used by another wallet.`);
                             return; // Skip this object and don't count it
                         }
 
                         if (!processedCollections.includes(collectionName)) {
                             const airdropValue = airdropValues.nft[airdropKey];
                             total += airdropValue;
-                            console.log(`Processing NFT: ${nftType} from collection: ${collectionName}`);
 
                             breakdown.push(`Holding ${collectionName} NFT ✅ : +${airdropValue} $SITY`);
                             processedCollections.push(collectionName);
@@ -338,7 +323,6 @@ const AirdropCalculator = ({
 
         Object.keys(tokenBalances || {}).forEach((tokenType) => {
             const balance = tokenBalances ? tokenBalances[tokenType] : 0;
-            console.log(`Processing token ${tokenType}, balance: ${balance}`);
             const tokenSymbol = (tokenType.split("::").pop() || "Unknown Token") as string;
 
             if (tokenRanges.hasOwnProperty(tokenSymbol)) {
@@ -364,7 +348,6 @@ const AirdropCalculator = ({
         total += suiActivityBonus;
         breakdown.push(`SUI Activity ✅ : +${suiActivityBonus} $SITY`);
 
-        console.log(`Final airdrop total: ${total}`);
         setAirdropBreakdown(breakdown);
         setTotalAirdrop(total);
         localStorage.setItem("total_airdrop", String(total));
@@ -375,7 +358,6 @@ const AirdropCalculator = ({
 
     const signMessage = async () => {
         if (!message) return;
-        console.log("Signing message");
 
         try {
             const response = await fetch("/.netlify/functions/sign-message", {
@@ -385,7 +367,6 @@ const AirdropCalculator = ({
 
             const data = await response.json();
             if (data.hexSign) {
-                console.log("Message signed successfully");
                 setSignature(data.hexSign);
                 localStorage.setItem("airdrop_signature", data.hexSign);
             } else {
@@ -399,14 +380,12 @@ const AirdropCalculator = ({
 
     useEffect(() => {
         if (currentAccount?.address) {
-            console.log("Wallet address detected, calculating airdrop...");
             calculateAirdrop();
         }
     }, [currentAccount?.address]);
 
     useEffect(() => {
         if (totalAirdrop !== null && message) {
-            console.log("Signing message after airdrop calculation");
             signMessage();
         }
     }, [totalAirdrop, message]);

@@ -83,7 +83,6 @@ const ClaimReference = ({
       }
 
       setReferenceWalletAddress(refData.walletAddress);
-      console.log("Reference wallet address fetched:", refData.walletAddress);
 
       // Step 2: Sign the reference claim automatically
       const signResponse = await fetch("/.netlify/functions/ref-sign", {
@@ -107,7 +106,6 @@ const ClaimReference = ({
       setMySignature(signData.hexSign); // Set the signature
       setHashedMessage(signData.message); // Set the hashed message
 
-      console.log("Signature and message received.");
 
       // Check if the reference code belongs to the current user
       if (refData.walletAddress === currentAccount.address) {
@@ -131,13 +129,11 @@ const ClaimReference = ({
         ],
       });
 
-      console.log("Transaction prepared. Executing...");
 
       signAndExecute(
         { transaction: transactionBlock },
         {
-          onSuccess: async (result) => {
-            console.log("Claim successful", result);
+          onSuccess: async () => {
             onClaimSuccessful(); // Trigger the success callback
             setRefUsed(true); // Disable the button after successful claim
             showModal("✅ Claim Successful!", 1); // Show success modal
