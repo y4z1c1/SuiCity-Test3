@@ -64,11 +64,39 @@ const Game: React.FC = () => {
   const [isCastleHovered, setIsCastleHovered] = useState(false);
   const [preloadedVideoUrls] = useState<{ [key: string]: string }>({}); // Store preloaded video URLs
   const clickAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for click sound
+  const [hasNftInDb, setHasNftInDb] = useState<boolean>(false); // Track if the user has an NFT in the database
+
 
   // Add this state to manage the sound
   const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
   const audioRef = useRef<HTMLAudioElement | null>(null); // Ref to the audio element
   // Play the click sound
+
+  const checkIfUserHasNft = useCallback(async () => {
+    try {
+      const response = await fetch("/.netlify/functions/check-nft", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ walletAddress: account?.address }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setHasNftInDb(data.hasNft); // Update the state based on the response
+      } else {
+        console.error("Failed to check NFT status:", data.error);
+      }
+    } catch (error) {
+      console.error("Error checking if user has NFT:", error);
+    }
+  }, [account?.address]);
+  useEffect(() => {
+    if (connectionStatus === "connected" && account?.address) {
+      checkIfUserHasNft(); // Check if the user has an NFT in the database
+    }
+  }, [connectionStatus, account?.address, checkIfUserHasNft]);
 
   useEffect(() => {
     if (connectionStatus === "connected") {
@@ -806,7 +834,7 @@ const Game: React.FC = () => {
 
 
 
-          {storedSignature && airdropAmount > 0 && (
+          {storedSignature && airdropAmount > 0 && !hasNftInDb && (
             <ClaimReward
               mySignature={storedSignature}
               hashedMessage={`Airdrop reward claim for wallet ${account?.address}`}
@@ -815,6 +843,7 @@ const Game: React.FC = () => {
               onClaimSuccessful={handleAirdropClaimSuccess}
             />
           )}
+
 
 
 
@@ -1059,7 +1088,7 @@ const Game: React.FC = () => {
 
                       {/* Add a darken overlay when a building is hovered */}
                       <div className={`darken-overlay ${isHovered ? 'visible' : ''}`}></div>
-                      <div className={`darken-overlay-2 ${(storedSignature || airdropAmount > 0) && filteredNft ? 'visible' : ''}`}></div>
+                      <div className={`darken-overlay-2 ${(!hasNftInDb) && filteredNft ? 'visible' : ''}`}></div>
 
 
                     </>
