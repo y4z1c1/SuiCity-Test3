@@ -612,18 +612,68 @@ const Game: React.FC = () => {
           setHouse(fields.buildings[2]);
           setEnter(fields.buildings[3]);
         }
-
-
       }
 
       setIsLoading(false); // Mark loading as complete once NFT is fetched
       setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
     } catch (error) {
-      console.error("Error refreshing NFTs:", error);
-      setIsLoading(false); // Stop loading if error occurs
-      setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
+      console.error("Error refreshing NFTs, switching RPC:", error);
+
+      // Switch to an alternative RPC URL temporarily
+      const provider = new SuiClient({
+        url: "https://sui-mainnet-endpoint.blockvision.org",
+      });
+
+      // Retry the request with the new RPC URL
+      try {
+        const allObjects: any[] = [];
+        let lastObject = null;
+        let hasMore = true;
+
+        while (hasMore) {
+          const object = await provider.getOwnedObjects({
+            owner: String(account?.address),
+            cursor: lastObject?.data?.[lastObject.data.length - 1]?.data?.objectId || null,
+            options: { showType: true, showContent: true },
+          });
+
+          allObjects.push(...object.data);
+
+          if (object.data.length === 0 || !object.nextCursor) {
+            hasMore = false;
+          } else {
+            lastObject = object;
+          }
+        }
+
+        const nft = allObjects.find(
+          (nft) => String(nft.data?.type) === `${ADDRESSES.NFT_TYPE}`
+        );
+
+        console.log("NFT found with new RPC:", nft?.data);
+
+        setFilteredNft(nft?.data || null);
+        if (nft?.data) {
+          const fields = nft.data.content.fields;
+
+          if (fields.buildings) {
+            setOffice(fields.buildings[0]);
+            setFactory(fields.buildings[1]);
+            setHouse(fields.buildings[2]);
+            setEnter(fields.buildings[3]);
+          }
+        }
+
+        setIsLoading(false);
+        setIsAwaitingBlockchain(false);
+      } catch (error) {
+        console.error("Error refreshing NFTs after switching RPC:", error);
+        setIsLoading(false);
+        setIsAwaitingBlockchain(false);
+      }
     }
   }, [account?.address]);
+
 
 
   // Re-fetch NFTs and balances when account changes
