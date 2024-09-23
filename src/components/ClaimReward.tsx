@@ -45,14 +45,9 @@ const ClaimReward = ({
 
   const claimReward = useCallback(async () => {
     try {
-      console.log("ClaimReward function invoked");
-      console.log("Signature received (hex):", mySignature);
-      console.log("Hashed message received (hex):", hashedMessage);
-      console.log("Amount to claim:", amount);
 
       // Convert the hex signature to Uint8Array
       const signatureArray = hexToUint8Array(mySignature);
-      console.log("Signature array (Uint8Array):", signatureArray);
 
       const transactionBlock = new Transaction();
 
@@ -67,7 +62,6 @@ const ClaimReward = ({
         ],
       });
 
-      console.log("Transaction prepared. Executing...");
 
       signAndExecute(
         {

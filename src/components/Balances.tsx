@@ -23,7 +23,6 @@ const Balances: React.FC<BalancesProps> = ({
 
   const fetchBalances = useCallback(async () => {
     if (!account?.address) return;
-    console.log("Fetching balances...");
 
     try {
       const [sityResponse, suiResponse] = await Promise.all([
@@ -37,9 +36,6 @@ const Balances: React.FC<BalancesProps> = ({
       const fetchedSityBalance = parseInt(sityResponse.totalBalance) / 1000;
       const fetchedSuiBalance =
         parseInt(suiResponse.totalBalance) / Number(MIST_PER_SUI);
-
-      console.log("SITY balance fetched:", fetchedSityBalance);
-      console.log("SUI balance fetched:", fetchedSuiBalance);
 
       // Update state
       setSityBalance(fetchedSityBalance);

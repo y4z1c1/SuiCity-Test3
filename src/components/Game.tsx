@@ -199,9 +199,22 @@ const Game: React.FC = () => {
     setIsTouchDevice(isTouch);
   }, []);
 
+
+
   // Inside your Game component
   const [modalMessage, setModalMessage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMuted, setIsMuted] = useState(false); // State to track if the game is muted
+
+  // Toggle the mute state
+  const handleMuteClick = () => {
+    setIsMuted((prevMuted) => !prevMuted);
+  };
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -699,6 +712,9 @@ const Game: React.FC = () => {
           </audio>
           <audio ref={clickAudioRef} src="/click.mp3" preload="auto" />
 
+
+
+
         </>
       )}
       <div
@@ -818,6 +834,9 @@ const Game: React.FC = () => {
                       onBalancesUpdate={handleBalancesUpdate}
                       refreshTrigger={refreshBalances}
                     />
+                    <button onClick={handleMuteClick} className="mute-button">
+                      {isMuted ? "🔇 Unmute" : "🔊 Mute"}
+                    </button>
 
 
                     {/* New NftSpecs component */}

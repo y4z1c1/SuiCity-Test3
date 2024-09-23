@@ -176,7 +176,6 @@ const Building: React.FC<BuildingProps> = ({
     // Set loading state until new image is loaded
     setIsLoadingNewLevel(true);
 
-    console.log("Loading new level...");
 
     // Simulate loading new image (until it is fully loaded)
     const img = new Image();
