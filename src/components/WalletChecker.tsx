@@ -17,7 +17,7 @@ const WalletChecker = ({
     const [checkedBoundStatus, setCheckedBoundStatus] = useState<boolean>(false); // Track if the bound check has been made
     const [bindingChecked, setBindingChecked] = useState<boolean>(false); // Track if the bind check has been completed
     const currentAccount = useCurrentAccount(); // Get the current wallet address
-    const tweetId = "1834908891349406060"; // Example tweet ID to check
+    const tweetId = "1837828610373161016"; // Example tweet ID to check
     const { mutate: signPersonalMessage } = useSignPersonalMessage(); // Hook to sign message
     const [loadingVerification, setLoadingVerification] = useState<boolean>(false); // Track verification loading state
     const [totalAirdrop, setTotalAirdrop] = useState<number | null>(null); // Track total airdrop value
@@ -36,7 +36,6 @@ const WalletChecker = ({
     };
 
 
-    const tweetLink = "1834908891349406060";
 
 
     // Mimic checking if liked
@@ -405,7 +404,7 @@ const WalletChecker = ({
                                 className="task-button"
                                 disabled={!tasksEnabled}
 
-                                onClick={() => { window.open(`https://twitter.com/intent/tweet?text=I%20have%2just%20claimed%20${totalAirdrop}%20$SITY%20airdrop!%20Freemint%20your%20@SuiCityP2E%20NFT%20and%20dive%20intp%20the%20game!%20Check%20your%20allocated%20starting%20$SITY%20airdrop%20and%20start%20earning%20&%20building%20$SITY.%20🏙️%20play.suicityp2e.com&url=https://twitter.com/SuiCityP2E/status/${tweetLink}`, '_blank'); setIsQuoted(true); }}
+                                onClick={() => { window.open(`https://twitter.com/intent/tweet?text=I%20have%2just%20claimed%20${totalAirdrop}%20$SITY%20airdrop!%20Freemint%20your%20@SuiCityP2E%20NFT%20and%20dive%20intp%20the%20game!%20Check%20your%20allocated%20starting%20$SITY%20airdrop%20and%20start%20earning%20&%20building%20$SITY.%20🏙️%20play.suicityp2e.com&url=https://twitter.com/SuiCityP2E/status/${tweetId}`, '_blank'); setIsQuoted(true); }}
                             >
                                 ✍️ Quote the Tweet
                             </button>
@@ -413,7 +412,7 @@ const WalletChecker = ({
                                 className="task-button"
                                 disabled={!tasksEnabled}
 
-                                onClick={() => { window.open(`https://twitter.com/intent/like?tweet_id=${tweetLink}`, '_blank'); setIsLiked(true); }}
+                                onClick={() => { window.open(`https://twitter.com/intent/like?tweet_id=${tweetId}`, '_blank'); setIsLiked(true); }}
                             >
                                 ❤️ Like the Tweet
                             </button>
@@ -421,7 +420,7 @@ const WalletChecker = ({
                                 className="task-button"
                                 disabled={!tasksEnabled}
 
-                                onClick={() => { window.open(`https://twitter.com/intent/retweet?tweet_id=${tweetLink}`, '_blank'); setIsRetweeted(true); }}
+                                onClick={() => { window.open(`https://twitter.com/intent/retweet?tweet_id=${tweetId}`, '_blank'); setIsRetweeted(true); }}
                             >
                                 🔁 Retweet the Tweet
                             </button>
