@@ -388,7 +388,7 @@ const WalletChecker = ({
                             <h3>Complete the following tasks:</h3>
                             <button
                                 className="task-button"
-                                disabled={!tasksEnabled}
+                                disabled={!tasksEnabled || !isAirdropCalculated}
 
                                 onClick={() => {
                                     window.open('https://x.com/intent/user?screen_name=SuiCityP2E', '_blank');
@@ -400,7 +400,7 @@ const WalletChecker = ({
 
                             <button
                                 className="task-button"
-                                disabled={!tasksEnabled}
+                                disabled={!tasksEnabled || !isAirdropCalculated}
 
                                 onClick={() => {
                                     const tweetText = `I have just claimed ${totalAirdrop} $SITY airdrop! Freemint your @SuiCityP2E NFT and dive into the game! Check your allocated starting $SITY airdrop and start earning & building $SITY. 🏙️ play.suicityp2e.com`;
@@ -414,7 +414,7 @@ const WalletChecker = ({
                             </button>
                             <button
                                 className="task-button"
-                                disabled={!tasksEnabled}
+                                disabled={!tasksEnabled || !isAirdropCalculated}
 
                                 onClick={() => { window.open(`https://twitter.com/intent/like?tweet_id=${tweetId}`, '_blank'); setIsLiked(true); }}
                             >
@@ -422,7 +422,7 @@ const WalletChecker = ({
                             </button>
                             <button
                                 className="task-button"
-                                disabled={!tasksEnabled}
+                                disabled={!tasksEnabled || !isAirdropCalculated}
 
                                 onClick={() => { window.open(`https://twitter.com/intent/retweet?tweet_id=${tweetId}`, '_blank'); setIsRetweeted(true); }}
                             >
