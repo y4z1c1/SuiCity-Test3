@@ -82,31 +82,43 @@ const Upgrade = ({
   const getUpgradeCosts = useCallback(
     (level: number) => {
       const officeHouseCosts = [
-        { sui: 1, sity: 0 },
-        { sui: 0, sity: 240 },
-        { sui: 5, sity: 0 },
-        { sui: 0, sity: 1280 },
-        { sui: 25, sity: 0 },
-        { sui: 0, sity: 5120 },
-        { sui: 100, sity: 0 },
+        { sui: 0.8, sity: 0 },
+        { sui: 0, sity: 620 },
+        { sui: 4, sity: 0 },
+        { sui: 0, sity: 2900 },
+        { sui: 20, sity: 0 },
+        { sui: 0, sity: 9400 },
+        { sui: 75, sity: 0 },
         { sui: 0, sity: 0 },
       ];
 
-      const factoryEntertainmentCosts = [
-        { sui: 0, sity: 80 },
-        { sui: 2.25, sity: 0 },
-        { sui: 0, sity: 640 },
-        { sui: 12, sity: 0 },
-        { sui: 0, sity: 2560 },
-        { sui: 50, sity: 0 },
-        { sui: 0, sity: 10240 },
+      const factoryCosts = [
+        { sui: 0, sity: 200 },
+        { sui: 0, sity: 620 },
+        { sui: 0, sity: 1400 },
+        { sui: 9.5, sity: 0 },
+        { sui: 0, sity: 6200 },
+        { sui: 35, sity: 0 },
+        { sui: 0, sity: 20000 },
+        { sui: 0, sity: 0 },
+      ];
+
+      const enterCosts = [
+        { sui: 0, sity: 200 },
+        { sui: 1.8, sity: 0 },
+        { sui: 0, sity: 1400 },
+        { sui: 9.5, sity: 0 },
+        { sui: 0, sity: 6200 },
+        { sui: 35, sity: 0 },
+        { sui: 0, sity: 20000 },
         { sui: 0, sity: 0 },
       ];
 
       const baseCosts =
         buildingType === 0 || buildingType === 2
           ? officeHouseCosts[level]
-          : factoryEntertainmentCosts[level];
+          : buildingType === 1 ? factoryCosts[level]
+            : enterCosts[level];
 
       const costMultiplier = gameData?.cost_multiplier || 100;
       return {

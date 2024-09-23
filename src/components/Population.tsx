@@ -94,7 +94,7 @@ const Population: React.FC<PopulationProps> = ({
           )} $SITY! 🚀 Check out the game now! @SuiCityP2E`;
           const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
             tweetText
-          )}&url=https://suicityp2e.com`;
+          )}&url=https://play.suicityp2e.com`;
 
           window.open(twitterUrl, "_blank");
         }}

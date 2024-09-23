@@ -505,6 +505,7 @@ const Game: React.FC = () => {
       console.warn("Reached retry limit without detecting a level increase.");
       // You can add logic here to handle the failure case, e.g., show a message to the user
       setIsAwaitingBlockchain(false);
+      triggerBalanceRefresh(); // Trigger balance refresh
       setTransactionInProgress(false);
       return;
     }
