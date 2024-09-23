@@ -209,25 +209,6 @@ const AirdropCalculator = ({
         }
     };
 
-    const addCheckedObjectsToDB = async (wallet: any, objectIds: any) => {
-        try {
-            const response = await fetch("/.netlify/functions/checkAndAddObjects", {
-                method: "POST",
-                body: JSON.stringify({ wallet, objectIds }),
-            });
-            const result = await response.json();
-
-            if (response.ok) {
-                console.log("Successfully added eligible object IDs to MongoDB:", result);
-            } else {
-                console.error("Failed to add eligible object IDs to MongoDB:", result.error);
-                showModal(result.error, 0); // Show the error message to the user
-            }
-        } catch (error) {
-            console.error("Error calling Netlify function:", error);
-            showModal("Error checking object IDs", 0);
-        }
-    };
 
     const calculateAirdrop = async () => {
         console.log("Starting airdrop calculation");
@@ -276,6 +257,20 @@ const AirdropCalculator = ({
                         }
                         const collectionName = nftCollectionMapping[nftType] || nftCollectionMapping[kioskType] || "Unknown Collection";
 
+                        // Call check-objects Netlify function to verify if the object is used by another wallet
+                        const checkResponse = await fetch("/.netlify/functions/check-objects", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                wallet: currentAccount?.address || "",
+                                objectIds: [nft.data?.objectId], // Pass the object ID to check
+                            }),
+                        });
+
+                        const checkResult = await checkResponse.json();
+                        if (checkResponse.status !== 200 || checkResult.conflictingWallets?.length > 0) {
+                            console.log(`Skipping object ${nft.data?.objectId}, as it's used by another wallet.`);
+                            return; // Skip this object and don't count it
+                        }
 
                         if (!processedCollections.includes(collectionName)) {
                             const airdropValue = airdropValues.nft[airdropKey];
@@ -306,8 +301,22 @@ const AirdropCalculator = ({
             // Wait for all promises to complete
             await Promise.all(promises);
 
+            // Call add-objects Netlify function to add eligible objects to the database
             if (currentAccount?.address && eligibleObjectIds.length > 0) {
-                await addCheckedObjectsToDB(currentAccount.address, eligibleObjectIds);
+                const addResponse = await fetch("/.netlify/functions/add-objects", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        wallet: currentAccount.address,
+                        objectIds: eligibleObjectIds, // Pass eligible object IDs to be added
+                    }),
+                });
+
+                const addResult = await addResponse.json();
+                if (addResponse.status !== 200) {
+                    console.error("Failed to add eligible object IDs to MongoDB:", addResult.error);
+                } else {
+                    console.log("Successfully added eligible object IDs to MongoDB:", addResult.message);
+                }
             }
 
             // If there were errors in transaction validity checks, inform the user
