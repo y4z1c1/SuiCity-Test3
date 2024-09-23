@@ -243,30 +243,30 @@ const AirdropCalculator = ({
                         }
                         const collectionName = nftCollectionMapping[nftType] || nftCollectionMapping[kioskType] || "";
 
-                        // // Call check-objects Netlify function to verify if the object is used by another wallet
-                        // const checkResponse = await fetch("/.netlify/functions/check-objects", {
-                        //     method: "POST",
-                        //     body: JSON.stringify({
-                        //         wallet: currentAccount?.address || "",
-                        //         objectIds: [nft.data?.objectId], // Pass the object ID to check
-                        //     }),
-                        // });
+                        // Call check-objects Netlify function to verify if the object is used by another wallet
+                        const checkResponse = await fetch("/.netlify/functions/check-objects", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                wallet: currentAccount?.address || "",
+                                objectIds: [nft.data?.objectId], // Pass the object ID to check
+                            }),
+                        });
 
-                        // if (processedCollections.includes(collectionName)) {
-                        //     return
-                        // }
+                        if (processedCollections.includes(collectionName)) {
+                            return
+                        }
 
-                        // const checkResult = await checkResponse.json();
-                        // if (checkResponse.status !== 200) {
-                        //     console.error("Error checking object ownership");
-                        //     return; // Skip this object due to an error
-                        // }
+                        const checkResult = await checkResponse.json();
+                        if (checkResponse.status !== 200) {
+                            console.error("Error checking object ownership");
+                            return; // Skip this object due to an error
+                        }
 
-                        // // If the object belongs to another wallet, skip it
-                        // if (checkResult.conflictingObjects.includes(nft.data?.objectId)) {
-                        //     console.log(`Skipping object ${nft.data?.objectId}, as it belongs to another wallet.`);
-                        //     return; // Skip this object and don't count it
-                        // }
+                        // If the object belongs to another wallet, skip it
+                        if (checkResult.conflictingObjects.includes(nft.data?.objectId)) {
+                            console.log(`Skipping object ${nft.data?.objectId}, as it belongs to another wallet.`);
+                            return; // Skip this object and don't count it
+                        }
 
                         if (!processedCollections.includes(collectionName)) {
                             const airdropValue = airdropValues.nft[airdropKey];
