@@ -161,6 +161,8 @@ const Game: React.FC = () => {
   const updatePopulation = async () => {
 
     console.log("Attempting to update population...");
+    console.log("1)Account:", account?.address);
+    console.log("2)Total Population:", totalPopulation);
 
     if (!account?.address) return; // Ensure the account is connected
     if (!totalPopulation) return; // Ensure there is a population to update
