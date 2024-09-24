@@ -65,6 +65,11 @@ const Population: React.FC<PopulationProps> = ({
       console.error("No account address found");
       return;
     }
+    if (!accumulatedSity) { return; }
+    if (!sityBalance) { return; }
+
+
+
 
     console.log("Updating population for account:", account.address, "with population:", totalPopulation);
 
@@ -73,7 +78,7 @@ const Population: React.FC<PopulationProps> = ({
         method: "POST",
         body: JSON.stringify({
           walletAddress: account.address,
-          population: totalPopulation,
+          population: parseInt(totalPopulation.toString()),
         }),
         headers: {
           "Content-Type": "application/json",
@@ -102,11 +107,11 @@ const Population: React.FC<PopulationProps> = ({
       }, 60000);
 
       return () => clearInterval(intervalId); // Clean up the interval on component unmount
-    }, 10000);
+    }, 30000);
 
     return () => clearTimeout(initialTimeout); // Clean up the initial timeout
 
-  }, [account?.address]);
+  }, [account?.address,]);
 
 
   return (
