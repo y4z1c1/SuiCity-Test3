@@ -148,9 +148,8 @@ const ClaimReward = ({
   return (
     <div className="claim-reward">
       {isCheckingNft || isClaiming ? (
-        <p>Checking eligibility...</p>
-      ) : hasNftInDb ? (
-        <p>You already claimed your airdrop!</p>
+        <></>
+      ) : hasNftInDb ? (<></>
       ) : (
         <button onClick={handleClaimClick} disabled={isCheckingNft || isClaiming}>
           🎁 Claim {amount} $SITY Allocation
