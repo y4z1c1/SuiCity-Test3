@@ -65,8 +65,7 @@ const Game: React.FC = () => {
   const [preloadedVideoUrls] = useState<{ [key: string]: string }>({}); // Store preloaded video URLs
   const clickAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for click sound
   const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(null); // Initialize as null to avoid confusion
-  const [isCheckingNft, setIsCheckingNft] = useState(false);
-  const [canClaimReward, setCanClaimReward] = useState(false);
+
 
   // Add this state to manage the sound
   const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
@@ -478,18 +477,7 @@ const Game: React.FC = () => {
     }
   }, [filteredNft, account?.address, triggerBalanceRefresh, showModal]);
 
-  const handleAirdropClick = async () => {
-    setIsCheckingNft(true); // Set loading state
-    await checkIfUserHasNft(); // Call function to check if the user has NFT in DB
 
-    if (!hasNftInDb) {
-      setCanClaimReward(true); // Allow the claim if no NFT exists in DB
-    } else {
-      setCanClaimReward(false); // Block the claim if NFT exists
-      console.error("❌ You already have an NFT in the database!", 0); // Show error message
-    }
-    setIsCheckingNft(false); // End loading state
-  };
 
   const handleClaimClick = () => {
 
