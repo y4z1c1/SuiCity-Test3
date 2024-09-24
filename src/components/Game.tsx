@@ -64,7 +64,7 @@ const Game: React.FC = () => {
   const [isCastleHovered, setIsCastleHovered] = useState(false);
   const [preloadedVideoUrls] = useState<{ [key: string]: string }>({}); // Store preloaded video URLs
   const clickAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for click sound
-  const [hasNftInDb, setHasNftInDb] = useState<boolean>(false); // Track if the user has an NFT in the database
+  const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(null); // Track if the user has an NFT in the database
 
 
   // Add this state to manage the sound
@@ -84,11 +84,14 @@ const Game: React.FC = () => {
 
       const data = await response.json();
       if (data.success) {
-        setHasNftInDb(data.hasNft); // Update the state based on the response
+        setHasNftInDb(true); // Update the state based on the response
+        console.log("User has NFT in the database.");
       } else {
+        setHasNftInDb(false); // Update the state based on the response
         console.error("Failed to check NFT status:", data.error);
       }
     } catch (error) {
+      setHasNftInDb(false); // Set to null in case of an error
       console.error("Error checking if user has NFT:", error);
     }
   }, [account?.address]);
@@ -884,7 +887,7 @@ const Game: React.FC = () => {
 
 
 
-          {storedSignature && airdropAmount > 0 && hasNftInDb && (
+          {storedSignature && airdropAmount > 0 && !hasNftInDb && (
             <ClaimReward
               mySignature={storedSignature}
               hashedMessage={`Airdrop reward claim for wallet ${account?.address}`}
