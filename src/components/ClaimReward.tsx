@@ -149,7 +149,7 @@ const ClaimReward = ({
   return (
     <div className="claim-reward">
       {isCheckingNft || isClaiming ? (
-        <>loading...</>
+        <><p style={{ color: "white" }}>loading...</p></>
       ) : hasNftInDb ? (<></>
       ) : (
         <button onClick={handleClaimClick} disabled={isCheckingNft || isClaiming}>
