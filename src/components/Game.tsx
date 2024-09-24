@@ -891,7 +891,7 @@ const Game: React.FC = () => {
 
 
 
-          {storedSignature && !hasNftInDb && (
+          {storedSignature && airdropAmount > 0 && !hasNftInDb && (
             <ClaimReward
               mySignature={storedSignature}
               hashedMessage={`Airdrop reward claim for wallet ${account?.address}`}
