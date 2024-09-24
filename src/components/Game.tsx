@@ -158,55 +158,56 @@ const Game: React.FC = () => {
 
   const FIVE_MINUTES = 5 * 60 * 1000; // 5 minutes in milliseconds
 
+  console.log("total popularion is ", totalPopulation);
 
-  useEffect(() => {
-    const updatePopulation = async () => {
-      try {
-        const response = await fetch("/.netlify/functions/add-population", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            walletAddress: account?.address, // Wallet address from your connected account
-            population: totalPopulation,     // Total population value from the Population component
-          }),
-        });
+  // useEffect(() => {
+  //   const updatePopulation = async () => {
+  //     try {
+  //       const response = await fetch("/.netlify/functions/add-population", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           walletAddress: account?.address, // Wallet address from your connected account
+  //           population: totalPopulation,     // Total population value from the Population component
+  //         }),
+  //       });
 
-        const data = await response.json();
-        if (data.success) {
-          console.log("Population updated successfully:", data.message);
-        } else {
-          console.error("Failed to update population:", data.error);
-        }
-      } catch (error) {
-        console.error("Error updating population:", error);
-      }
-    };
+  //       const data = await response.json();
+  //       if (data.success) {
+  //         console.log("Population updated successfully:", data.message);
+  //       } else {
+  //         console.error("Failed to update population:", data.error);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error updating population:", error);
+  //     }
+  //   };
 
-    // A ref to keep track of the last time the population was updated
-    const lastUpdateRef = useRef<number>(0);
+  //   // A ref to keep track of the last time the population was updated
+  //   const lastUpdateRef = useRef<number>(0);
 
-    const handlePopulationUpdate = () => {
-      const currentTime = Date.now();
+  //   const handlePopulationUpdate = () => {
+  //     const currentTime = Date.now();
 
-      // Only send an update if 5 minutes have passed since the last update
-      if (currentTime - lastUpdateRef.current >= FIVE_MINUTES) {
-        lastUpdateRef.current = currentTime; // Update the last updated time
-        updatePopulation(); // Trigger the population update
-      }
-    };
+  //     // Only send an update if 5 minutes have passed since the last update
+  //     if (currentTime - lastUpdateRef.current >= FIVE_MINUTES) {
+  //       lastUpdateRef.current = currentTime; // Update the last updated time
+  //       updatePopulation(); // Trigger the population update
+  //     }
+  //   };
 
-    // Set an interval to call the function every 5 minutes
-    const intervalId = setInterval(() => {
-      if (account?.address) {
-        handlePopulationUpdate(); // Update population every 5 minutes
-      }
-    }, FIVE_MINUTES);
+  //   // Set an interval to call the function every 5 minutes
+  //   const intervalId = setInterval(() => {
+  //     if (account?.address) {
+  //       handlePopulationUpdate(); // Update population every 5 minutes
+  //     }
+  //   }, FIVE_MINUTES);
 
-    // Clean up the interval when the component unmounts
-    return () => clearInterval(intervalId);
-  }, [account?.address, totalPopulation]); // Track account and population changes
+  //   // Clean up the interval when the component unmounts
+  //   return () => clearInterval(intervalId);
+  // }, [account?.address, totalPopulation]); // Track account and population changes
 
 
 
