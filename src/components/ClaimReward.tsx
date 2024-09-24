@@ -34,7 +34,19 @@ const ClaimReward = ({
 
   const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(null);
   const [isCheckingNft, setIsCheckingNft] = useState(true); // Track NFT check loading state
+  const [isClaiming, setIsClaiming] = useState(false); // Track claim loading state
+  const handleClaimClick = async () => {
+    setIsClaiming(true); // Start claim loading state
+    await checkIfUserHasNft(); // Recheck NFT status before claim
 
+    if (!hasNftInDb) {
+      await claimReward(); // Proceed with the claim if no NFT in the database
+    } else {
+      showModal("❌ You already claimed your airdrop!", 0); // Show error if NFT exists
+    }
+
+    setIsClaiming(false); // End claim loading state
+  };
   const currentAccount = useCurrentAccount();
   const checkIfUserHasNft = useCallback(async () => {
     try {
@@ -124,12 +136,12 @@ const ClaimReward = ({
   }, [reset]);
   return (
     <div className="claim-reward">
-      {isCheckingNft ? (
+      {isCheckingNft || isClaiming ? (
         <p>Checking eligibility...</p>
       ) : hasNftInDb ? (
         <p>You already claimed your airdrop!</p>
       ) : (
-        <button onClick={claimReward} disabled={isCheckingNft}>
+        <button onClick={handleClaimClick} disabled={isCheckingNft || isClaiming}>
           🎁 Claim {amount} $SITY Allocation
         </button>
       )}
