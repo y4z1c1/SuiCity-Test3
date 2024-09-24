@@ -19,6 +19,8 @@ const Game: React.FC = () => {
 
   const { connectionStatus } = useCurrentWallet();
 
+
+
   useEffect(() => {
     if (connectionStatus === "connected") {
       document.body.classList.remove("disconnected"); // Set background for connected wallet
@@ -28,6 +30,8 @@ const Game: React.FC = () => {
   }, [connectionStatus]);
 
   const account = useCurrentAccount();
+
+
 
   const [filteredNft, setFilteredNft] = useState<any>(null); // Storing only a single filtered NFT
   const [accumulatedSity, setAccumulatedSity] = useState<number>(0);
@@ -66,7 +70,13 @@ const Game: React.FC = () => {
   const clickAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for click sound
   const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(null); // Initialize as null to avoid confusion
 
+  // State to store the total population
+  const [totalPopulation, setTotalPopulation] = useState<number>(0);
 
+  // Function to handle population update from Population component
+  const handlePopulationUpdate = (newPopulation: number) => {
+    setTotalPopulation(newPopulation);
+  };
   // Add this state to manage the sound
   const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
   const audioRef = useRef<HTMLAudioElement | null>(null); // Ref to the audio element
@@ -143,6 +153,36 @@ const Game: React.FC = () => {
       setAirdropAmount(parseInt(airdrop));
     } else {
       setAirdropAmount(0); // Ensure airdrop amount is cleared if not found
+    }
+  }, []);
+
+  useEffect(() => {
+    const updatePopulation = async () => {
+      try {
+        const response = await fetch("/.netlify/functions/add-population", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            walletAddress: account?.address, // Wallet address from your connected account
+            population: totalPopulation,     // Total population value from the Population component
+          }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          console.log("Population updated successfully:", data.message);
+        } else {
+          console.error("Failed to update population:", data.error);
+        }
+      } catch (error) {
+        console.error("Error updating population:", error);
+      }
+    };
+
+    if (account?.address) {
+      updatePopulation(); // Call function when page loads or is refreshed
     }
   }, []);
 
@@ -1222,6 +1262,8 @@ const Game: React.FC = () => {
                     factoryLevel={factory}
                     houseLevel={house}
                     enterLevel={enter}
+                    onPopulationUpdate={handlePopulationUpdate} // Pass the handler function
+
                   />
 
                 </>

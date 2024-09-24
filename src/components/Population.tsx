@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 interface PopulationProps {
   filteredNft: any; // The user's filtered NFT object
@@ -8,6 +8,8 @@ interface PopulationProps {
   factoryLevel: number; // Level of the factory
   houseLevel: number; // Level of the house
   enterLevel: number; // Level of the entertainment complex
+  onPopulationUpdate: (population: number) => void; // Callback function to update population in parent
+
 }
 
 const Population: React.FC<PopulationProps> = ({
@@ -18,6 +20,7 @@ const Population: React.FC<PopulationProps> = ({
   factoryLevel,
   houseLevel,
   enterLevel,
+  onPopulationUpdate,
 }) => {
   // Function to format the balance for readability
   const formatBalance = (balance: number) => {
@@ -54,7 +57,12 @@ const Population: React.FC<PopulationProps> = ({
 
   // Calculate the total population including accumulated SITY
   const population = calculatePopulation();
-  const totalPopulation = population + accumulatedSity;
+  const totalPopulation = population + accumulatedSity + sityBalance;
+
+  // Call the callback to update the parent component when totalPopulation changes
+  useEffect(() => {
+    onPopulationUpdate(totalPopulation);
+  }, [totalPopulation, onPopulationUpdate]);
 
   return (
     <div className="population">
