@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useCurrentAccount } from "@mysten/dapp-kit";
 
 interface PopulationProps {
   filteredNft: any; // The user's filtered NFT object
@@ -8,8 +9,6 @@ interface PopulationProps {
   factoryLevel: number; // Level of the factory
   houseLevel: number; // Level of the house
   enterLevel: number; // Level of the entertainment complex
-  onPopulationUpdate: (population: number) => void; // Callback function to update population in parent
-
 }
 
 const Population: React.FC<PopulationProps> = ({
@@ -20,8 +19,9 @@ const Population: React.FC<PopulationProps> = ({
   factoryLevel,
   houseLevel,
   enterLevel,
-  onPopulationUpdate,
 }) => {
+  const account = useCurrentAccount(); // Get the current account
+
   // Function to format the balance for readability
   const formatBalance = (balance: number) => {
     if (balance >= 1000) {
@@ -59,15 +59,59 @@ const Population: React.FC<PopulationProps> = ({
   const population = calculatePopulation();
   const totalPopulation = population + accumulatedSity + sityBalance;
 
-  // Call the callback to update the parent component when totalPopulation changes
+  // Function to call the Netlify function to update the population in MongoDB
+  const updatePopulation = async () => {
+    if (!account?.address) {
+      console.error("No account address found");
+      return;
+    }
+
+    console.log("Updating population for account:", account.address, "with population:", totalPopulation);
+
+    try {
+      const response = await fetch("/.netlify/functions/add-population", {
+        method: "POST",
+        body: JSON.stringify({
+          walletAddress: account.address,
+          population: totalPopulation,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        console.error("Failed to update population");
+      } else {
+        console.log("Population updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating population:", error);
+    }
+  };
+
+  // Set up the interval to call the function every minute, starting 10 seconds after mount
   useEffect(() => {
-    onPopulationUpdate(totalPopulation);
-  }, [totalPopulation, onPopulationUpdate]);
+    console.log("Setting up population update interval");
+    const initialTimeout = setTimeout(() => {
+      updatePopulation(); // Initial call after 10 seconds
+
+      // Set the interval to call every minute (60000 ms)
+      const intervalId = setInterval(() => {
+        updatePopulation();
+      }, 60000);
+
+      return () => clearInterval(intervalId); // Clean up the interval on component unmount
+    }, 10000);
+
+    return () => clearTimeout(initialTimeout); // Clean up the initial timeout
+
+  }, [account?.address]);
+
 
   return (
     <div className="population">
       <div className="population-top">
-
         <h2>
           <img
             src="https://bafybeiahevtcpw4pxgklnglmoayfoer3asgha6ajk3pxbu35g4npwb54ey.ipfs.w3s.link/peop1.webp"
@@ -82,12 +126,9 @@ const Population: React.FC<PopulationProps> = ({
           />
           {`${formatBalance(totalPopulation)}`}
         </h2>
-
       </div>
 
-      <p>
-        Population
-      </p>
+      <p>Population</p>
 
       <button
         onClick={() => {
