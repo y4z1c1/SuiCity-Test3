@@ -908,7 +908,7 @@ const Game: React.FC = () => {
 
 
           {storedSignature && airdropAmount > 0 && !canClaimReward && (
-            <button onClick={handleClaimClick} disabled={isCheckingNft}>
+            <button onClick={handleAirdropClick} disabled={isCheckingNft}>
               {isCheckingNft ? "Checking..." : "Claim Airdrop"}
             </button>
           )}
