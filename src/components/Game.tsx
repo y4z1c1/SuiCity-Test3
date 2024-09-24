@@ -64,7 +64,7 @@ const Game: React.FC = () => {
   const [isCastleHovered, setIsCastleHovered] = useState(false);
   const [preloadedVideoUrls] = useState<{ [key: string]: string }>({}); // Store preloaded video URLs
   const clickAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for click sound
-  const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(null); // Track if the user has an NFT in the database
+  const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(true); // Track if the user has an NFT in the database
 
 
   // Add this state to manage the sound
