@@ -35,6 +35,7 @@ const ClaimReward = ({
   const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(null);
   const [isCheckingNft, setIsCheckingNft] = useState(true); // Track NFT check loading state
   const [isClaiming, setIsClaiming] = useState(false); // Track claim loading state
+
   const handleClaimClick = async () => {
     setIsClaiming(true); // Start claim loading state
     await checkIfUserHasNft(); // Recheck NFT status before claim
@@ -47,6 +48,7 @@ const ClaimReward = ({
 
     setIsClaiming(false); // End claim loading state
   };
+
   const currentAccount = useCurrentAccount();
   const checkIfUserHasNft = useCallback(async () => {
     try {

@@ -437,14 +437,15 @@ const Game: React.FC = () => {
     localStorage.removeItem("airdrop_signature");
     localStorage.removeItem("total_airdrop");
 
-    checkIfUserHasNft(); // Check if the user has an NFT in the database
 
     setStoredSignature(null); // Remove signature from state
     setAirdropAmount(0); // Set airdrop amount to 0
 
     setTimeout(() => {
       triggerBalanceRefresh(); // Trigger balance refresh after 2 seconds
-    }, 2000);
+      checkIfUserHasNft(); // Check if the user has an NFT in the database
+
+    }, 3000);
 
     // Check if the NFT has already been added to the database by checking localStorage
     const storedNftId = localStorage.getItem("added_nft_id");
