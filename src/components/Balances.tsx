@@ -70,7 +70,7 @@ const Balances: React.FC<BalancesProps> = ({
         <div className="balance-bar-track">
           <div
             className="balance-bar-fill balance-bar-fill-sui"
-            style={{ width: `${suiBalance * 10}%` }}
+            style={{ width: `${suiBalance}%` }}
           ></div>
           <div
             className="balance-amount"
@@ -89,7 +89,7 @@ const Balances: React.FC<BalancesProps> = ({
         <div className="balance-bar-track">
           <div
             className="balance-bar-fill balance-bar-fill-sity"
-            style={{ width: `${sityBalance / 1000}%` }}
+            style={{ width: `${sityBalance / 5000}%` }}
           ></div>
           <div className="balance-amount">{`${formatBalance(
             sityBalance
