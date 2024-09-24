@@ -1630,16 +1630,6 @@ p,
     max-height: 30%;
   }
 
-  .buildingType.collapsed {
-    min-height: 25%;
-    max-height: 30%;
-  }
-
-  .buildingType.expanded {
-    min-height: 60%;
-    max-height: 70%;
-  }
-
   .population {
     min-height: 20%;
     max-height: 25%;

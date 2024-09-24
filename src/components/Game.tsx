@@ -69,6 +69,7 @@ const Game: React.FC = () => {
   const [preloadedVideoUrls] = useState<{ [key: string]: string }>({}); // Store preloaded video URLs
   const clickAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for click sound
   const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(null); // Initialize as null to avoid confusion
+  const [isPopulationUpdated, setIsPopulationUpdated] = useState<boolean>(false); // New state to track if population was updated
 
   // State to store the total population
   const [totalPopulation, setTotalPopulation] = useState<number>(0);
@@ -157,12 +158,22 @@ const Game: React.FC = () => {
   }, []);
 
 
-  const updatePopulation = async () => {
+  // Function to update population
+  const updatePopulation = useCallback(async () => {
+    console.log("1) Checking if population needs to be updated...");
 
-    if (!account?.address) return; // Ensure the account is connected
-    if (!totalPopulation) return; // Ensure there is a population to update
+    if (!account?.address || !totalPopulation) {
+      console.log("Population update skipped: no account or population value");
+      return;
+    }
 
-    console.log("2)Attempting to update population...");
+    if (isPopulationUpdated) {
+      console.log("Population update skipped: already updated");
+      return;
+    }
+
+    console.log("2) Attempting to update population...");
+
     try {
       const response = await fetch("/.netlify/functions/add-population", {
         method: "POST",
@@ -170,28 +181,39 @@ const Game: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          walletAddress: account.address, // Wallet address from your connected account
-          population: totalPopulation,    // Total population value from the Population component
+          walletAddress: account.address,
+          population: totalPopulation,
         }),
       });
 
       const data = await response.json();
       if (data.success) {
         console.log("Population updated successfully:", data.message);
+        setIsPopulationUpdated(true); // Mark population as updated
       } else {
         console.error("Failed to update population:", data.error);
       }
     } catch (error) {
       console.error("Error updating population:", error);
     }
-  };
+  }, [account?.address, totalPopulation, isPopulationUpdated]);
 
+  // Ensure updatePopulation is only called when `totalPopulation` is set and `account` is available
+  useEffect(() => {
+    console.log("Population update effect triggered...");
+    console.log("Population:", totalPopulation);
+    console.log("Account:", account?.address);
+    console.log("Is updated:", isPopulationUpdated);
 
+    if (totalPopulation > 0 && account?.address && !isPopulationUpdated) {
+      console.log("Population update scheduled...");
+      const timer = setTimeout(() => {
+        updatePopulation();
+      }, 10000); // Delay the update
 
-
-
-
-
+      return () => clearTimeout(timer); // Cleanup
+    }
+  }, []);
 
   // Added useEffect to check local storage when the component mounts and when connectionStatus changes
   useEffect(() => {
@@ -675,7 +697,6 @@ const Game: React.FC = () => {
       setIsLoading(false); // Mark loading as complete once NFT is fetched
       setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
 
-      updatePopulation(); // Update the population in the databas9e 
     } catch (error) {
       console.error("Error refreshing NFTs, switching RPC:", error);
 
@@ -726,7 +747,6 @@ const Game: React.FC = () => {
 
         setIsLoading(false);
         setIsAwaitingBlockchain(false);
-        updatePopulation(); // Update the population in the databas9e 
       } catch (error) {
         console.error("Error refreshing NFTs after switching RPC:", error);
         setIsLoading(false);
@@ -754,13 +774,6 @@ const Game: React.FC = () => {
     triggerBalanceRefresh(); // Trigger balance refresh
     fetchGameData();
 
-    if (totalPopulation > 0) {
-      const timer = setTimeout(() => {
-        updatePopulation();
-      }, 10000);
-
-      return () => clearTimeout(timer); // Clean up on unmount or state change
-    }
   }, [account]);
 
   const handleMapButtonClick = () => {
