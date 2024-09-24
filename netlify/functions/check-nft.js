@@ -3,12 +3,9 @@ import { MongoClient } from "mongodb";
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
-export const handler = async (event, context) => {
+export const handler = async (event) => {
   try {
-    console.log("Received event:", event);
-
-    const body = JSON.parse(event.body);
-    const { walletAddress } = body;
+    const { walletAddress } = event.queryStringParameters;
 
     if (!walletAddress) {
       return {
@@ -17,33 +14,29 @@ export const handler = async (event, context) => {
       };
     }
 
-    console.log("Connecting to MongoDB...");
     await client.connect();
-    console.log("Successfully connected to MongoDB");
-
     const database = client.db("twitter_bindings");
     const collection = database.collection("bindings");
 
-    // Fetch the user document from MongoDB
+    // Query for the wallet address
     const userBinding = await collection.findOne({ walletAddress });
 
-    if (!userBinding) {
+    if (userBinding) {
       return {
-        statusCode: 400,
+        statusCode: 200,
         body: JSON.stringify({
-          error: "No binding found for this wallet address",
+          success: true,
+          hasNft: !!userBinding.nft, // Return true if 'nft' field exists
         }),
       };
     }
 
-    // Check if the user already has an nft field
-    const hasNft = !!userBinding.nft;
-
+    // Return if no document found
     return {
       statusCode: 200,
       body: JSON.stringify({
-        success: true,
-        hasNft,
+        success: false,
+        hasNft: false,
       }),
     };
   } catch (error) {
@@ -53,7 +46,6 @@ export const handler = async (event, context) => {
       body: JSON.stringify({ error: "Failed to check NFT data" }),
     };
   } finally {
-    console.log("Closing MongoDB connection");
     await client.close();
   }
 };

@@ -64,7 +64,7 @@ const Game: React.FC = () => {
   const [isCastleHovered, setIsCastleHovered] = useState(false);
   const [preloadedVideoUrls] = useState<{ [key: string]: string }>({}); // Store preloaded video URLs
   const clickAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for click sound
-  const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(true); // Track if the user has an NFT in the database
+  const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(null); // Initialize as null to avoid confusion
 
 
   // Add this state to manage the sound
@@ -74,27 +74,31 @@ const Game: React.FC = () => {
 
   const checkIfUserHasNft = useCallback(async () => {
     try {
-      const response = await fetch("/.netlify/functions/check-nft", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ walletAddress: account?.address }),
-      });
+      const response = await fetch(
+        `/.netlify/functions/check-nft?walletAddress=${account?.address}`, // Add walletAddress as query parameter
+        {
+          method: "GET", // Change to GET request
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const data = await response.json();
       if (data.success) {
-        setHasNftInDb(true); // Update the state based on the response
-        console.log("User has NFT in the database.");
+        console.log("data is: ", data);
+        setHasNftInDb(data.hasNft); // Update the state based on the response
       } else {
-        setHasNftInDb(false); // Update the state based on the response
         console.error("Failed to check NFT status:", data.error);
+        setHasNftInDb(true); // Set to false if no NFT found or error occurred
       }
     } catch (error) {
-      setHasNftInDb(false); // Set to null in case of an error
+      setHasNftInDb(true); // Set to false in case of an error
       console.error("Error checking if user has NFT:", error);
     }
   }, [account?.address]);
+
+
   useEffect(() => {
     if (connectionStatus === "connected" && account?.address) {
       checkIfUserHasNft(); // Check if the user has an NFT in the database
@@ -887,7 +891,7 @@ const Game: React.FC = () => {
 
 
 
-          {storedSignature && airdropAmount > 0 && !hasNftInDb && (
+          {storedSignature && !hasNftInDb && (
             <ClaimReward
               mySignature={storedSignature}
               hashedMessage={`Airdrop reward claim for wallet ${account?.address}`}
@@ -1142,7 +1146,7 @@ const Game: React.FC = () => {
 
                       {/* Add a darken overlay when a building is hovered */}
                       <div className={`darken-overlay ${isHovered ? 'visible' : ''}`}></div>
-                      <div className={`darken-overlay-2 ${(storedSignature && airdropAmount > 0) && filteredNft ? 'visible' : ''}`}></div>
+                      <div className={`darken-overlay-2 ${!hasNftInDb && filteredNft ? 'visible' : ''}`}></div>
 
 
                     </>
