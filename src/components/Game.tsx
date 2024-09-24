@@ -156,7 +156,7 @@ const Game: React.FC = () => {
     }
   }, []);
 
-  const FIVE_MINUTES = 5 * 60 * 1000; // 5 minutes in milliseconds
+  // const FIVE_MINUTES = 5 * 60 * 1000; // 5 minutes in milliseconds
 
   console.log("total popularion is ", totalPopulation);
 
