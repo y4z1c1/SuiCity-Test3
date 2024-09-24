@@ -907,14 +907,9 @@ const Game: React.FC = () => {
 
 
 
-          {storedSignature && airdropAmount > 0 && !canClaimReward && (
-            <button onClick={handleAirdropClick} disabled={isCheckingNft}>
-              {isCheckingNft ? "Checking..." : "Claim Airdrop"}
-            </button>
-          )}
 
           {/* Only render ClaimReward if the user is allowed to claim */}
-          {storedSignature && airdropAmount > 0 && canClaimReward && (
+          {storedSignature && airdropAmount > 0 && (
             <ClaimReward
               mySignature={storedSignature}
               hashedMessage={`Airdrop reward claim for wallet ${account?.address}`}

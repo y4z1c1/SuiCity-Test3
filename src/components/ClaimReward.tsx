@@ -1,8 +1,9 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ADDRESSES } from "../../addresses.ts";
 import { Transaction } from "@mysten/sui/transactions";
 import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 import { bcs } from "@mysten/sui/bcs";
+import { useCurrentAccount } from "@mysten/dapp-kit";
 
 // Helper function to convert hex string to Uint8Array
 const hexToUint8Array = (hexString: string) => {
@@ -28,7 +29,38 @@ const ClaimReward = ({
   mySignature: string; // Hex-encoded signature from the backend
   hashedMessage: string; // Hex-encoded hashed message
   amount: number; // Amount of SITY to claim
+
 }) => {
+
+  const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(null);
+  const [isCheckingNft, setIsCheckingNft] = useState(true); // Track NFT check loading state
+
+  const currentAccount = useCurrentAccount();
+  const checkIfUserHasNft = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `/.netlify/functions/check-nft?walletAddress=${currentAccount?.address}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      setHasNftInDb(data.hasNft);
+    } catch (error) {
+      console.error("Error checking NFT in database", error);
+      setHasNftInDb(true); // Default to true to avoid claim if there's an error
+    } finally {
+      setIsCheckingNft(false);
+    }
+  }, [currentAccount?.address]);
+
+  useEffect(() => {
+    checkIfUserHasNft();
+  }, [checkIfUserHasNft]);
+
   const suiClient = useSuiClient();
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
     execute: async ({ bytes, signature }) =>
@@ -90,14 +122,17 @@ const ClaimReward = ({
   useEffect(() => {
     reset();
   }, [reset]);
-
   return (
     <div className="claim-reward">
-      <button
-        onClick={claimReward}
-      >
-        🎁 Claim {amount} $SITY Allocation
-      </button>
+      {isCheckingNft ? (
+        <p>Checking eligibility...</p>
+      ) : hasNftInDb ? (
+        <p>You already claimed your airdrop!</p>
+      ) : (
+        <button onClick={claimReward} disabled={isCheckingNft}>
+          🎁 Claim {amount} $SITY Allocation
+        </button>
+      )}
     </div>
   );
 };
