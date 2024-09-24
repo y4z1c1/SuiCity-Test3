@@ -182,9 +182,10 @@ const Game: React.FC = () => {
     };
 
     if (account?.address) {
-      updatePopulation(); // Call function when page loads or is refreshed
+      updatePopulation(); // Call function when page loads or when account address is updated
     }
-  }, []);
+  }, [account?.address]); // Run when account?.address or totalPopulation changes
+
 
 
   // Added useEffect to check local storage when the component mounts and when connectionStatus changes
