@@ -156,7 +156,6 @@ const Game: React.FC = () => {
     }
   }, []);
 
-  console.log("population:", totalPopulation);
 
   const updatePopulation = async () => {
 
