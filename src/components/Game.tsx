@@ -677,7 +677,10 @@ const Game: React.FC = () => {
 
       setIsLoading(false); // Mark loading as complete once NFT is fetched
       setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
-      updatePopulation(); // Update the population in the database
+
+      setTimeout(() => {
+        updatePopulation(); // Update the population in the databas9e 
+      }, 5000); // 2000 milliseconds = 2 seconds 
     } catch (error) {
       console.error("Error refreshing NFTs, switching RPC:", error);
 
@@ -728,8 +731,9 @@ const Game: React.FC = () => {
 
         setIsLoading(false);
         setIsAwaitingBlockchain(false);
-        updatePopulation(); // Update the population in the database
-
+        setTimeout(() => {
+          updatePopulation(); // Update the population in the databas9e 
+        }, 5000); // 2000 milliseconds = 2 seconds 
       } catch (error) {
         console.error("Error refreshing NFTs after switching RPC:", error);
         setIsLoading(false);
