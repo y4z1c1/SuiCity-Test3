@@ -1,7 +1,13 @@
 import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
-const client = new MongoClient(uri);
+let client = null; // Declare the client globally to reuse it
+let clientPromise = null;
+
+if (!clientPromise) {
+  client = new MongoClient(uri);
+  clientPromise = client.connect(); // Initialize connection only once
+}
 
 export const handler = async (event, context) => {
   try {
@@ -20,7 +26,7 @@ export const handler = async (event, context) => {
     }
 
     console.log("Connecting to MongoDB...");
-    await client.connect();
+    await clientPromise; // Await the initialized client connection
     console.log("Successfully connected to MongoDB");
 
     const database = client.db("twitter_bindings");
@@ -72,8 +78,5 @@ export const handler = async (event, context) => {
         error: "Failed to update or add population data",
       }),
     };
-  } finally {
-    console.log("Closing MongoDB connection");
-    await client.close();
   }
 };

@@ -156,58 +156,43 @@ const Game: React.FC = () => {
     }
   }, []);
 
-  // const FIVE_MINUTES = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-  console.log("total popularion is ", totalPopulation);
 
-  // useEffect(() => {
-  //   const updatePopulation = async () => {
-  //     try {
-  //       const response = await fetch("/.netlify/functions/add-population", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           walletAddress: account?.address, // Wallet address from your connected account
-  //           population: totalPopulation,     // Total population value from the Population component
-  //         }),
-  //       });
+  const updatePopulation = async () => {
 
-  //       const data = await response.json();
-  //       if (data.success) {
-  //         console.log("Population updated successfully:", data.message);
-  //       } else {
-  //         console.error("Failed to update population:", data.error);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error updating population:", error);
-  //     }
-  //   };
+    console.log("Attempting to update population...");
 
-  //   // A ref to keep track of the last time the population was updated
-  //   const lastUpdateRef = useRef<number>(0);
+    if (!account?.address) return; // Ensure the account is connected
+    if (!totalPopulation) return; // Ensure there is a population to update
 
-  //   const handlePopulationUpdate = () => {
-  //     const currentTime = Date.now();
+    console.log("2)Attempting to update population...");
+    try {
+      const response = await fetch("/.netlify/functions/add-population", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          walletAddress: account.address, // Wallet address from your connected account
+          population: totalPopulation,    // Total population value from the Population component
+        }),
+      });
 
-  //     // Only send an update if 5 minutes have passed since the last update
-  //     if (currentTime - lastUpdateRef.current >= FIVE_MINUTES) {
-  //       lastUpdateRef.current = currentTime; // Update the last updated time
-  //       updatePopulation(); // Trigger the population update
-  //     }
-  //   };
+      const data = await response.json();
+      if (data.success) {
+        console.log("Population updated successfully:", data.message);
+      } else {
+        console.error("Failed to update population:", data.error);
+      }
+    } catch (error) {
+      console.error("Error updating population:", error);
+    }
+  };
 
-  //   // Set an interval to call the function every 5 minutes
-  //   const intervalId = setInterval(() => {
-  //     if (account?.address) {
-  //       handlePopulationUpdate(); // Update population every 5 minutes
-  //     }
-  //   }, FIVE_MINUTES);
 
-  //   // Clean up the interval when the component unmounts
-  //   return () => clearInterval(intervalId);
-  // }, [account?.address, totalPopulation]); // Track account and population changes
+
+
+
 
 
 
@@ -692,6 +677,7 @@ const Game: React.FC = () => {
 
       setIsLoading(false); // Mark loading as complete once NFT is fetched
       setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
+      updatePopulation(); // Update the population in the database
     } catch (error) {
       console.error("Error refreshing NFTs, switching RPC:", error);
 
@@ -742,6 +728,8 @@ const Game: React.FC = () => {
 
         setIsLoading(false);
         setIsAwaitingBlockchain(false);
+        updatePopulation(); // Update the population in the database
+
       } catch (error) {
         console.error("Error refreshing NFTs after switching RPC:", error);
         setIsLoading(false);
