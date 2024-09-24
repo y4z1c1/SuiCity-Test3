@@ -156,6 +156,9 @@ const Game: React.FC = () => {
     }
   }, []);
 
+  const FIVE_MINUTES = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+
   useEffect(() => {
     const updatePopulation = async () => {
       try {
@@ -181,10 +184,29 @@ const Game: React.FC = () => {
       }
     };
 
-    if (account?.address) {
-      updatePopulation(); // Call function when page loads or when account address is updated
-    }
-  }, [account?.address]); // Run when account?.address or totalPopulation changes
+    // A ref to keep track of the last time the population was updated
+    const lastUpdateRef = useRef<number>(0);
+
+    const handlePopulationUpdate = () => {
+      const currentTime = Date.now();
+
+      // Only send an update if 5 minutes have passed since the last update
+      if (currentTime - lastUpdateRef.current >= FIVE_MINUTES) {
+        lastUpdateRef.current = currentTime; // Update the last updated time
+        updatePopulation(); // Trigger the population update
+      }
+    };
+
+    // Set an interval to call the function every 5 minutes
+    const intervalId = setInterval(() => {
+      if (account?.address) {
+        handlePopulationUpdate(); // Update population every 5 minutes
+      }
+    }, FIVE_MINUTES);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, [account?.address, totalPopulation]); // Track account and population changes
 
 
 
