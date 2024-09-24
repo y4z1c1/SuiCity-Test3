@@ -160,10 +160,6 @@ const Game: React.FC = () => {
 
   const updatePopulation = async () => {
 
-    console.log("Attempting to update population...");
-    console.log("1)Account:", account?.address);
-    console.log("2)Total Population:", totalPopulation);
-
     if (!account?.address) return; // Ensure the account is connected
     if (!totalPopulation) return; // Ensure there is a population to update
 
@@ -680,9 +676,7 @@ const Game: React.FC = () => {
       setIsLoading(false); // Mark loading as complete once NFT is fetched
       setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
 
-      setTimeout(() => {
-        updatePopulation(); // Update the population in the databas9e 
-      }, 10000); // 2000 milliseconds = 2 seconds 
+      updatePopulation(); // Update the population in the databas9e 
     } catch (error) {
       console.error("Error refreshing NFTs, switching RPC:", error);
 
@@ -733,9 +727,7 @@ const Game: React.FC = () => {
 
         setIsLoading(false);
         setIsAwaitingBlockchain(false);
-        setTimeout(() => {
-          updatePopulation(); // Update the population in the databas9e 
-        }, 10000); // 2000 milliseconds = 2 seconds 
+        updatePopulation(); // Update the population in the databas9e 
       } catch (error) {
         console.error("Error refreshing NFTs after switching RPC:", error);
         setIsLoading(false);
@@ -762,6 +754,14 @@ const Game: React.FC = () => {
     refreshNft();
     triggerBalanceRefresh(); // Trigger balance refresh
     fetchGameData();
+
+    if (totalPopulation > 0) {
+      const timer = setTimeout(() => {
+        updatePopulation();
+      }, 10000);
+
+      return () => clearTimeout(timer); // Clean up on unmount or state change
+    }
   }, [account]);
 
   const handleMapButtonClick = () => {
