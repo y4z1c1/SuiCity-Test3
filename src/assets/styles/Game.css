@@ -1888,7 +1888,7 @@ p,
   }
 
   .balance-amount {
-    font-size: 80%;
+    font-size: 60%;
   }
 
   .mint button {
@@ -1907,13 +1907,21 @@ p,
 }
 
 @media (max-width: 425px) {
+  .map-button {
+    font-size: 70%;
+  }
+
   .game-container {
-    height: 70vh;
-    margin-top: 0vh;
+    height: 80vh;
+    margin-top: 4vh;
+  }
+
+  .suicity-title {
+    font-size: 1rem;
   }
 
   .info-container {
-    top: 83vh;
+    top: 100vh;
   }
 
   .arrow-left,
@@ -1958,26 +1966,26 @@ p,
   }
 
   .buildingType.collapsed {
-    min-height: 24%;
+    min-height: 30%;
   }
 
   .accumulated {
-    min-height: 24%;
+    min-height: 30%;
   }
 
   .population {
-    min-height: 24%;
+    min-height: 30%;
   }
 
   .accumulated p {
-    font-size: 70%;
+    font-size: 60%;
   }
 
   .buildingType p {
-    font-size: 80%;
+    font-size: 70%;
   }
 
   .population p {
-    font-size: 80%;
+    font-size: 60%;
   }
 }
