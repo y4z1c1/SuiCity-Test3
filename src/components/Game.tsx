@@ -13,6 +13,7 @@ import NftTech from "./NftTech";
 import Reference from "./Reference";
 import WalletChecker from "./WalletChecker";
 import ClaimReward from "./ClaimReward";
+import Leaderboard from "./Leaderboard";
 
 
 const Game: React.FC = () => {
@@ -844,9 +845,7 @@ const Game: React.FC = () => {
           <h2>🏆 Leaderboard</h2>
 
 
-          <p>
-            Coming soon...
-          </p>
+          <Leaderboard />
         </div>
       </div>
 

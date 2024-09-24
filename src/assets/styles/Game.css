@@ -82,7 +82,7 @@
 
 .leaderboard h2 {
   font-family: "Kanit", Helvetica;
-  margin: 0 q;
+  margin: 0;
   color: rgb(255, 255, 255); /* White text color */
   font-size: 150%;
   text-shadow: black 1px 1px 2px; /* Add a subtle shadow */
@@ -99,6 +99,60 @@
   margin-bottom: 12px;
   text-align: center;
   margin-top: 100%;
+}
+
+.leaderboard-content {
+  height: 90%;
+  border-radius: 12p;
+  overflow-y: auto;
+  text-align: left;
+  padding: 2%;
+}
+
+.leaderboard-content table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.leaderboard-content thead {
+  margin-bottom: 8px;
+}
+
+.leaderboard-content th {
+  font-family: "Kanit", Helvetica;
+  color: rgb(255, 255, 255);
+  font-size: 80%;
+  font-weight: 300;
+  text-align: left;
+  border-bottom: 1px solid rgb(255, 255, 255);
+}
+
+.leaderboard-content td {
+  font-family: "Kanit", Helvetica;
+  color: rgb(195, 195, 195);
+  font-size: 80%;
+  font-weight: 200;
+}
+
+/* Custom Scrollbar Styling */
+.leaderboard-content::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+}
+
+.leaderboard-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); /* Background of the scrollbar track */
+  border-radius: 10px;
+}
+
+.leaderboard-content::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.4); /* Scrollbar color */
+  border-radius: 10px;
+  border: 3px solid rgba(0, 0, 0, 0.2); /* Border around the scrollbar for better visibility */
+}
+
+.leaderboard-content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.6); /* Scrollbar color on hover */
 }
 
 .nft-info {
