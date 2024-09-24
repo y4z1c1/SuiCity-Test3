@@ -1,5 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useCurrentAccount } from "@mysten/dapp-kit";
+
+// Debounce utility function
+const debounce = (func: (...args: any[]) => void, wait: number) => {
+  let timeout: ReturnType<typeof setTimeout>;
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+};
 
 interface PopulationProps {
   filteredNft: any; // The user's filtered NFT object
@@ -21,6 +30,7 @@ const Population: React.FC<PopulationProps> = ({
   enterLevel,
 }) => {
   const account = useCurrentAccount(); // Get the current account
+  const [hasUpdated, setHasUpdated] = useState(false); // State to track whether the update has happened
 
   // Function to format the balance for readability
   const formatBalance = (balance: number) => {
@@ -55,9 +65,10 @@ const Population: React.FC<PopulationProps> = ({
     );
   };
 
-  // Calculate the total population including accumulated SITY
-  const population = calculatePopulation();
-  const totalPopulation = population + accumulatedSity + sityBalance;
+  // Memoize the population and totalPopulation calculation to prevent recalculations
+  const population = useMemo(() => calculatePopulation(), [officeLevel, houseLevel, factoryLevel, enterLevel]);
+
+  const totalPopulation = useMemo(() => population + accumulatedSity + sityBalance, [population, accumulatedSity, sityBalance]);
 
   // Function to call the Netlify function to update the population in MongoDB
   const updatePopulation = async () => {
@@ -65,11 +76,6 @@ const Population: React.FC<PopulationProps> = ({
       console.error("No account address found");
       return;
     }
-    if (!accumulatedSity) { return; }
-    if (!sityBalance) { return; }
-
-
-
 
     console.log("Updating population for account:", account.address, "with population:", totalPopulation);
 
@@ -78,7 +84,7 @@ const Population: React.FC<PopulationProps> = ({
         method: "POST",
         body: JSON.stringify({
           walletAddress: account.address,
-          population: parseInt(totalPopulation.toString()),
+          population: totalPopulation,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -95,24 +101,17 @@ const Population: React.FC<PopulationProps> = ({
     }
   };
 
-  // Set up the interval to call the function every minute, starting 10 seconds after mount
+  // Debounced version of updatePopulation
+  const debouncedUpdatePopulation = debounce(updatePopulation, 5000); // Debounce with 5-second delay
+
+  // Trigger updatePopulation only when sityBalance and accumulatedSity are available and it has not updated yet
   useEffect(() => {
-    console.log("Setting up population update interval");
-    const initialTimeout = setTimeout(() => {
-      updatePopulation(); // Initial call after 10 seconds
-
-      // Set the interval to call every minute (60000 ms)
-      const intervalId = setInterval(() => {
-        updatePopulation();
-      }, 60000);
-
-      return () => clearInterval(intervalId); // Clean up the interval on component unmount
-    }, 30000);
-
-    return () => clearTimeout(initialTimeout); // Clean up the initial timeout
-
-  }, [account?.address,]);
-
+    if (sityBalance && accumulatedSity && account?.address && !hasUpdated) {
+      console.log("Triggering updatePopulation after sityBalance and accumulatedSity became available");
+      debouncedUpdatePopulation(); // Debounced call
+      setHasUpdated(true); // Set the flag so it only updates once
+    }
+  }, [sityBalance, accumulatedSity, account?.address, hasUpdated, debouncedUpdatePopulation]);
 
   return (
     <div className="population">
