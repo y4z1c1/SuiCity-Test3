@@ -51,23 +51,32 @@ const ClaimReward = ({
 
   const currentAccount = useCurrentAccount();
   const checkIfUserHasNft = useCallback(async () => {
+    setIsCheckingNft(true); // Start loading state
     try {
       const response = await fetch(
-        `/.netlify/functions/check-nft?walletAddress=${currentAccount?.address}`,
+        `/.netlify/functions/check-nft?walletAddress=${currentAccount?.address}`, // Add walletAddress as query parameter
         {
-          method: "GET",
+          method: "GET", // Change to GET request
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
+
       const data = await response.json();
-      setHasNftInDb(data.hasNft);
+      if (data.success) {
+        console.log("data is: ", data);
+        setHasNftInDb(data.hasNft); // Update the state based on the response
+        setIsCheckingNft(false); // End loading state
+      } else {
+        console.error("Failed to check NFT status:", data.error);
+        setHasNftInDb(true); // Set to false if no NFT found or error occurred
+        setIsCheckingNft(false); // End loading state
+      }
     } catch (error) {
-      console.error("Error checking NFT in database", error);
-      setHasNftInDb(true); // Default to true to avoid claim if there's an error
-    } finally {
-      setIsCheckingNft(false);
+      setHasNftInDb(true); // Set to false in case of an error
+      setIsCheckingNft(false); // End loading state
+      console.error("Error checking if user has NFT:", error);
     }
   }, [currentAccount?.address]);
 
