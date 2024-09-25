@@ -276,7 +276,7 @@
 .reference-system p {
   color: rgb(255, 255, 255);
   font-size: 80%;
-  text-align: justify; /* Center text within the div */
+  text-align: center; /* Center text within the div */
   margin: 0;
   margin-bottom: 12px;
   width: 90%;
