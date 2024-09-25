@@ -94,12 +94,21 @@ const Leaderboard: React.FC = () => {
                         </tr>
                     ))}
 
+
+
                     {/* Render the current user below the top 50 if their rank is greater than 50 */}
                     {rank && rank > 50 && currentUserData && (
                         <tr className="highlight-row">
                             <td>{rank}.</td>
                             <td>{currentUserData.twitterId}</td>
                             <td>{parseInt(currentUserData.population.toString())}</td>
+                        </tr>
+                    )}
+
+                    {/* If rank is 0, display a message asking the user to refresh the page */}
+                    {rank === 0 && (
+                        <tr>
+                            <td className="refresh-message">Please refresh the page.</td>
                         </tr>
                     )}
                 </tbody>

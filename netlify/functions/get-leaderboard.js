@@ -22,11 +22,21 @@ exports.handler = async (event, context) => {
     const database = client.db("twitter_bindings");
     const collection = database.collection("bindings");
 
-    // Fetch all users sorted by population
-    const users = await collection.find().sort({ population: -1 }).toArray();
+    // Fetch all users and sort by population if the field exists, default to 0 if not
+    const users = await collection.find().toArray();
+
+    // Filter out users without a population field or set their population to 0
+    const usersWithPopulation = users
+      .map((user) => ({
+        ...user,
+        population: user.population || 0, // Default population to 0 if undefined
+      }))
+      .sort((a, b) => b.population - a.population); // Sort by population in descending order
 
     // Find the current user by walletAddress
-    const user = users.find((u) => u.walletAddress === walletAddress);
+    const user = usersWithPopulation.find(
+      (u) => u.walletAddress === walletAddress
+    );
 
     if (!user) {
       return {
@@ -35,18 +45,24 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Get the user's rank based on their index in the sorted array
-    const userRank =
-      users.findIndex((u) => u.walletAddress === walletAddress) + 1;
+    let userRank = 0;
+
+    // Only calculate rank if population exists and is greater than 0
+    if (user.population > 0) {
+      userRank =
+        usersWithPopulation.findIndex(
+          (u) => u.walletAddress === walletAddress
+        ) + 1;
+    }
 
     // Return the top 50 users along with the current user's rank
     return {
       statusCode: 200,
       body: JSON.stringify({
-        topUsers: users.slice(0, 50), // Return top 50 users
+        topUsers: usersWithPopulation.slice(0, 50), // Return top 50 users
         currentUser: {
           ...user,
-          rank: userRank,
+          rank: userRank, // Rank is calculated only if population > 0
         },
       }),
     };
