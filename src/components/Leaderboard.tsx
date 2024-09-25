@@ -90,7 +90,7 @@ const Leaderboard: React.FC = () => {
                             <td style={user.walletAddress === currentUserData?.walletAddress ? { color: "black", fontWeight: "500" } : { color: "white", fontWeight: "300" }}>
                                 {user.twitterId}
                             </td>
-                            <td>{user.population.toFixed(2)}</td>
+                            <td>{parseInt(user.population.toString())}</td>
                         </tr>
                     ))}
 
@@ -99,7 +99,7 @@ const Leaderboard: React.FC = () => {
                         <tr className="highlight-row">
                             <td>{rank}.</td>
                             <td>{currentUserData.twitterId}</td>
-                            <td>{currentUserData.population.toFixed(2)}</td>
+                            <td>{parseInt(currentUserData.population.toString())}</td>
                         </tr>
                     )}
                 </tbody>

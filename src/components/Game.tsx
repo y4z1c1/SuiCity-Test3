@@ -847,7 +847,7 @@ const Game: React.FC = () => {
           <h2>🏆 Leaderboard</h2>
 
 
-          <Leaderboard />
+          {account && <Leaderboard />}
         </div>
       </div>
 
