@@ -34,7 +34,9 @@ const Population: React.FC<PopulationProps> = ({
 
   // Function to format the balance for readability
   const formatBalance = (balance: number) => {
-    if (balance >= 1000) {
+    if (balance >= 1000000) {
+      return (balance / 1000000).toFixed(2) + "M";
+    } else if (balance >= 1000) {
       return (balance / 1000).toFixed(2) + "k";
     }
     return balance.toFixed(2);
