@@ -499,6 +499,8 @@ const Game: React.FC = () => {
     // Proceed with claim logic...
   };
   const handleUpgradeSuccess = async () => {
+    triggerBalanceRefresh(); // Trigger balance refresh
+
 
     // Store the previous levels before refreshing NFT data
     const previousLevels = {
