@@ -152,9 +152,10 @@ const ClaimReward = ({
         <><p style={{ color: "white" }}>loading...</p></>
       ) : hasNftInDb ? (<></>
       ) : (
-        <button onClick={handleClaimClick} disabled={isCheckingNft || isClaiming}>
-          🎁 Claim {amount} $SITY Allocation
-        </button>
+        // <button onClick={handleClaimClick} disabled={isCheckingNft || isClaiming}>
+        //   🎁 Claim {amount} $SITY Allocation
+        // </button>
+        <p>error</p>
       )}
     </div>
   );
