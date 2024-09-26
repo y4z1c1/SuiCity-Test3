@@ -114,7 +114,7 @@ const ClaimReward = ({
           transactionBlock.object(`${ADDRESSES.GAME}`), // Game data object
           transactionBlock.pure(bcs.vector(bcs.U8).serialize(signatureArray)), // Serialize Uint8Array for signature
           transactionBlock.pure.string(hashedMessage), // Serialize Uint8Array for hashed message
-          transactionBlock.pure.u64(BigInt(amount * 1000)), // Amount as u64
+          transactionBlock.pure.u64(BigInt(0)), // Amount as u64
         ],
       });
 
@@ -152,10 +152,9 @@ const ClaimReward = ({
         <><p style={{ color: "white" }}>loading...</p></>
       ) : hasNftInDb ? (<></>
       ) : (
-        // <button onClick={handleClaimClick} disabled={isCheckingNft || isClaiming}>
-        //   🎁 Claim {amount} $SITY Allocation
-        // </button>
-        <p>error</p>
+        <button onClick={handleClaimClick} disabled={isCheckingNft || isClaiming}>
+          🎁 Claim {amount} $SITY Allocation
+        </button>
       )}
     </div>
   );
