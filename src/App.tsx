@@ -1,7 +1,7 @@
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Game from "./components/Game";
+// import Game from "./components/Game";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SuccessPage from "./components/SuccessPage";
 
