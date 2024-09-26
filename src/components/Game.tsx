@@ -12,7 +12,7 @@ import Population from "./Population";
 import NftTech from "./NftTech";
 import Reference from "./Reference";
 import WalletChecker from "./WalletChecker";
-// import ClaimReward from "./ClaimReward";
+import ClaimReward from "./ClaimReward";
 import Leaderboard from "./Leaderboard";
 
 
@@ -149,6 +149,13 @@ const Game: React.FC = () => {
       setAirdropAmount(0); // Ensure airdrop amount is cleared if not found
     }
   }, []);
+
+
+
+
+
+
+
 
   // Added useEffect to check local storage when the component mounts and when connectionStatus changes
   useEffect(() => {
@@ -433,53 +440,53 @@ const Game: React.FC = () => {
   };
 
 
-  // const handleAirdropClaimSuccess = useCallback(async () => {
-  //   showModal("✅ Airdrop claimed successfully!", 1);
+  const handleAirdropClaimSuccess = useCallback(async () => {
+    showModal("✅ Airdrop claimed successfully!", 1);
 
-  //   // Clear airdrop data from localStorage
-  //   localStorage.removeItem("airdrop_signature");
-  //   localStorage.removeItem("total_airdrop");
+    // Clear airdrop data from localStorage
+    localStorage.removeItem("airdrop_signature");
+    localStorage.removeItem("total_airdrop");
 
 
-  //   setStoredSignature(null); // Remove signature from state
-  //   setAirdropAmount(0); // Set airdrop amount to 0
+    setStoredSignature(null); // Remove signature from state
+    setAirdropAmount(0); // Set airdrop amount to 0
 
-  //   setTimeout(() => {
-  //     triggerBalanceRefresh(); // Trigger balance refresh after 2 seconds
-  //     checkIfUserHasNft(); // Check if the user has an NFT in the database
+    setTimeout(() => {
+      triggerBalanceRefresh(); // Trigger balance refresh after 2 seconds
+      checkIfUserHasNft(); // Check if the user has an NFT in the database
 
-  //   }, 3000);
+    }, 3000);
 
-  //   // Check if the NFT has already been added to the database by checking localStorage
-  //   const storedNftId = localStorage.getItem("added_nft_id");
+    // Check if the NFT has already been added to the database by checking localStorage
+    const storedNftId = localStorage.getItem("added_nft_id");
 
-  //   // Only add to the database if it hasn't been added before
-  //   if (filteredNft?.objectId && storedNftId !== filteredNft.objectId) {
-  //     try {
-  //       const response = await fetch("/.netlify/functions/add-nft", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           walletAddress: account?.address, // The current wallet address
-  //           nftData: filteredNft.objectId, // Add actual NFT data
-  //         }),
-  //       });
+    // Only add to the database if it hasn't been added before
+    if (filteredNft?.objectId && storedNftId !== filteredNft.objectId) {
+      try {
+        const response = await fetch("/.netlify/functions/add-nft", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            walletAddress: account?.address, // The current wallet address
+            nftData: filteredNft.objectId, // Add actual NFT data
+          }),
+        });
 
-  //       const data = await response.json();
-  //       if (data.success) {
+        const data = await response.json();
+        if (data.success) {
 
-  //         // Store the NFT ID in local storage to prevent future redundant additions
-  //         localStorage.setItem("added_nft_id", filteredNft.objectId);
-  //       } else {
-  //         console.error("Failed to add NFT data:", data.error);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error adding NFT data:", error);
-  //     }
-  //   }
-  // }, [filteredNft, account?.address, triggerBalanceRefresh, showModal]);
+          // Store the NFT ID in local storage to prevent future redundant additions
+          localStorage.setItem("added_nft_id", filteredNft.objectId);
+        } else {
+          console.error("Failed to add NFT data:", data.error);
+        }
+      } catch (error) {
+        console.error("Error adding NFT data:", error);
+      }
+    }
+  }, [filteredNft, account?.address, triggerBalanceRefresh, showModal]);
 
 
 
@@ -904,7 +911,7 @@ const Game: React.FC = () => {
 
 
 
-          {/* Only render ClaimReward if the user is allowed to claim
+          {/* Only render ClaimReward if the user is allowed to claim */}
           {storedSignature && airdropAmount > 0 && (
             <ClaimReward
               mySignature={storedSignature}
@@ -913,7 +920,7 @@ const Game: React.FC = () => {
               showModal={showModal}
               onClaimSuccessful={handleAirdropClaimSuccess} // Handle success
             />
-          )} */}
+          )}
 
 
 
