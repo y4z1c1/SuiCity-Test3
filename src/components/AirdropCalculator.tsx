@@ -94,8 +94,6 @@ const AirdropCalculator = ({
         return Math.round(points);
     };
 
-
-
     const calculateSuiActivityBonus = (totalObjects: number) => {
         const maxBonus = 750;
         const maxObjects = 500;
@@ -103,7 +101,6 @@ const AirdropCalculator = ({
     };
     const fetchAllObjects = async (client: SuiClient) => {
         if (!currentAccount?.address) return [];
-
         let allObjects: any[] = [];
         let hasMore = true;
         let cursor: string | null = null; // Ensure this starts as null
@@ -370,7 +367,7 @@ const AirdropCalculator = ({
         localStorage.setItem("total_airdrop", String(total));
         setLoadingAirdrop(false);
         onAirdropCalculated(total);
-        setMessage(`Airdrop reward claim for wallet ${currentAccount?.address}`);
+        setMessage(`${total} Airdrop reward claim for wallet ${currentAccount?.address}`);
     };
 
     const signMessage = async () => {
