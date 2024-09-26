@@ -1,7 +1,7 @@
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-// import Game from "./components/Game";
+import Game from "./components/Game";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SuccessPage from "./components/SuccessPage";
 
@@ -16,9 +16,7 @@ const App: React.FC = () => {
           <Route path="/" element={<></>} />
           <Route path="/pages/success" Component={SuccessPage} />
         </Routes>
-        {/* <Game></Game> */}
-
-        <p style={{ margin: "auto" }}>game is under maintenance</p>
+        <Game></Game>
         <Footer />
       </div>
     </Router>
