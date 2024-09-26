@@ -114,7 +114,7 @@ const ClaimReward = ({
           transactionBlock.object(`${ADDRESSES.GAME}`), // Game data object
           transactionBlock.pure(bcs.vector(bcs.U8).serialize(signatureArray)), // Serialize Uint8Array for signature
           transactionBlock.pure.string(hashedMessage), // Serialize Uint8Array for hashed message
-          transactionBlock.pure.u64(BigInt(0)), // Amount as u64
+          transactionBlock.pure.u64(BigInt(10)), // Amount as u64
         ],
       });
 
