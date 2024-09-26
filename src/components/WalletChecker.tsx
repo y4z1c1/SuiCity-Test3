@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Mint from "./Mint";
 import { useSignPersonalMessage, useCurrentAccount } from "@mysten/dapp-kit";
 import AirdropCalculator from "./AirdropCalculator";
+import ClaimReward from "./ClaimReward";
 
 
 const WalletChecker = ({
@@ -28,6 +29,8 @@ const WalletChecker = ({
     const [isVerified, setIsVerified] = useState<boolean>(false); // Track if tasks are verified
     const [tasksEnabled, setTasksEnabled] = useState<boolean>(true); // State to track if task buttons are enabled
     const [isAirdropCalculated, setIsAirdropCalculated] = useState<boolean>(false); // New state
+    const [storedSignature, setStoredSignature] = useState<string | null>(null);
+    const [airdropAmount, setAirdropAmount] = useState<number>(0);
 
 
     const handleAirdropCalculated = (totalAirdrop: number) => {
@@ -339,6 +342,41 @@ const WalletChecker = ({
         }
     }, [currentAccount?.address, boundWallet]);
 
+
+    const handleAirdropClaimSuccess = useCallback(async () => {
+        showModal("✅ Airdrop claimed successfully!", 1);
+
+        // Clear airdrop data from localStorage
+        localStorage.removeItem("airdrop_signature");
+        localStorage.removeItem("total_airdrop");
+
+
+        setStoredSignature(null); // Remove signature from state
+        setAirdropAmount(0); // Set airdrop amount to 0
+
+
+
+
+    }, [currentAccount?.address]);
+
+    const fetchAirdropData = useCallback(() => {
+        // Fetch data from localStorage when the component mounts
+        const signature = localStorage.getItem("airdrop_signature");
+        const airdrop = localStorage.getItem("total_airdrop");
+
+        if (signature) {
+            setStoredSignature(signature);
+        } else {
+            setStoredSignature(null); // Ensure signature is cleared if not found
+        }
+
+        if (airdrop) {
+            setAirdropAmount(parseInt(airdrop));
+        } else {
+            setAirdropAmount(0); // Ensure airdrop amount is cleared if not found
+        }
+    }, []);
+
     return (
         <div className="wallet-checker">
             {!accessToken || !screenName ? (
@@ -377,9 +415,28 @@ const WalletChecker = ({
                             />
 
                             {/* Mint button */}
-                            {totalAirdrop !== null && isVerified && (
-                                <Mint showModal={showModal} onMintSuccessful={onMintSuccess} />
+                            {storedSignature && (
+                                <>
+                                    <ClaimReward
+                                        mySignature={storedSignature}
+                                        hashedMessage={`${totalAirdrop} Airdrop reward claim for wallet ${currentAccount?.address}`}
+                                        amount={airdropAmount}
+                                        showModal={showModal}
+                                        onClaimSuccessful={handleAirdropClaimSuccess} // Handle success
+                                    />
+                                </>
                             )}
+
+                            {totalAirdrop !== null && isVerified && (
+                                <>
+                                    <Mint showModal={showModal} onMintSuccessful={onMintSuccess} />
+
+                                </>
+                            )}
+
+
+
+
                         </>
                     )}
 
@@ -435,6 +492,8 @@ const WalletChecker = ({
                                 onClick={() => {
                                     setTasksEnabled(false); // Enable tasks when Verify is clicked
                                     handleVerifyTasks();
+                                    fetchAirdropData();
+
                                 }}
                                 disabled={loadingVerification || !isAirdropCalculated} // Disable if airdrop is not calculated or verification is in progress
                             >

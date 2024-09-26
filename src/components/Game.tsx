@@ -441,7 +441,6 @@ const Game: React.FC = () => {
 
 
   const handleAirdropClaimSuccess = useCallback(async () => {
-    showModal("✅ Airdrop claimed successfully!", 1);
 
     // Clear airdrop data from localStorage
     localStorage.removeItem("airdrop_signature");
@@ -460,6 +459,8 @@ const Game: React.FC = () => {
     // Check if the NFT has already been added to the database by checking localStorage
     const storedNftId = localStorage.getItem("added_nft_id");
 
+
+    console.log("Adding NFT data to the database...");
     // Only add to the database if it hasn't been added before
     if (filteredNft?.objectId && storedNftId !== filteredNft.objectId) {
       try {
@@ -717,6 +718,7 @@ const Game: React.FC = () => {
     refreshNft();
     triggerBalanceRefresh(); // Trigger balance refresh
     fetchGameData();
+    handleAirdropClaimSuccess();
 
   }, [account]);
 
