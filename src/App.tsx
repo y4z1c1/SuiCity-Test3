@@ -16,7 +16,9 @@ const App: React.FC = () => {
           <Route path="/" element={<></>} />
           <Route path="/pages/success" Component={SuccessPage} />
         </Routes>
-        <Game></Game>
+        {/* <Game></Game> */}
+
+        <p style={{ margin: "auto" }}>game is under maintenance</p>
         <Footer />
       </div>
     </Router>
