@@ -68,7 +68,7 @@ const Game: React.FC = () => {
   const [isCastleHovered, setIsCastleHovered] = useState(false);
   const [preloadedVideoUrls] = useState<{ [key: string]: string }>({}); // Store preloaded video URLs
   const clickAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for click sound
-  const [hasNftInDb, setHasNftInDb] = useState<boolean | null>(null); // Initialize as null to avoid confusion
+  const [, setHasNftInDb] = useState<boolean | null>(null); // Initialize as null to avoid confusion
 
   // Add this state to manage the sound
   const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
@@ -439,54 +439,6 @@ const Game: React.FC = () => {
   };
 
 
-  const handleAirdropClaimSuccess = useCallback(async () => {
-
-    // Clear airdrop data from localStorage
-    localStorage.removeItem("airdrop_signature");
-    localStorage.removeItem("total_airdrop");
-
-
-    setStoredSignature(null); // Remove signature from state
-    setAirdropAmount(0); // Set airdrop amount to 0
-
-    setTimeout(() => {
-      triggerBalanceRefresh(); // Trigger balance refresh after 2 seconds
-      checkIfUserHasNft(); // Check if the user has an NFT in the database
-
-    }, 3000);
-
-    // Check if the NFT has already been added to the database by checking localStorage
-    const storedNftId = localStorage.getItem("added_nft_id");
-
-
-    console.log("Adding NFT data to the database...");
-    // Only add to the database if it hasn't been added before
-    if (filteredNft?.objectId && storedNftId !== filteredNft.objectId) {
-      try {
-        const response = await fetch("/.netlify/functions/add-nft", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            walletAddress: account?.address, // The current wallet address
-            nftData: filteredNft.objectId, // Add actual NFT data
-          }),
-        });
-
-        const data = await response.json();
-        if (data.success) {
-
-          // Store the NFT ID in local storage to prevent future redundant additions
-          localStorage.setItem("added_nft_id", filteredNft.objectId);
-        } else {
-          console.error("Failed to add NFT data:", data.error);
-        }
-      } catch (error) {
-        console.error("Error adding NFT data:", error);
-      }
-    }
-  }, [filteredNft, account?.address, triggerBalanceRefresh, showModal]);
 
 
 
@@ -717,7 +669,6 @@ const Game: React.FC = () => {
     refreshNft();
     triggerBalanceRefresh(); // Trigger balance refresh
     fetchGameData();
-    handleAirdropClaimSuccess();
 
   }, [account]);
 
@@ -1159,7 +1110,6 @@ const Game: React.FC = () => {
 
                       {/* Add a darken overlay when a building is hovered */}
                       <div className={`darken-overlay ${isHovered ? 'visible' : ''}`}></div>
-                      <div className={`darken-overlay-2 ${!hasNftInDb && filteredNft ? 'visible' : ''}`}></div>
 
 
                     </>
