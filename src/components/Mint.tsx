@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { ADDRESSES } from "../../addresses.ts";
 import { Transaction } from "@mysten/sui/transactions";
 import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
+import { useCurrentAccount } from "@mysten/dapp-kit";
+
 
 const Mint = ({
   onMintSuccessful, // Add onMintSuccessful prop
@@ -12,6 +14,7 @@ const Mint = ({
 }) => {
   const suiClient = useSuiClient();
   const [loading, setLoading] = useState<boolean>(false); // Add loading state
+  const account = useCurrentAccount();
 
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
     execute: async ({ bytes, signature }) =>
@@ -48,7 +51,6 @@ const Mint = ({
             const created = result.effects?.created;
             if (created && created.length > 0) {
               const nftId = created[0].reference.objectId;
-              const owner = created[0].owner;
 
               // Call add-nft function to store the NFT in MongoDB and Netlify Blobs
               try {
@@ -58,7 +60,7 @@ const Mint = ({
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    walletAddress: owner, // Include the sender's wallet address
+                    walletAddress: account?.address, // Include the sender's wallet address
                     nftData: { nftId }, // Include the minted NFT data
                   }),
                 });
