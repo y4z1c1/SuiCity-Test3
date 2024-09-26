@@ -991,7 +991,7 @@ const Game: React.FC = () => {
                             width: "40%", // 30% width of the image
                             height: "40%", // 30% height of the image
                             cursor: "pointer",
-                            zIndex: 100,
+                            zIndex: 10,
 
                           }}
                           onClick={() => handleBuildingClick(2)}
@@ -1029,7 +1029,7 @@ const Game: React.FC = () => {
                             width: "40%", // 30% width of the image
                             height: "40%", // 30% height of the image
                             cursor: "pointer",
-                            zIndex: 100,
+                            zIndex: 10,
 
                           }}
                           onClick={() => {
@@ -1070,7 +1070,7 @@ const Game: React.FC = () => {
                             width: "40%", // 30% width of the image
                             height: "40%", // 30% height of the image
                             cursor: "pointer",
-                            zIndex: 100,
+                            zIndex: 10,
 
                           }}
                           onClick={() => {
@@ -1105,7 +1105,7 @@ const Game: React.FC = () => {
                             left: "30%", // center the clickable area horizontally
                             width: "40%", // 30% width of the image
                             height: "40%", // 30% height of the image
-                            zIndex: 100,
+                            zIndex: 10,
 
 
                           }}

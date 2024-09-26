@@ -395,7 +395,7 @@
   box-sizing: border-box;
   border-radius: 2px 2px 0px 0px;
   color: white;
-  z-index: 1;
+  z-index: 10;
 }
 
 .nft-specs {
@@ -422,7 +422,7 @@
   box-sizing: border-box;
   /* Transition for hover effect */
   transition: transform 0.2s ease-in-out;
-  z-index: 10;
+  z-index: 2;
 }
 
 .nft-specs h2,
@@ -1371,7 +1371,7 @@ p,
 
 .buildingPos:hover {
   filter: brightness(100%) drop-shadow(0 0 50px rgba(255, 255, 255, 0.4)); /* Increase brightness and apply feather effect */
-  z-index: 10; /* Bring the hovered building to the top */
+  z-index: 3; /* Bring the hovered building to the top */
 }
 .castle-coming-soon-text {
   position: absolute;
@@ -1410,6 +1410,7 @@ p,
   -webkit-backdrop-filter: blur(2px); /* For Safari */
   opacity: 0; /* Initially hidden */
   transition: opacity 0.5s ease; /* Smooth transition */
+  z-index: 2;
 }
 
 .darken-overlay.visible {
@@ -1492,7 +1493,7 @@ p,
   }
 
   .nft-specs h2 {
-    font-size: 100%;
+    font-size: 90%;
   }
 
   .nft-specs p {
