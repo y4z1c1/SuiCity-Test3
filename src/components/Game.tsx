@@ -12,7 +12,6 @@ import Population from "./Population";
 import NftTech from "./NftTech";
 import Reference from "./Reference";
 import WalletChecker from "./WalletChecker";
-import ClaimReward from "./ClaimReward";
 import Leaderboard from "./Leaderboard";
 
 
@@ -913,16 +912,7 @@ const Game: React.FC = () => {
 
 
 
-          {/* Only render ClaimReward if the user is allowed to claim */}
-          {storedSignature && airdropAmount > 0 && (
-            <ClaimReward
-              mySignature={storedSignature}
-              hashedMessage={`Airdrop reward claim for wallet ${account?.address}`}
-              amount={airdropAmount}
-              showModal={showModal}
-              onClaimSuccessful={handleAirdropClaimSuccess} // Handle success
-            />
-          )}
+
 
 
 
