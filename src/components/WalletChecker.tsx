@@ -415,7 +415,7 @@ const WalletChecker = ({
                             />
 
                             {/* Mint button */}
-                            {storedSignature && (
+                            {storedSignature && isVerified && (
                                 <>
                                     <ClaimReward
                                         mySignature={storedSignature}

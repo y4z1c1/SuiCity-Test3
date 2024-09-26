@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ADDRESSES } from "../../addresses.ts";
 import { Transaction } from "@mysten/sui/transactions";
 import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
@@ -11,13 +11,14 @@ const Mint = ({
   onMintSuccessful: () => void;
 }) => {
   const suiClient = useSuiClient();
+  const [loading, setLoading] = useState<boolean>(false); // Add loading state
+
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
     execute: async ({ bytes, signature }) =>
       await suiClient.executeTransactionBlock({
         transactionBlock: bytes,
         signature,
         options: {
-          // Raw effects are required so the effects can be reported back to the wallet
           showRawEffects: true,
           showEffects: true,
         },
@@ -25,6 +26,7 @@ const Mint = ({
   });
 
   const mint = useCallback(async () => {
+    setLoading(true); // Set loading to true
     try {
       const transactionBlock = new Transaction();
       transactionBlock.moveCall({
@@ -40,19 +42,51 @@ const Mint = ({
           transaction: transactionBlock,
         },
         {
-          onSuccess: (result) => {
+          onSuccess: async (result) => {
             console.log("Mint successful ", result);
+
+            const created = result.effects?.created;
+            if (created && created.length > 0) {
+              const nftId = created[0].reference.objectId;
+              const owner = created[0].owner;
+
+              // Call add-nft function to store the NFT in MongoDB and Netlify Blobs
+              try {
+                const response = await fetch("/.netlify/functions/add-nft", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    walletAddress: owner, // Include the sender's wallet address
+                    nftData: { nftId }, // Include the minted NFT data
+                  }),
+                });
+
+                const responseData = await response.json();
+                if (responseData.success) {
+                } else {
+                }
+              } catch (error) {
+                console.error("Error storing NFT data:", error);
+              }
+            } else {
+              console.error("No NFT created");
+            }
 
             onMintSuccessful(); // Trigger the success callback
           },
           onError: (error) => {
             console.error("Mint error:", error);
-            showModal(`🚫 Error: ${error}`, 0); // Show success message in the modal
+            showModal(`🚫 Error: ${error}`, 0); // Show error message in the modal
           },
         }
       );
     } catch (error) {
       console.error("Mint Error:", error);
+      showModal("🚫 Error minting NFT", 0);
+    } finally {
+      setLoading(false); // Stop loading when mint is done
     }
   }, [signAndExecute, onMintSuccessful]);
 
@@ -67,8 +101,9 @@ const Mint = ({
       <button
         className="mint-button"
         onClick={mint}
+        disabled={loading} // Disable button while minting
       >
-        🏙️ Free Mint your SuiCity
+        {loading ? "Minting..." : "🏙️ Free Mint your SuiCity"}
       </button>
 
       <p>You will be able to claim your tokens after minting.</p>
