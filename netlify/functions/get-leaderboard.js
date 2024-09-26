@@ -4,7 +4,10 @@ const uri = process.env.MONGODB_URI;
 let client = null;
 
 if (!client) {
-  client = new MongoClient(uri); // No need for useNewUrlParser and useUnifiedTopology
+  client = new MongoClient(uri, {
+    connectTimeoutMS: 30000, // Set the connection timeout to 30 seconds
+    socketTimeoutMS: 30000, // Set the socket timeout to 30 seconds
+  });
 }
 
 exports.handler = async (event, context) => {

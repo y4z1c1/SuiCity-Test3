@@ -72,6 +72,8 @@ const Game: React.FC = () => {
 
   // Add this state to manage the sound
   const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
+  const [tried, setTried] = useState(false); // Track if the game-container is on
+
   const audioRef = useRef<HTMLAudioElement | null>(null); // Ref to the audio element
   // Play the click sound
 
@@ -592,6 +594,33 @@ const Game: React.FC = () => {
 
       setIsLoading(false); // Mark loading as complete once NFT is fetched
       setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
+      // Call add-nft function to store the NFT in MongoDB and Netlify Blobs
+      if (filteredNft?.objectId && !tried) {
+        try {
+          const response = await fetch("/.netlify/functions/add-nft", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              walletAddress: account?.address, // The current wallet address
+              nftData: filteredNft.objectId, // Add actual NFT data
+            }),
+          });
+          const data = await response.json();
+          if (data.success) {
+            // Store the NFT ID in local storage to prevent future redundant additions
+            localStorage.setItem("added_nft_id", filteredNft.objectId);
+            setTried(true);
+          } else {
+            console.error("Failed to add NFT data:", data.error);
+          }
+        } catch (error) {
+          console.error("Error adding NFT data:", error);
+        }
+      }
+
+
 
     } catch (error) {
       console.error("Error refreshing NFTs, switching RPC:", error);
