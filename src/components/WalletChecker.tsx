@@ -427,7 +427,7 @@ const WalletChecker = ({
                                 </>
                             )}
 
-                            {totalAirdrop !== null && isVerified && (
+                            {!storedSignature && totalAirdrop !== null && isVerified && (
                                 <>
                                     <Mint showModal={showModal} onMintSuccessful={onMintSuccess} />
 
