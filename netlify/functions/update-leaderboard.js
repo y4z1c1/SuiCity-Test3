@@ -53,7 +53,7 @@ export default async (req, context) => {
   }
 };
 
-// Specify the cron schedule for the function to run every 5 minutes
+// Specify the cron schedule for the function to run every 2 minutes
 export const config = {
-  schedule: "*/5 * * * *",
+  schedule: "*/2 * * * *",
 };
