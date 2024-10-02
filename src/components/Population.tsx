@@ -46,12 +46,12 @@ const Population: React.FC<PopulationProps> = ({
 
   // Function to calculate population based on building levels
   const calculatePopulation = () => {
-    const basePopulation = 10000;
+    const basePopulation = 20000;
 
     const calculateForBuilding = (level: number) => {
       let population = basePopulation;
       for (let i = 0; i < level; i++) {
-        population = Math.floor((population * 14) / 10); // Multiply by 1.4
+        population = Math.floor((population * 18) / 10); // Multiply by 1.8
       }
       return population;
     };
@@ -74,7 +74,7 @@ const Population: React.FC<PopulationProps> = ({
   // Memoize the population and totalPopulation calculation to prevent recalculations
   const population = useMemo(() => calculatePopulation(), [officeLevel, houseLevel, factoryLevel, enterLevel]);
 
-  const totalPopulation = useMemo(() => population + accumulatedSity + sityBalance, [population, accumulatedSity, sityBalance]);
+  const totalPopulation = useMemo(() => population + Number((accumulatedSity + sityBalance) / 4), [population, accumulatedSity, sityBalance]);
 
   // Function to call the Netlify function to update the population in MongoDB
   const updatePopulation = async () => {

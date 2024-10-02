@@ -76,7 +76,6 @@ const Game: React.FC = () => {
 
   // Add this state to manage the sound
   const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
-  const [tried, setTried] = useState(false); // Track if the game-container is on
 
   const [currentNonce, setCurrentNonce] = useState<number | null>(null); // Track the current nonce
 
@@ -96,6 +95,20 @@ const Game: React.FC = () => {
     console.log("Signature generated:", signature);
     setStoredSignature(signature);
   }
+
+  const RPC_URLS = [
+    "https://fullnode.mainnet.sui.io",
+    "https://sui-rpc.publicnode.com",
+    "https://sui-mainnet.nodeinfra.com",
+    "https://sui-mainnet-endpoint.blockvision.org",
+    "https://mainnet.suiet.app",
+    "https://sui-mainnet-ca-2.cosmostation.io",
+    "https://mainnet-rpc.sui.chainbase.online"
+
+
+
+  ];
+
 
 
   // Play the click sound
@@ -600,98 +613,13 @@ const Game: React.FC = () => {
 
   const refreshNft = useCallback(async () => {
     console.log("Refreshing NFTs...");
-    try {
-      const allObjects: any[] = [];
-      let lastObject = null;
-      let hasMore = true;
+    let success = false;
 
-      while (hasMore) {
-        const object = await provider.getOwnedObjects({
-          owner: String(account?.address),
-          cursor: lastObject?.data?.[lastObject.data.length - 1]?.data?.objectId || null,
-          options: { showType: true, showContent: true },
-        });
-
-        allObjects.push(...object.data);
-
-        if (object.data.length === 0 || !object.nextCursor) {
-          hasMore = false;
-        } else {
-          lastObject = object;
-        }
-      }
-
-      console.log("All objects found:", allObjects);
-
-      const nft = allObjects.find(
-        (nft) => String(nft.data?.type) === `${ADDRESSES.NFT_TYPE}`
-      );
-
-      const oldNft = allObjects.find(
-        (nft) => String(nft.data?.type) === `${BURN.NFT_TYPE}`
-      );
-      console.log("Old NFT found:", oldNft?.data);
-
-      setOldNft(oldNft?.data || null);
-
-      console.log("NFT found:", nft?.data);
-      setFilteredNft(nft?.data || null);
-      if (nft?.data) {
-        const fields = nft.data.content.fields;
-        if (fields.buildings) {
-          setOffice(fields.buildings[0]);
-          setFactory(fields.buildings[1]);
-          setHouse(fields.buildings[2]);
-          setEnter(fields.buildings[3]);
-          setCastle(fields.buildings[4]);
-        }
-        if (fields.wallet) {
-          setWalletObject(fields.wallet);
-        }
-
-      }
-
-      setIsLoading(false); // Mark loading as complete once NFT is fetched
-      setIsAwaitingBlockchain(false); // Re-enable interaction and accumulation process
-      // Call add-nft function to store the NFT in MongoDB and Netlify Blobs
-      if (filteredNft?.objectId && !tried) {
-        try {
-          const response = await fetch("/.netlify/functions/add-nft", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              walletAddress: account?.address, // The current wallet address
-              nftData: filteredNft.objectId, // Add actual NFT data
-              walletId: walletObject,
-            }),
-          });
-          const data = await response.json();
-          if (data.success) {
-            // Store the NFT ID in local storage to prevent future redundant additions
-            localStorage.setItem("added_nft_id", filteredNft.objectId);
-            setTried(true);
-          } else {
-            console.error("Failed to add NFT data:", data.error);
-          }
-        } catch (error) {
-          console.error("Error adding NFT data:", error);
-        }
-      }
-
-
-
-    } catch (error) {
-      console.error("Error refreshing NFTs, switching RPC:", error);
-
-      // Switch to an alternative RPC URL temporarily
-      const provider = new SuiClient({
-        url: "https://sui-rpc.publicnode.com",
-      });
-
-      // Retry the request with the new RPC URL
+    for (const rpcUrl of RPC_URLS) {
       try {
+        console.log(`Trying to refresh NFTs with RPC URL: ${rpcUrl}`);
+        const provider = new SuiClient({ url: rpcUrl });
+
         const allObjects: any[] = [];
         let lastObject = null;
         let hasMore = true;
@@ -699,7 +627,9 @@ const Game: React.FC = () => {
         while (hasMore) {
           const object = await provider.getOwnedObjects({
             owner: String(account?.address),
-            cursor: lastObject?.data?.[lastObject.data.length - 1]?.data?.objectId || null,
+            cursor:
+              lastObject?.data?.[lastObject.data.length - 1]?.data?.objectId ||
+              null,
             options: { showType: true, showContent: true },
           });
 
@@ -712,6 +642,8 @@ const Game: React.FC = () => {
           }
         }
 
+        console.log("All objects found:", allObjects);
+
         const nft = allObjects.find(
           (nft) => String(nft.data?.type) === `${ADDRESSES.NFT_TYPE}`
         );
@@ -719,15 +651,14 @@ const Game: React.FC = () => {
         const oldNft = allObjects.find(
           (nft) => String(nft.data?.type) === `${BURN.NFT_TYPE}`
         );
+        console.log("Old NFT found:", oldNft?.data);
 
         setOldNft(oldNft?.data || null);
 
-        console.log("NFT found with new RPC:", nft?.data);
-
+        console.log("NFT found:", nft?.data);
         setFilteredNft(nft?.data || null);
         if (nft?.data) {
           const fields = nft.data.content.fields;
-
           if (fields.buildings) {
             setOffice(fields.buildings[0]);
             setFactory(fields.buildings[1]);
@@ -735,7 +666,6 @@ const Game: React.FC = () => {
             setEnter(fields.buildings[3]);
             setCastle(fields.buildings[4]);
           }
-
           if (fields.wallet) {
             setWalletObject(fields.wallet);
           }
@@ -743,41 +673,58 @@ const Game: React.FC = () => {
 
         setIsLoading(false);
         setIsAwaitingBlockchain(false);
+        success = true;
+        break; // Exit the loop on success
       } catch (error) {
-        console.error("Error refreshing NFTs after switching RPC:", error);
-        setIsLoading(false);
-        setIsAwaitingBlockchain(false);
+        console.error(`Error refreshing NFTs with RPC URL ${rpcUrl}:`, error);
+        // Continue to the next RPC URL
       }
+    }
+
+    if (!success) {
+      console.error("Failed to refresh NFTs after trying all RPC URLs");
+      setIsLoading(false);
+      setIsAwaitingBlockchain(false);
     }
   }, [account?.address]);
 
 
+
   const refreshSity = useCallback(async () => {
     console.log("Refreshing SITY...");
-    try {
+    let success = false;
 
-      const object = await provider.getObject({
-        id: String(walletObject),
-        options: { showContent: true },
+    for (const rpcUrl of RPC_URLS) {
+      try {
+        console.log(`Trying to refresh SITY with RPC URL: ${rpcUrl}`);
+        const provider = new SuiClient({ url: rpcUrl });
 
-      });
+        const object = await provider.getObject({
+          id: String(walletObject),
+          options: { showContent: true },
+        });
 
-      console.log("SITY object found:", object.data);
-      if (object?.data) {
-        const wallet = object as any;
-        const fields = wallet.data.content.fields;
+        console.log("SITY object found:", object.data);
+        if (object?.data) {
+          const wallet = object as any;
+          const fields = wallet.data.content.fields;
 
-        if (fields.balance) {
-          setSityBalance(parseInt(fields.balance) / 1000);
+          if (fields.balance) {
+            setSityBalance(parseInt(fields.balance) / 1000);
+          }
         }
+
+        success = true;
+        break; // Exit the loop on success
+      } catch (error) {
+        console.error(`Error refreshing SITY with RPC URL ${rpcUrl}:`, error);
+        // Continue to the next RPC URL
       }
-
     }
 
-    catch (error) {
-      console.error("Error refreshing SITY balance:", error);
+    if (!success) {
+      console.error("Failed to refresh SITY after trying all RPC URLs");
     }
-
   }, [account?.address, walletObject]);
 
   useEffect(() => {
