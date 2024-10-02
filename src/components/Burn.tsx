@@ -140,7 +140,7 @@ const Burn = ({
                 {loading ? "Burning..." : "🔥 Burn your Old NFT"}
             </button>
 
-            <p>You are suposed to burn your old nft to continue with the new contract.</p>
+            <p>You are supposed to burn your old nft to continue with the new contract.</p>
         </div>
     );
 };
