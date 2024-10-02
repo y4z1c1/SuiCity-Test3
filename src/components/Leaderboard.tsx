@@ -19,7 +19,14 @@ const Leaderboard: React.FC = () => {
     const account = useCurrentAccount();
 
     const walletAddress = account?.address || "";
-
+    const formatBalance = (balance: number) => {
+        if (balance >= 1000000) {
+            return (balance / 1000000).toFixed(2) + "M";
+        } else if (balance >= 1000) {
+            return (balance / 1000).toFixed(2) + "k";
+        }
+        return balance.toFixed(2);
+    };
     // Fetch the leaderboard data from the backend
     const fetchLeaderboard = async (walletAddress: string) => {
         try {
@@ -90,7 +97,7 @@ const Leaderboard: React.FC = () => {
                             <td style={user.walletAddress === currentUserData?.walletAddress ? { color: "black", fontWeight: "500" } : { color: "white", fontWeight: "300" }}>
                                 {user.twitterId}
                             </td>
-                            <td>{parseInt(user.population.toString())}</td>
+                            <td>{formatBalance(user.population)}</td>
                         </tr>
                     ))}
 
@@ -101,7 +108,7 @@ const Leaderboard: React.FC = () => {
                         <tr className="highlight-row">
                             <td>{rank}.</td>
                             <td>{currentUserData.twitterId}</td>
-                            <td>{parseInt(currentUserData.population.toString())}</td>
+                            <td>{formatBalance(currentUserData.population)}</td>
                         </tr>
                     )}
 
