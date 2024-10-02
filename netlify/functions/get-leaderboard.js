@@ -36,21 +36,26 @@ exports.handler = async (event, context) => {
       .toArray();
 
     // Find the current user by walletAddress
-    const user = await bindingsCollection.findOne({ walletAddress });
+    const currentUser = await bindingsCollection.findOne({ walletAddress });
 
-    if (!user) {
+    if (!currentUser) {
       return {
         statusCode: 404,
         body: JSON.stringify({ error: "User not found" }),
       };
     }
 
-    // Return the top 50 users along with the current user's data
+    // Find the rank of the current user if not in the top 50
+    const rank = await bindingsCollection.countDocuments({
+      population: { $gt: currentUser.population },
+    });
+
+    // Return the top 50 users along with the current user's rank (rank + 1 due to 0-indexing)
     return {
       statusCode: 200,
       body: JSON.stringify({
         topUsers,
-        currentUser: user,
+        currentUser: { ...currentUser, rank: rank + 1 },
       }),
     };
   } catch (error) {
