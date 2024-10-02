@@ -23,8 +23,9 @@ const Reference = ({ nft, showModal, officeLevel, factoryLevel, houseLevel, ente
 
     // Check if the reference has already been used (from nft content)
     useEffect(() => {
-        if (nft?.content?.fields?.ref_used) {
-            setRefUsed(nft.content.fields.ref_used); // Set refUsed if it's true
+        if (nft?.content?.fields?.use_check) {
+            setRefUsed(nft.content.fields.use_check[0]); // Set refUsed if it's true
+            console.log("Reference used:", nft.content.fields.use_check[0]);
         }
     }, [nft]);
 
