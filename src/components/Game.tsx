@@ -60,9 +60,7 @@ const Game: React.FC = () => {
   const [, setIsBuildingClickable] = useState<boolean>(true); // Manage clickable areas
   const [isMapView, setIsMapView] = useState(true); // Track if map view is active
   // State for tracking airdrop claim data
-  const [storedSignature, setStoredSignature] = useState<string | null>(null);
-  const [storedMessage, setStoredMessage] = useState<string | null>(null);
-  const [airdropAmount, setAirdropAmount] = useState<number>(0);
+
   const [office, setOffice] = useState<number>(0);
   const [factory, setFactory] = useState<number>(0);
   const [house, setHouse] = useState<number>(0);
@@ -166,11 +164,10 @@ const Game: React.FC = () => {
   const handleAirdropClaimSuccess = useCallback(async () => {
     showModal("✅ Airdrop claimed successfully!", 1);
 
-    // Clear airdrop data from localStorage
-    localStorage.removeItem("airdrop_signature");
-    localStorage.removeItem("total_airdrop");
 
-
+    localStorage.removeItem("signature");
+    localStorage.removeItem("message");
+    localStorage.removeItem("totalAirdrop");
     setStoredSignature(null); // Remove signature from state
     setAirdropAmount(0); // Set airdrop amount to 0
     setStoredMessage(null); // Remove message from state
@@ -181,8 +178,44 @@ const Game: React.FC = () => {
   }, [account?.address]);
 
 
+  // State for tracking airdrop claim data
+  const [storedSignature, setStoredSignature] = useState<string | null>(() => {
+    const savedSignature = localStorage.getItem("signature");
+    return savedSignature ? savedSignature : null;
+  });
 
 
+  const [storedMessage, setStoredMessage] = useState<string | null>(() => {
+    const savedMessage = localStorage.getItem("message");
+    return savedMessage ? savedMessage : null;
+  });
+
+  // Initialize airdropAmount from localStorage
+  const [airdropAmount, setAirdropAmount] = useState<number>(() => {
+    const savedAirdropAmount = localStorage.getItem('airdropAmount');
+    return savedAirdropAmount ? parseFloat(savedAirdropAmount) : 0;
+  });
+
+
+  // Update airdropAmount when storedMessage changes
+  useEffect(() => {
+    if (storedMessage) {
+      const messageParts = storedMessage.split(":");
+      if (messageParts.length > 0) {
+        const amountInSity = parseInt(messageParts[0], 10) / 1000; // Divide by 1000 to get the original amount
+        setAirdropAmount(amountInSity);
+      }
+    }
+  }, [storedMessage]);
+
+  // Synchronize airdropAmount with localStorage
+  useEffect(() => {
+    if (airdropAmount > 0) {
+      localStorage.setItem('airdropAmount', String(airdropAmount));
+    } else {
+      localStorage.removeItem('airdropAmount');
+    }
+  }, [airdropAmount]);
 
   const originalBackgroundSize = { width: 1280, height: 1280 }; // Original map size
 
@@ -1208,7 +1241,7 @@ const Game: React.FC = () => {
                           showModal={showModal}
                           nftIdToBurn={oldNft?.objectId}
                         />
-                        <div className={`darken-overlay ${oldNft ? 'visible' : ''}`}></div></>
+                        <div className={`darken-overlay ${oldNft || (storedSignature != null) ? 'visible' : ''}`}></div></>
                       )
                       }
 

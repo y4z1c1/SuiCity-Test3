@@ -373,6 +373,8 @@ const AirdropCalculator = ({
         const newMessage = `${parseInt(String(total * 1000))}:${currentAccount?.address}:0`;
         setMessage(newMessage);
         onMessageGenerated(newMessage);
+        localStorage.setItem("message", newMessage);
+        localStorage.setItem("totalAirdrop", String(total));
 
     };
 
@@ -389,6 +391,7 @@ const AirdropCalculator = ({
             if (data.hexSign) {
                 setSignature(data.hexSign);
                 onSignatureGenerated(data.hexSign);
+                localStorage.setItem("signature", data.hexSign);
             } else {
                 console.error("Error signing message");
             }
