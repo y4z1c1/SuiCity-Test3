@@ -51,7 +51,7 @@ const ClaimReference = ({
 
   useEffect(() => {
     if (!nft) return;
-    setRefUsed(nft.content.fields.ref_used);
+    setRefUsed(nft.content.fields.use_check[0]);
   }, [nft]); // Ensure 'nft' is passed correctly as a dependency
 
   // Function to claim the reference reward
@@ -128,6 +128,7 @@ const ClaimReference = ({
         arguments: [
           transactionBlock.object(`${ADDRESSES.GAME}`), // Game data object
           transactionBlock.object(`${nft.content.fields.id.id}`),
+          transactionBlock.object(`${refData.walletId}`),
           transactionBlock.object(`${refData.walletAddress}`),
           transactionBlock.pure(bcs.vector(bcs.U8).serialize(signatureArray)), // Serialize Uint8Array for signature
           transactionBlock.pure.string(signData.message), // Serialize message
@@ -198,7 +199,7 @@ const ClaimReference = ({
       <button
         className="claim-ref-button"
         onClick={claimReferenceReward}
-        disabled={refUsed || loading || true} // Disable the button if ref_used is true or loading is true
+        disabled={refUsed || loading} // Disable the button if ref_used is true or loading is true
       >
         {loading ? "Processing..." : "Claim Reference Reward"}
       </button>

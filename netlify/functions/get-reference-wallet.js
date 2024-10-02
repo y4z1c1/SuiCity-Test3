@@ -35,17 +35,23 @@ export const handler = async (event) => {
         };
       }
 
+      const parsedBlobBinding = JSON.parse(blobBinding);
+
       return {
         statusCode: 200,
         body: JSON.stringify({
-          walletAddress: JSON.parse(blobBinding).walletAddress,
+          walletAddress: parsedBlobBinding.walletAddress,
+          walletId: parsedBlobBinding.walletId || null,
         }),
       };
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ walletAddress: binding.walletAddress }),
+      body: JSON.stringify({
+        walletAddress: binding.walletAddress,
+        walletId: binding.walletId || null,
+      }),
     };
   } catch (error) {
     return {

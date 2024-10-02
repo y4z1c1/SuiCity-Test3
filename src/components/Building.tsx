@@ -538,13 +538,13 @@ const Building: React.FC<BuildingProps> = ({
                   </p>
 
                   <p className="info-text" >
-                    The Entertainment C. level affects Amenity points, impacting the frequency at which the player is required to claim rewards. Additionally, thanks to dNFT technology, upgrading your building will change the appearance, metadata, and rarity of your NFT.
+                    As your Castle level increases, your probability of winning against your opponents increases. You will soon be able to battle with bots. ⚔️
                   </p>
 
                   <a
                     target="_blank"
                     className="details"
-                    href="https://docs.suicityp2e.com/buildings/entertainment-complex"
+                    href="https://docs.suicityp2e.com/buildings/castle"
                     style={{ color: "lightblue", fontSize: "14px", textDecoration: "underline" }}
                   >
                     more details
