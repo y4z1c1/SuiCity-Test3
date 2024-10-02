@@ -101,7 +101,7 @@ const Upgrade = ({
         console.log("Unknown building type");
         return 0;
     }
-  }, [buildingType, officeLevel, factoryLevel, houseLevel, enterLevel]);
+  }, [buildingType, officeLevel, factoryLevel, houseLevel, enterLevel, castleLevel]);
 
   const handleCastleClick = () => {
     if (!canUpgradeCastle) {
@@ -406,6 +406,7 @@ const Upgrade = ({
               onUpgradeSuccess();
               setIsProcessing(false);
               setCastleUpgradeClicked(false);
+
             },
             onError: (error) => {
               showModal(`🚫 Error: ${error.message}`, 0);
