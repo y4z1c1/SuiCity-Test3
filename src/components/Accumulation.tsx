@@ -165,7 +165,7 @@ const Accumulation: React.FC<AccumulationProps> = ({
     return `${hours}h ${minutes}m ${seconds}s`;
   };
 
-  // Define the onClick handler to be passed to Claim
+  // Define the onClick handler to be passed to Claim component
   const handleClick = () => {
     console.log("Claim button clicked");
   };
