@@ -1,5 +1,4 @@
 import { MongoClient } from "mongodb";
-import { getStore } from "@netlify/blobs";
 
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
@@ -9,9 +8,9 @@ export const handler = async (event, context) => {
     console.log("Received event:", event);
 
     const body = JSON.parse(event.body);
-    const { walletAddress, nftData } = body;
+    const { walletAddress, walletObject, nftData } = body;
 
-    if (!walletAddress || !nftData) {
+    if (!walletAddress || !walletObject || !nftData) {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: "Missing required fields" }),
@@ -36,29 +35,27 @@ export const handler = async (event, context) => {
       };
     }
 
-    // Update MongoDB with new NFT data
+    // Update MongoDB with new NFT string and walletObject stored in walletId field
     const updateResult = await collection.updateOne(
       { walletAddress },
-      { $set: { nft: nftData } }
+      { $set: { nft: nftData, walletId: walletObject } }
     );
-
-    // Store NFT data in Netlify Blobs
-    const nftStore = getStore("nft_data");
-    await nftStore.setJSON(walletAddress, { nftData });
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
-        message: "NFT data added successfully",
+        message: "NFT data and walletObject added successfully",
         updateResult,
       }),
     };
   } catch (error) {
-    console.error("Error updating NFT data:", error);
+    console.error("Error updating NFT data and walletObject:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Failed to update NFT data" }),
+      body: JSON.stringify({
+        error: "Failed to update NFT data and walletObject",
+      }),
     };
   } finally {
     console.log("Closing MongoDB connection");

@@ -631,11 +631,35 @@ const Game: React.FC = () => {
     refreshNft();
   };
 
-  const handleMintSuccess = () => {
-    setTimeout(() => {
+  const handleMintSuccess = async () => {
+    setTimeout(async () => {
       console.log("MINT SUCCESSFUL, awaiting new data...");
       refreshNft();
       showModal("✅ Mint successful!", 1); // Show success message in the modal
+
+      // Prepare the data to send to the server
+      const walletAddress = "user_wallet_address"; // Replace this with the actual wallet address
+      const walletObject = "user_wallet_object"; // Replace this with the actual wallet object
+      const nftData = "nft_string_data"; // Replace this with the actual NFT data string
+
+      try {
+        const response = await fetch("/.netlify/functions/add-nft", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ walletAddress, walletObject, nftData }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("NFT data and walletObject successfully added to MongoDB:", data);
+        } else {
+          console.error("Failed to update MongoDB:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error sending data to MongoDB:", error);
+      }
 
       setTransactionType(null);
       setIsAwaitingBlockchain(true);
@@ -643,6 +667,7 @@ const Game: React.FC = () => {
       setTransactionInProgress(false);
     }, 2000); // 2000 milliseconds
   };
+
 
   const refreshNft = useCallback(async () => {
     console.log("Refreshing NFTs...");
