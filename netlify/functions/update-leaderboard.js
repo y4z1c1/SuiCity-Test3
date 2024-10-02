@@ -7,8 +7,8 @@ let client = null;
 const getMongoClient = async () => {
   if (!client) {
     client = new MongoClient(uri, {
-      connectTimeoutMS: 30000,
-      socketTimeoutMS: 30000,
+      connectTimeoutMS: 60000,
+      socketTimeoutMS: 60000,
     });
     await client.connect(); // Ensure we only connect once
   }
