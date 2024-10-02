@@ -11,6 +11,17 @@ if (!client) {
 }
 
 exports.handler = async (event, context) => {
+  // Add secret token authentication
+  const secretToken = process.env.SECRET_TOKEN;
+  const authHeader = event.headers["authorization"];
+
+  if (!authHeader || authHeader !== `Bearer ${secretToken}`) {
+    return {
+      statusCode: 401,
+      body: JSON.stringify({ error: "Unauthorized" }),
+    };
+  }
+
   try {
     await client.connect();
     const database = client.db("twitter_bindings");
