@@ -1944,8 +1944,13 @@ p,
     height: 20px !important;
   }
 
+  .sword-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
   .nft-specs h2 {
-    font-size: 80%;
+    font-size: 70%;
   }
 
   .pleaseConnect h2 {
