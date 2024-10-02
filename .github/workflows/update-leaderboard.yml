@@ -12,5 +12,7 @@ jobs:
       - name: Trigger Netlify Function
         run: |
           curl -X POST \
+            --http1.1 \
+            -v \
             -H "Authorization: Bearer ${{ secrets.SECRET_TOKEN }}" \
-            https://play.suicityp2e.com/.netlify/functions/update-leaderboard
+            https://my-actual-site.netlify.app/.netlify/functions/update-leaderboard
