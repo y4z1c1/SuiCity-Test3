@@ -23,14 +23,20 @@ exports.handler = async (event, context) => {
   try {
     await client.connect();
     const database = client.db("twitter_bindings");
-    const collection = database.collection("leaderboard");
+    const bindingsCollection = database.collection("bindings");
 
-    // Fetch top 50 users from the leaderboard collection without sorting
-    // Since the collection is pre-sorted and ranks are assigned during the update
-    const topUsers = await collection.find().limit(50).toArray();
+    // Ensure an index on the 'population' field for efficient sorting
+    await bindingsCollection.createIndex({ population: -1 });
+
+    // Fetch top 50 users from the bindings collection sorted by population
+    const topUsers = await bindingsCollection
+      .find()
+      .sort({ population: -1 })
+      .limit(50)
+      .toArray();
 
     // Find the current user by walletAddress
-    const user = await collection.findOne({ walletAddress });
+    const user = await bindingsCollection.findOne({ walletAddress });
 
     if (!user) {
       return {
