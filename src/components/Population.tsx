@@ -74,7 +74,7 @@ const Population: React.FC<PopulationProps> = ({
   // Memoize the population and totalPopulation calculation to prevent recalculations
   const population = useMemo(() => calculatePopulation(), [officeLevel, houseLevel, factoryLevel, enterLevel]);
 
-  const totalPopulation = useMemo(() => population + Number((accumulatedSity + sityBalance) / 4), [population, accumulatedSity, sityBalance]);
+  const totalPopulation = useMemo(() => population + Number((accumulatedSity + sityBalance)), [population, accumulatedSity, sityBalance]);
 
   // Function to call the Netlify function to update the population in MongoDB
   const updatePopulation = async () => {
