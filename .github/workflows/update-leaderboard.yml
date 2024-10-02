@@ -1,0 +1,13 @@
+name: Update Leaderboard
+
+on:
+  schedule:
+    - cron: "*/2 * * * *" # Runs every 2 minutes
+
+jobs:
+  update-leaderboard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Netlify Function
+        run: |
+          curl -X POST https://play.suicityp2e.com/.netlify/functions/update-leaderboard
