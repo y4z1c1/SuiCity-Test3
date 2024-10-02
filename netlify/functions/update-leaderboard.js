@@ -1,5 +1,6 @@
-const { MongoClient } = require("mongodb");
+import { MongoClient } from "mongodb";
 
+// MongoDB connection setup
 const uri = process.env.MONGODB_URI;
 let client = null;
 
@@ -10,19 +11,9 @@ if (!client) {
   });
 }
 
-exports.handler = async (event, context) => {
-  // Add secret token authentication
-  const secretToken = process.env.SECRET_TOKEN;
-  const authHeader = event.headers["authorization"];
-
-  if (!authHeader || authHeader !== `Bearer ${secretToken}`) {
-    return {
-      statusCode: 401,
-      body: JSON.stringify({ error: "Unauthorized" }),
-    };
-  }
-
+export default async (req, context) => {
   try {
+    // Connect to MongoDB
     await client.connect();
     const database = client.db("twitter_bindings");
     const bindingsCollection = database.collection("bindings");
@@ -32,21 +23,22 @@ exports.handler = async (event, context) => {
     const users = await bindingsCollection.find().toArray();
 
     // Prepare users with population
-    const usersWithPopulation = users
-      .map((user) => ({
-        ...user,
-        population: user.population || 0,
-      }))
-      .sort((a, b) => b.population - a.population);
+    const usersWithPopulation = users.map((user) => ({
+      ...user,
+      population: user.population || 0,
+    }));
 
-    // Assign ranks
+    // Sort users by population (descending)
+    usersWithPopulation.sort((a, b) => b.population - a.population);
+
+    // Assign ranks to each user
     usersWithPopulation.forEach((user, index) => {
       user.rank = index + 1;
     });
 
-    // Upsert the leaderboard data
-    await leaderboardCollection.deleteMany({}); // Clear previous leaderboard
-    await leaderboardCollection.insertMany(usersWithPopulation);
+    // Upsert leaderboard data
+    await leaderboardCollection.deleteMany({}); // Clear old leaderboard
+    await leaderboardCollection.insertMany(usersWithPopulation); // Insert new leaderboard
 
     return {
       statusCode: 200,
@@ -59,4 +51,9 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({ error: "Failed to update leaderboard" }),
     };
   }
+};
+
+// Specify the cron schedule for the function to run every 5 minutes
+export const config = {
+  schedule: "*/5 * * * *",
 };
