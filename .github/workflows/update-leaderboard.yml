@@ -3,6 +3,7 @@ name: Update Leaderboard
 on:
   schedule:
     - cron: "*/2 * * * *" # Runs every 2 minutes
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
   update-leaderboard:
@@ -10,4 +11,6 @@ jobs:
     steps:
       - name: Trigger Netlify Function
         run: |
-          curl -X POST https://play.suicityp2e.com/.netlify/functions/update-leaderboard
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.SECRET_TOKEN }}" \
+            https://play.suicityp2e.com/.netlify/functions/update-leaderboard
