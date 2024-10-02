@@ -5,5 +5,5 @@ directory = "netlify/functions"  # Specify your functions directory
   [functions.functionName]  # Replace "functionName" with your function's name if needed
   timeout = 30  # Extend timeout to 30 seconds (if allowed by your plan)
 
-[[functions.background]]
-  path = "netlify/functions/update-leaderboard"
+[functions.background]
+  external_node_modules = ["mongodb"]
