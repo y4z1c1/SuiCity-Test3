@@ -7,8 +7,8 @@ let client = null;
 const getMongoClient = async () => {
   if (!client) {
     client = new MongoClient(uri, {
-      connectTimeoutMS: 60000,
-      socketTimeoutMS: 60000,
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 30000,
     });
     await client.connect(); // Ensure we only connect once
   }
@@ -19,23 +19,41 @@ export default async (req, context) => {
   try {
     const client = await getMongoClient();
     const database = client.db("twitter_bindings");
-    const bindingsCollection = database.collection("bindings");
     const leaderboardCollection = database.collection("leaderboard");
 
-    // Fetch users and sort directly in MongoDB by population
-    const users = await bindingsCollection
-      .find()
-      .sort({ population: -1 })
-      .toArray();
+    // MongoDB Aggregation to sort by population and assign ranks
+    const leaderboardPipeline = [
+      { $match: {} }, // Fetch all users
+      { $sort: { population: -1 } }, // Sort by population in descending order
+      { $group: { _id: null, users: { $push: "$$ROOT" } } }, // Group all users
+      {
+        $project: {
+          users: {
+            $map: {
+              input: { $range: [0, { $size: "$users" }] }, // Create ranks for users
+              as: "rank",
+              in: {
+                $mergeObjects: [
+                  { $arrayElemAt: ["$users", "$$rank"] },
+                  { rank: { $add: ["$$rank", 1] } }, // Add rank based on position
+                ],
+              },
+            },
+          },
+        },
+      },
+      { $unwind: "$users" }, // Unwind the users array
+      { $replaceRoot: { newRoot: "$users" } }, // Replace root with users
+    ];
 
-    // Assign ranks to each user
-    users.forEach((user, index) => {
-      user.rank = index + 1;
-    });
+    const usersWithRanks = await database
+      .collection("bindings")
+      .aggregate(leaderboardPipeline)
+      .toArray();
 
     // Upsert leaderboard data (clear and insert new leaderboard)
     await leaderboardCollection.deleteMany({}); // Clear old leaderboard
-    await leaderboardCollection.insertMany(users); // Insert new leaderboard
+    await leaderboardCollection.insertMany(usersWithRanks); // Insert new leaderboard
 
     return {
       statusCode: 200,
