@@ -6,9 +6,10 @@ interface NftSpecsProps {
   factoryLevel: number;
   houseLevel: number;
   enterLevel: number;
+  castleLevel: number;
 }
 
-const NftSpecs: React.FC<NftSpecsProps> = ({ nft, officeLevel, factoryLevel, houseLevel, enterLevel }) => {
+const NftSpecs: React.FC<NftSpecsProps> = ({ nft, officeLevel, factoryLevel, houseLevel, enterLevel, castleLevel }) => {
 
   const formatLastClaimedDate = (timestamp: string | number) => {
 
@@ -65,6 +66,7 @@ const NftSpecs: React.FC<NftSpecsProps> = ({ nft, officeLevel, factoryLevel, hou
         <p>Factory Level: <strong>{factoryLevel}</strong></p>
         <p>House Level: <strong>{houseLevel}</strong></p>
         <p>Entertainment Complex Level: <strong>{enterLevel}</strong></p>
+        <p>Castle Level: <strong>{castleLevel}</strong></p>
 
         {nft && nft.objectId ? (
           <a

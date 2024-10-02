@@ -21,10 +21,12 @@ const ClaimReference = ({
   onClaimSuccessful,
   showModal,
   nft, // New prop to accept NFT
+  currentNonce
 }: {
   currentAccount: { address: string }; // Define the shape of currentAccount
   showModal: (message: string, bgColor: 0 | 1 | 2) => void;
   onClaimSuccessful: () => void;
+  currentNonce: number | null;
   nft: any;
 }) => {
   const [refNumber, setRefNumber] = useState<string>(""); // Reference number input by the user
@@ -93,6 +95,7 @@ const ClaimReference = ({
         body: JSON.stringify({
           currentWalletAddress: currentAccount?.address, // Use currentAccount from prop
           referenceWalletAddress: refData.walletAddress,
+          currentNonce: currentNonce,
         }),
       });
 
@@ -117,6 +120,8 @@ const ClaimReference = ({
       // Step 3: Execute the claim transaction
       const signatureArray = hexToUint8Array(signData.hexSign);
       const transactionBlock = new Transaction();
+
+      console.log("message is: ", signData.message);
 
       transactionBlock.moveCall({
         target: `${ADDRESSES.PACKAGE}::nft::claim_reference`,
@@ -193,7 +198,7 @@ const ClaimReference = ({
       <button
         className="claim-ref-button"
         onClick={claimReferenceReward}
-        disabled={refUsed || loading} // Disable the button if ref_used is true or loading is true
+        disabled={refUsed || loading || true} // Disable the button if ref_used is true or loading is true
       >
         {loading ? "Processing..." : "Claim Reference Reward"}
       </button>

@@ -1,20 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { SuiClient, getFullnodeUrl } from "@mysten/sui/client";
 import { MIST_PER_SUI } from "@mysten/sui/utils";
-import { ADDRESSES } from "../../addresses";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 
 interface BalancesProps {
-  onBalancesUpdate: (suiBalance: number, sityBalance: number) => void; // Callback to pass balances back to Game
+  sityBalance: number; // The current SITY balance
+  onBalancesUpdate: (suiBalance: number) => void; // Callback to pass balances back to Game
   refreshTrigger: boolean; // Use this prop to trigger refresh
 }
 
 const Balances: React.FC<BalancesProps> = ({
+  sityBalance,
   onBalancesUpdate,
   refreshTrigger,
 }) => {
   const account = useCurrentAccount();
-  const [sityBalance, setSityBalance] = useState<number>(0);
   const [suiBalance, setSuiBalance] = useState<number>(0);
 
   const provider = new SuiClient({
@@ -25,24 +25,21 @@ const Balances: React.FC<BalancesProps> = ({
     if (!account?.address) return;
 
     try {
-      const [sityResponse, suiResponse] = await Promise.all([
-        provider.getBalance({
-          owner: String(account?.address),
-          coinType: `${ADDRESSES.TOKEN_TYPE}`,
-        }),
+      const [suiResponse] = await Promise.all([
+
         provider.getBalance({ owner: String(account?.address) }),
       ]);
 
-      const fetchedSityBalance = parseInt(sityResponse.totalBalance) / 1000;
+
+
       const fetchedSuiBalance =
         parseInt(suiResponse.totalBalance) / Number(MIST_PER_SUI);
 
       // Update state
-      setSityBalance(fetchedSityBalance);
       setSuiBalance(fetchedSuiBalance);
 
       // Pass the balances back to Game.tsx
-      onBalancesUpdate(fetchedSuiBalance, fetchedSityBalance);
+      onBalancesUpdate(fetchedSuiBalance);
     } catch (error) {
       console.error("Error fetching balances:", error);
     }
@@ -52,8 +49,11 @@ const Balances: React.FC<BalancesProps> = ({
     fetchBalances();
   }, [account?.address, fetchBalances, refreshTrigger]);
 
+  // Function to format the balance for readability
   const formatBalance = (balance: number) => {
-    if (balance >= 1000) {
+    if (balance >= 1000000) {
+      return (balance / 1000000).toFixed(2) + "M";
+    } else if (balance >= 1000) {
       return (balance / 1000).toFixed(2) + "k";
     }
     return balance.toFixed(2);
@@ -89,7 +89,7 @@ const Balances: React.FC<BalancesProps> = ({
         <div className="balance-bar-track">
           <div
             className="balance-bar-fill balance-bar-fill-sity"
-            style={{ width: `${sityBalance / 5000}%` }}
+            style={{ width: `${sityBalance / 20000}%` }}
           ></div>
           <div className="balance-amount">{`${formatBalance(
             sityBalance

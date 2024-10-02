@@ -15,9 +15,8 @@ export const handler = async (event, context) => {
   console.log("Sign Reference Claim function invoked");
 
   try {
-    const { currentWalletAddress, referenceWalletAddress } = JSON.parse(
-      event.body
-    );
+    const { currentWalletAddress, referenceWalletAddress, currentNonce } =
+      JSON.parse(event.body);
 
     if (!currentWalletAddress || !referenceWalletAddress) {
       console.error("Missing required fields");
@@ -29,9 +28,10 @@ export const handler = async (event, context) => {
 
     console.log("Current Wallet Address:", currentWalletAddress);
     console.log("Reference Wallet Address:", referenceWalletAddress);
+    console.log("Current Nonce:", currentNonce);
 
     // Prepare the raw message to sign (concatenate relevant fields)
-    const message = `Claiming reference reward for both ${currentWalletAddress} & ${referenceWalletAddress}`;
+    const message = `${currentWalletAddress}:${referenceWalletAddress}:${currentNonce}`;
     const messageBytes = new TextEncoder().encode(message); // Encode message as Uint8Array
     console.log("Raw message to sign:", message);
 

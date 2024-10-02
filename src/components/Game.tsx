@@ -4,6 +4,7 @@ import Balances from "./Balances"; // Import the new Balances component
 import Accumulation from "./Accumulation"; // Import the new Balances component
 import Building from "./Building"; // Import the Building component
 import { ADDRESSES } from "../../addresses";
+import { BURN } from "../../burn";
 import { SuiClient, getFullnodeUrl } from "@mysten/sui/client";
 import { useCurrentWallet, useCurrentAccount } from "@mysten/dapp-kit";
 import Modal from "./Modal"; // Import the new Modal component
@@ -13,6 +14,8 @@ import NftTech from "./NftTech";
 import Reference from "./Reference";
 import WalletChecker from "./WalletChecker";
 import Leaderboard from "./Leaderboard";
+import Burn from "./Burn";
+import ClaimReward from "./ClaimReward";
 
 
 const Game: React.FC = () => {
@@ -58,14 +61,15 @@ const Game: React.FC = () => {
   const [isMapView, setIsMapView] = useState(true); // Track if map view is active
   // State for tracking airdrop claim data
   const [storedSignature, setStoredSignature] = useState<string | null>(null);
+  const [storedMessage, setStoredMessage] = useState<string | null>(null);
   const [airdropAmount, setAirdropAmount] = useState<number>(0);
   const [office, setOffice] = useState<number>(0);
   const [factory, setFactory] = useState<number>(0);
   const [house, setHouse] = useState<number>(0);
   const [enter, setEnter] = useState<number>(0);
-  const [mapUrl, setMapUrl] = useState<string>("https://bafybeig5ettnunvapmokcki3xjqwzxb3qmvsvj3qmi4mpelcsitpq6z7ui.ipfs.w3s.link/");
+  const [castle, setCastle] = useState<number>(0);
+  const [mapUrl, setMapUrl] = useState<string>("https://bafkreia2mnsyixtopukbs3x2bgbtxaa3fv5uaroixbqzmrm35lem62qz6q.ipfs.w3s.link/");
   // Add this state to track if the Castle is hovered
-  const [isCastleHovered, setIsCastleHovered] = useState(false);
   const [preloadedVideoUrls] = useState<{ [key: string]: string }>({}); // Store preloaded video URLs
   const clickAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for click sound
   const [, setHasNftInDb] = useState<boolean | null>(null); // Initialize as null to avoid confusion
@@ -74,7 +78,26 @@ const Game: React.FC = () => {
   const [isGameActive, setIsGameActive] = useState(false); // Track if the game-container is on
   const [tried, setTried] = useState(false); // Track if the game-container is on
 
+  const [currentNonce, setCurrentNonce] = useState<number | null>(null); // Track the current nonce
+
   const audioRef = useRef<HTMLAudioElement | null>(null); // Ref to the audio element
+
+
+  const [walletObject, setWalletObject] = useState<string | null>(null);
+
+  const [oldNft, setOldNft] = useState<any>(null); // Storing only a single filtered NFT
+
+  const handleMessageGenerated = (message: string | null) => {
+    console.log("Message generated:", message);
+    setStoredMessage(message);
+  }
+
+  const handleSignatureGenerated = (signature: string | null) => {
+    console.log("Signature generated:", signature);
+    setStoredSignature(signature);
+  }
+
+
   // Play the click sound
 
   const checkIfUserHasNft = useCallback(async () => {
@@ -118,14 +141,6 @@ const Game: React.FC = () => {
     }
   }, [connectionStatus]);
 
-  // Function to handle hover state for the Castle
-  const handleMouseEnterCastle = () => {
-    setIsCastleHovered(true);
-  };
-
-  const handleMouseLeaveCastle = () => {
-    setIsCastleHovered(false);
-  };
 
   const mintBackgroundUrl = useMemo(
     () =>
@@ -133,42 +148,26 @@ const Game: React.FC = () => {
     []
   );
 
-  const fetchAirdropData = useCallback(() => {
-    // Fetch data from localStorage when the component mounts
-    const signature = localStorage.getItem("airdrop_signature");
-    const airdrop = localStorage.getItem("total_airdrop");
 
-    if (signature) {
-      setStoredSignature(signature);
-    } else {
-      setStoredSignature(null); // Ensure signature is cleared if not found
-    }
 
-    if (airdrop) {
-      setAirdropAmount(parseInt(airdrop));
-    } else {
-      setAirdropAmount(0); // Ensure airdrop amount is cleared if not found
-    }
-  }, []);
+  const handleAirdropClaimSuccess = useCallback(async () => {
+    showModal("✅ Airdrop claimed successfully!", 1);
+
+    // Clear airdrop data from localStorage
+    localStorage.removeItem("airdrop_signature");
+    localStorage.removeItem("total_airdrop");
+
+
+    setStoredSignature(null); // Remove signature from state
+    setAirdropAmount(0); // Set airdrop amount to 0
+    setStoredMessage(null); // Remove message from state
 
 
 
 
+  }, [account?.address]);
 
 
-
-
-  // Added useEffect to check local storage when the component mounts and when connectionStatus changes
-  useEffect(() => {
-    fetchAirdropData(); // Fetch airdrop data on mount
-  }, [fetchAirdropData]);
-
-  useEffect(() => {
-    // Also run the fetch when the wallet connection status changes
-    if (connectionStatus === "connected") {
-      fetchAirdropData();
-    }
-  }, [connectionStatus, fetchAirdropData]);
 
 
 
@@ -227,7 +226,9 @@ const Game: React.FC = () => {
       {
         type: "Castle",
 
-        disabled: true,
+        imageBaseUrl: "https://bafybeicpdxgnbk5q5zucqblmrrkkkiyvyftuxzvbh3w7zas6fewvagcgpq.ipfs.w3s.link/",
+        buildingUrl: "https://bafybeiadsxbslazwpkhtlh52afbasmc2friwtc7cniw56kcvnv74dfuzym.ipfs.w3s.link/",
+        posUrl: "https://bafybeihvfyswgem7bijtfdt4qmzihabkp4apixn7fs4euf6qdgep45quze.ipfs.w3s.link/"
       },
     ],
     []
@@ -250,10 +251,11 @@ const Game: React.FC = () => {
   // Inside your Game component
   const [modalMessage, setModalMessage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMuted, setIsMuted] = useState(false); // State to track if the game is muted
+  const [isMuted, setIsMuted] = useState(true); // State to track if the game is muted
 
   // Toggle the mute state
   const handleMuteClick = () => {
+    handlePlaySound(); // Play the sound when the mute button is clicked
     setIsMuted((prevMuted) => !prevMuted);
   };
   useEffect(() => {
@@ -284,7 +286,9 @@ const Game: React.FC = () => {
   );
 
   const handleBuildingClick = (index: number) => {
-
+    if (oldNft != null) {
+      return;
+    }
     setCurrentBuildingIndex(index); // Set the clicked building as the current one
     setMapUrl(""); // Clear the map URL when a building is clicked
     setIsBuildingClickable(false); // Disable clickable areas after a building is clicked
@@ -298,7 +302,7 @@ const Game: React.FC = () => {
         ? factory
         : currentBuilding.type === "House"
           ? house
-          : enter; // for "E. Complex"
+          : currentBuilding.type === "Entertainment Complex" ? enter : castle;
 
   const provider = new SuiClient({
     url: getFullnodeUrl("mainnet"),
@@ -314,8 +318,7 @@ const Game: React.FC = () => {
   };
 
   const handleBalancesUpdate = useCallback(
-    (newSuiBalance: number, newSityBalance: number) => {
-      setSityBalance(newSityBalance);
+    (newSuiBalance: number) => {
       setSuiBalance(newSuiBalance);
     },
     []
@@ -347,6 +350,42 @@ const Game: React.FC = () => {
       console.error("Error fetching game data:", error);
     }
   }, []);
+
+  const fetchCurrentNonce = useCallback(async () => {
+    try {
+      // Ensure gameData is available before proceeding
+      if (!gameData || !gameData.nonces || !gameData.nonces.fields) {
+        console.warn("Game data or nonces not ready yet");
+        return; // Exit if gameData is not ready
+      }
+
+      console.log("Fetching nonce data...");
+      console.log("nonce id is:", gameData.nonces.fields.id.id);
+
+      const nonceResponse = await provider.getDynamicFieldObject({
+        parentId: String(gameData.nonces.fields.id.id),
+        name: { type: "address", value: String(account?.address) }
+      });
+
+      if (nonceResponse.data && nonceResponse.data.content && nonceResponse.data.content.dataType === "moveObject") {
+        const fields = nonceResponse.data.content.fields as { value: any };  // Assert the correct type
+        console.log("Nonce data fetched successfully:", fields.value);
+        setCurrentNonce(fields.value);
+      }
+
+    } catch (error) {
+      console.error("Error fetching nonce data:", error);
+    }
+  }, [gameData, account?.address]);
+
+  useEffect(() => {
+    if (account?.address && gameData) {
+      console.log("Account or game data changed, fetching nonce...");
+      fetchCurrentNonce(); // Only call fetchCurrentNonce when both account and gameData are available
+    }
+  }, [account?.address, gameData, fetchCurrentNonce]);
+
+
 
   const calculateFactoryBonusCountdown = (nft: any) => {
     const currentTime = Date.now();
@@ -462,6 +501,7 @@ const Game: React.FC = () => {
       factory,
       house,
       enter,
+      castle
     };
 
     setTransactionType(null);
@@ -478,6 +518,7 @@ const Game: React.FC = () => {
         factory,
         house,
         enter,
+        castle
       };
 
 
@@ -486,7 +527,9 @@ const Game: React.FC = () => {
         newLevels.office > previousLevels.office ||
         newLevels.factory > previousLevels.factory ||
         newLevels.house > previousLevels.house ||
-        newLevels.enter > previousLevels.enter
+        newLevels.enter > previousLevels.enter ||
+        newLevels.castle > previousLevels.castle
+
       );
     };
 
@@ -520,11 +563,16 @@ const Game: React.FC = () => {
   };
 
 
+  const handleBurnSuccess = () => {
+    setOldNft(null);
 
+  };
 
   const handleClaimSuccess = () => {
     setTimeout(() => {
       refreshNft();
+      refreshSity();
+      fetchCurrentNonce();
       setTransactionType(null);
       setIsAwaitingBlockchain(true);
       triggerBalanceRefresh(); // Trigger balance refresh
@@ -543,7 +591,6 @@ const Game: React.FC = () => {
       refreshNft();
       showModal("✅ Mint successful!", 1); // Show success message in the modal
 
-      fetchAirdropData();
       setTransactionType(null);
       setIsAwaitingBlockchain(true);
       triggerBalanceRefresh(); // Trigger balance refresh
@@ -574,22 +621,34 @@ const Game: React.FC = () => {
         }
       }
 
+      console.log("All objects found:", allObjects);
+
       const nft = allObjects.find(
         (nft) => String(nft.data?.type) === `${ADDRESSES.NFT_TYPE}`
       );
 
-      console.log("NFT found:", nft?.data);
+      const oldNft = allObjects.find(
+        (nft) => String(nft.data?.type) === `${BURN.NFT_TYPE}`
+      );
+      console.log("Old NFT found:", oldNft?.data);
 
+      setOldNft(oldNft?.data || null);
+
+      console.log("NFT found:", nft?.data);
       setFilteredNft(nft?.data || null);
       if (nft?.data) {
         const fields = nft.data.content.fields;
-
         if (fields.buildings) {
           setOffice(fields.buildings[0]);
           setFactory(fields.buildings[1]);
           setHouse(fields.buildings[2]);
           setEnter(fields.buildings[3]);
+          setCastle(fields.buildings[4]);
         }
+        if (fields.wallet) {
+          setWalletObject(fields.wallet);
+        }
+
       }
 
       setIsLoading(false); // Mark loading as complete once NFT is fetched
@@ -656,6 +715,12 @@ const Game: React.FC = () => {
           (nft) => String(nft.data?.type) === `${ADDRESSES.NFT_TYPE}`
         );
 
+        const oldNft = allObjects.find(
+          (nft) => String(nft.data?.type) === `${BURN.NFT_TYPE}`
+        );
+
+        setOldNft(oldNft?.data || null);
+
         console.log("NFT found with new RPC:", nft?.data);
 
         setFilteredNft(nft?.data || null);
@@ -667,6 +732,11 @@ const Game: React.FC = () => {
             setFactory(fields.buildings[1]);
             setHouse(fields.buildings[2]);
             setEnter(fields.buildings[3]);
+            setCastle(fields.buildings[4]);
+          }
+
+          if (fields.wallet) {
+            setWalletObject(fields.wallet);
           }
         }
 
@@ -681,6 +751,37 @@ const Game: React.FC = () => {
   }, [account?.address]);
 
 
+  const refreshSity = useCallback(async () => {
+    console.log("Refreshing SITY...");
+    try {
+
+      const object = await provider.getObject({
+        id: String(walletObject),
+        options: { showContent: true },
+
+      });
+
+      console.log("SITY object found:", object.data);
+      if (object?.data) {
+        const wallet = object as any;
+        const fields = wallet.data.content.fields;
+
+        if (fields.balance) {
+          setSityBalance(parseInt(fields.balance) / 1000);
+        }
+      }
+
+    }
+
+    catch (error) {
+      console.error("Error refreshing SITY balance:", error);
+    }
+
+  }, [account?.address, walletObject]);
+
+  useEffect(() => {
+    refreshSity();
+  }, [account?.address, filteredNft]);
 
   // Re-fetch NFTs and balances when account changes
   useEffect(() => {
@@ -689,8 +790,10 @@ const Game: React.FC = () => {
       setFilteredNft(null); // Reset NFT state
       setIsLoading(true); // Start loading when account changes
       refreshNft();
+      refreshSity();
       triggerBalanceRefresh(); // Trigger balance refresh
       fetchGameData();
+      fetchCurrentNonce();
     }
   }, [account?.address, refreshNft, fetchGameData, handleBalancesUpdate]);
 
@@ -698,12 +801,15 @@ const Game: React.FC = () => {
     refreshNft();
     triggerBalanceRefresh(); // Trigger balance refresh
     fetchGameData();
+    fetchCurrentNonce();
+    refreshSity();
+
 
   }, [account]);
 
   const handleMapButtonClick = () => {
 
-    setMapUrl("https://bafybeig5ettnunvapmokcki3xjqwzxb3qmvsvj3qmi4mpelcsitpq6z7ui.ipfs.w3s.link/");
+    setMapUrl("https://bafkreia2mnsyixtopukbs3x2bgbtxaa3fv5uaroixbqzmrm35lem62qz6q.ipfs.w3s.link/");
     setIsBuildingClickable(true); // Re-enable clickable areas when the map is shown
     setIsMapView(true); // Enable map view
   };
@@ -770,16 +876,28 @@ const Game: React.FC = () => {
 
   // Function to handle hover state for buildings
   const handleMouseEnterBuilding = () => {
-    setIsHovered(true);
+    if (oldNft != null) {
+      return;
+    }
+    else {
+      setIsHovered(true);
+
+    }
   };
 
   const handleMouseLeaveBuilding = () => {
-    setIsHovered(false);
+    if (oldNft != null) {
+      return;
+    }
+    else {
+      setIsHovered(false);
+
+    }
   };
 
   // Play audio on user interaction (e.g., clicking on the game)
   const handlePlaySound = () => {
-    if (audioRef.current) {
+    if (audioRef.current && !isMuted) {
       audioRef.current.play().catch((err) => console.error("Failed to play audio:", err));
     }
   };
@@ -813,12 +931,15 @@ const Game: React.FC = () => {
           factoryLevel={factory}
           houseLevel={house}
           enterLevel={enter}
+          castleLevel={castle}
         />
 
         <Reference nft={filteredNft} showModal={showModal} officeLevel={office}
           factoryLevel={factory}
           houseLevel={house}
-          enterLevel={enter} />
+          enterLevel={enter}
+          currentNonce={currentNonce}
+          onClaimSuccessful={handleClaimSuccess} />
       </div>
 
       <div
@@ -873,7 +994,7 @@ const Game: React.FC = () => {
         {/* Mint Section - Only show if not minted and connected */}
         {connectionStatus === "connected" && !filteredNft && (
           <div className="mint">
-            <WalletChecker showModal={showModal} onMintSuccess={handleMintSuccess} />
+            <WalletChecker showModal={showModal} onMintSuccess={handleMintSuccess} onMessageGenerated={handleMessageGenerated} onSignatureGenerated={handleSignatureGenerated} />
           </div>
         )}
 
@@ -889,15 +1010,6 @@ const Game: React.FC = () => {
   ${(storedSignature || airdropAmount > 0) ? 'mystic' : ''}`}
         >
 
-
-
-
-
-
-
-
-
-
           {/* Check if the wallet is connected */}
           {connectionStatus === "connected" && (
             <>
@@ -911,6 +1023,7 @@ const Game: React.FC = () => {
 
                   <div className="upper-div">
                     <Balances
+                      sityBalance={sityBalance}
                       onBalancesUpdate={handleBalancesUpdate}
                       refreshTrigger={refreshBalances}
                     />
@@ -925,9 +1038,13 @@ const Game: React.FC = () => {
                       factoryLevel={factory}
                       houseLevel={house}
                       enterLevel={enter}
+                      castleLevel={castle}
                       gameData={gameData}
                     />
                   </div>
+
+
+
 
                   {isMapView && (
                     <>
@@ -1056,46 +1173,43 @@ const Game: React.FC = () => {
                         />
                       </div>
 
+                      {/* castle Complex */}
                       <div
-                        className="castlePos"
+                        className="buildingPos"
+
                         style={{
                           position: "absolute",
                           top: adjustedBuildingPositions.castle.top,
                           left: adjustedBuildingPositions.castle.left,
                           width: `${scaleFactor * 512}px`,
                           height: `${scaleFactor * 512}px`,
-
-                        }
-
-                        }
+                        }}
                       >
+                        <img
+                          src={`${buildings[4].posUrl}/${castle}.png`}
+                          alt="Castle"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                          }}
 
+                        />
                         <div
-                          className="castlePos"
-
                           style={{
                             position: "absolute",
                             top: "30%", // center the clickable area vertically
                             left: "30%", // center the clickable area horizontally
                             width: "40%", // 30% width of the image
                             height: "40%", // 30% height of the image
-                            zIndex: 10,
-
-
+                            cursor: "pointer",
+                            zIndex: 100,
                           }}
-                          onMouseEnter={handleMouseEnterCastle}
-                          onMouseLeave={handleMouseLeaveCastle}
-
+                          onClick={() => {
+                            handleBuildingClick(4);
+                            handlePlaySound()
+                          }} onMouseEnter={handleMouseEnterBuilding}
+                          onMouseLeave={handleMouseLeaveBuilding}
                         />
-
-                        {/* "Coming soon..." text */}
-                        {isCastleHovered && (
-                          <div className="castle-coming-soon-text">
-                            <p>🏰 Coming soon...</p>
-                          </div>
-                        )}
-
-
                       </div>
 
                       {/* Entertainment Complex */}
@@ -1140,6 +1254,30 @@ const Game: React.FC = () => {
                       {/* Add a darken overlay when a building is hovered */}
                       <div className={`darken-overlay ${isHovered ? 'visible' : ''}`}></div>
 
+                      {oldNft !== null && (<>
+                        <Burn
+                          onBurnSuccessful={handleBurnSuccess}
+                          showModal={showModal}
+                          nftIdToBurn={oldNft?.objectId}
+                        />
+                        <div className={`darken-overlay ${oldNft ? 'visible' : ''}`}></div></>
+                      )
+                      }
+
+                      {/* Mint button */}
+                      {storedSignature && (
+                        <>
+                          <ClaimReward
+                            mySignature={storedSignature}
+                            hashedMessage={storedMessage}
+                            amount={airdropAmount}
+                            showModal={showModal}
+                            onClaimSuccessful={handleAirdropClaimSuccess} // Handle success
+                            walletObject={walletObject}
+                          />
+                        </>
+                      )}
+
 
                     </>
                   )}
@@ -1163,6 +1301,7 @@ const Game: React.FC = () => {
                         factoryLevel={factory}
                         houseLevel={house}
                         enterLevel={enter}
+                        castleLevel={castle}
                         gameData={gameData}
                         buildingIndex={currentBuildingIndex}
                         suiBalance={suiBalance}
@@ -1178,6 +1317,7 @@ const Game: React.FC = () => {
                         onUpgradeClick={handleUpgradeClick}
                         onClaimClick={handleClaimClick}
                         preloadedVideoUrl={preloadedVideoUrls[currentBuilding.type]} // Pass the preloaded video URL
+                        walletObject={walletObject}
 
                       />
                     </>
@@ -1197,6 +1337,7 @@ const Game: React.FC = () => {
                     factoryLevel={factory}
                     houseLevel={house}
                     enterLevel={enter}
+                    walletObject={walletObject}
                   />
 
                   <Population
@@ -1207,6 +1348,7 @@ const Game: React.FC = () => {
                     factoryLevel={factory}
                     houseLevel={house}
                     enterLevel={enter}
+                    castleLevel={castle}
                   />
 
                 </>

@@ -15,6 +15,7 @@ interface AccumulationProps {
   factoryLevel: number; // Level of the factory
   houseLevel: number; // Level of the house
   enterLevel: number; // Level of the entertainment complex
+  walletObject: any; // Wallet object containing user's SUI and SITY balances
 }
 
 const Accumulation: React.FC<AccumulationProps> = ({
@@ -30,6 +31,7 @@ const Accumulation: React.FC<AccumulationProps> = ({
   officeLevel,
   houseLevel,
   enterLevel,
+  walletObject,
 }) => {
   const [accumulatedSity, setAccumulatedSity] = useState<number>(0);
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -205,6 +207,7 @@ const Accumulation: React.FC<AccumulationProps> = ({
         onError={onClaimError}
         showModal={showModal}
         suiBalance={suiBalance}
+        walletObject={walletObject}
       />
 
 

@@ -10,6 +10,7 @@ const Claim = ({
   onError, // Prop to handle error
   showModal, // Add showModal as a prop
   suiBalance, // Receive SUI balance as prop
+  walletObject
 }: {
   nft: any;
   onClaimSuccess: () => void;
@@ -17,6 +18,7 @@ const Claim = ({
   onError: () => void;
   showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
   suiBalance: number;
+  walletObject: any;
 }) => {
   const [isLoading, setIsLoading] = useState(false); // State for loading indication
   const suiClient = useSuiClient();
@@ -50,6 +52,8 @@ const Claim = ({
 
       const transactionBlock = new Transaction();
 
+      console.log("wallet object is: ", walletObject);
+
       transactionBlock.moveCall({
         target: `${ADDRESSES.PACKAGE}::nft::claim_sity`,
         arguments: [
@@ -59,6 +63,8 @@ const Claim = ({
             version: nft.version,
           }),
           transactionBlock.object(ADDRESSES.GAME),
+          transactionBlock.object(String(walletObject)),
+
           transactionBlock.object(ADDRESSES.CLOCK),
         ],
       });

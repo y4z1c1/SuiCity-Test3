@@ -18,6 +18,7 @@ interface PopulationProps {
   factoryLevel: number; // Level of the factory
   houseLevel: number; // Level of the house
   enterLevel: number; // Level of the entertainment complex
+  castleLevel: number; // Level of the castle
 }
 
 const Population: React.FC<PopulationProps> = ({
@@ -28,6 +29,7 @@ const Population: React.FC<PopulationProps> = ({
   factoryLevel,
   houseLevel,
   enterLevel,
+  castleLevel
 }) => {
   const account = useCurrentAccount(); // Get the current account
   const [hasUpdated, setHasUpdated] = useState(false); // State to track whether the update has happened
@@ -58,12 +60,14 @@ const Population: React.FC<PopulationProps> = ({
     const housePopulation = calculateForBuilding(houseLevel);
     const factoryPopulation = calculateForBuilding(factoryLevel);
     const entertainmentPopulation = calculateForBuilding(enterLevel);
+    const castlePopulation = calculateForBuilding(castleLevel);
 
     return (
       residentialOfficePopulation +
       housePopulation +
       factoryPopulation +
-      entertainmentPopulation
+      entertainmentPopulation +
+      castlePopulation
     );
   };
 

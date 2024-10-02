@@ -588,6 +588,55 @@
   cursor: pointer;
   transform: translateY(3px);
 }
+
+.burn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 100%;
+  width: 50%;
+  transform: translate(-50%, -50%);
+
+  /* Padding and Spacing */
+  text-align: center; /* Center text within the div */
+
+  /* Transition for hover effect */
+  transition: transform 0.2s ease-in-out;
+  padding: 1%;
+  z-index: 1000;
+}
+
+.burn button {
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+  cursor: pointer;
+  align-self: center; /* Center the button horizontally */
+  margin-top: auto; /* Push the button to the bottom */
+  margin-bottom: 4%;
+  width: 100%;
+  margin-left: 5%;
+  border-radius: 8px;
+  border: none;
+  box-sizing: border-box;
+  padding: 2%;
+  font-weight: 500;
+  font-size: 200%;
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
+  margin-top: 5%;
+  color: white;
+  animation: glowPulse 2s ease-in-out infinite; /* Infinite animation for the glow */
+}
+
+.burn button:hover {
+  cursor: pointer;
+  transform: translateY(3px);
+}
+
+.burn p {
+  color: white;
+}
 .balance-bar {
   display: flex;
   align-items: center;
@@ -881,6 +930,16 @@
 .buildingType button:hover {
   cursor: pointer;
   transform: translateY(3px);
+}
+
+.buildingType button:disabled {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #000000;
+  cursor: not-allowed;
+}
+
+.buildingType button:disabled:hover {
+  transform: translateY(0px);
 }
 
 .map-button {
@@ -1359,6 +1418,9 @@ p,
 
 .people-icon {
   filter: drop-shadow(1px 1px 5px rgba(0, 0, 255, 0.45));
+}
+.sword-icon {
+  filter: drop-shadow(1px 1px 5px rgba(255, 255, 255, 0.45));
 }
 
 .buildingPos {

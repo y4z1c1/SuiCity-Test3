@@ -9,11 +9,12 @@ import {
 import { MIST_PER_SUI } from "@mysten/sui/utils";
 
 const Upgrade = ({
-  buildingType, // 0 for office, 1 for factory, 2 for house, 3 for entertainment_complex
+  buildingType, // 0 for office, 1 for factory, 2 for house, 3 for entertainment_complex, 4 for castle
   officeLevel, // Level of the residential office
   factoryLevel, // Level of the factory
   houseLevel, // Level of the house
   enterLevel, // Level of the entertainment complex
+  castleLevel,
   onUpgradeSuccess,
   onClick,
   onError,
@@ -24,6 +25,7 @@ const Upgrade = ({
   sityBalance, // Receive SITY balance as prop
   nft, // Include the NFT object for transaction purposes
   isExpanded, // New prop
+  walletObject
 
 }: {
   buildingType: number;
@@ -31,6 +33,7 @@ const Upgrade = ({
   factoryLevel: number;
   houseLevel: number;
   enterLevel: number;
+  castleLevel: number;
   onUpgradeSuccess: () => void;
   onClick: () => void;
   onError: () => void;
@@ -41,11 +44,21 @@ const Upgrade = ({
   isTouchDevice: boolean; // Define the type for isTouchDevice
   nft: any;
   isExpanded: boolean; // New prop
+  walletObject: any;
 
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const account = useCurrentAccount();
   const suiClient = useSuiClient();
+  const [castleUpgradeClicked, setCastleUpgradeClicked] = useState(false); // State to track castle upgrade button click
+  const requiredTotalLevels = [2, 4, 6, 8, 10, 12, 13, 14]; // Required total levels for castle upgrades
+  const totalOtherBuildingsLevel = useMemo(() => {
+    return Number(officeLevel) + Number(factoryLevel) + Number(houseLevel) + Number(enterLevel);
+  }, [officeLevel, factoryLevel, houseLevel, enterLevel]);
+  const canUpgradeCastle = useMemo(() => {
+    console.log("Total other buildings level: ", totalOtherBuildingsLevel);
+    return totalOtherBuildingsLevel >= requiredTotalLevels[castleLevel];
+  }, [totalOtherBuildingsLevel, castleLevel, requiredTotalLevels]);
 
   const { mutate: signAndExecute } = useSignAndExecuteTransaction({
     execute: async ({ bytes, signature }) =>
@@ -61,6 +74,15 @@ const Upgrade = ({
       }),
   });
 
+  const formatBalance = (balance: number) => {
+    if (balance >= 1000000) {
+      return (balance / 1000000).toFixed(2) + "M";
+    } else if (balance >= 1000) {
+      return (balance / 1000).toFixed(2) + "k";
+    }
+    return balance.toFixed(2);
+  };
+
   // Memoized current level based on building type
   const currentLevel = useMemo(() => {
     switch (buildingType) {
@@ -72,11 +94,43 @@ const Upgrade = ({
         return houseLevel;
       case 3:
         return enterLevel;
+      case 4:
+        return castleLevel;
+
       default:
         console.log("Unknown building type");
         return 0;
     }
   }, [buildingType, officeLevel, factoryLevel, houseLevel, enterLevel]);
+
+  const handleCastleClick = () => {
+    if (!canUpgradeCastle) {
+      // Calculate how many more levels are needed
+      const requiredLevels = requiredTotalLevels[castleLevel] - totalOtherBuildingsLevel;
+      const message = `❗️ Total level of other buildings is insufficient to upgrade the castle. You need to upgrade other buildings by a total of ${requiredLevels} more levels.`;
+
+      showModal(message, 0); // Show the modal with the specific info
+      return;
+    }
+
+    if (isExpanded) {
+      onClick();
+      upgrade(); // Call the upgrade function
+      console.log("Upgrade initiated...");
+      if (!castleUpgradeClicked) {
+        setCastleUpgradeClicked(true);
+      }
+    } else {
+      onClick();
+      if (!castleUpgradeClicked) {
+        setCastleUpgradeClicked(true);
+      }
+      console.log("Building expanded, click again to upgrade.");
+    }
+  };
+
+
+
 
   // Memoized function to calculate the upgrade costs based on level and building type
   const getUpgradeCosts = useCallback(
@@ -114,11 +168,23 @@ const Upgrade = ({
         { sui: 0, sity: 0 },
       ];
 
+      const castleCosts = [
+        { sui: 1, sity: 5000 },
+        { sui: 2, sity: 12500 },
+        { sui: 4, sity: 32000 },
+        { sui: 8, sity: 80000 },
+        { sui: 16, sity: 200000 },
+        { sui: 32, sity: 500000 },
+        { sui: 64, sity: 1250000 },
+        { sui: 0, sity: 0 },
+      ];
+
       const baseCosts =
         buildingType === 0 || buildingType === 2
           ? officeHouseCosts[level]
           : buildingType === 1 ? factoryCosts[level]
-            : enterCosts[level];
+            : buildingType === 3 ? enterCosts[level] :
+              castleCosts[level];
 
       const costMultiplier = gameData?.cost_multiplier || 100;
       return {
@@ -220,11 +286,8 @@ const Upgrade = ({
               version: nft.version,
             }),
             transactionBlock.object(ADDRESSES.GAME),
+            transactionBlock.object(String(walletObject)),
             transactionBlock.object(String(buildingType)),
-            coinWithBalance({
-              balance: costs.sity,
-              type: `${ADDRESSES.TOKEN_TYPE}`,
-            }),
             transactionBlock.object(ADDRESSES.CLOCK),
           ],
         });
@@ -263,6 +326,105 @@ const Upgrade = ({
     checkUserBalance, // Include the balance check logic in the dependencies
   ]);
 
+
+  const checkUserBalanceCastle = useCallback(
+    (isSui: boolean) => {
+      if (suiBalance < 0.01) {
+        showModal("❗️ You need more SUI to pay gas.", 0);
+        throw new Error("You need more SUI to pay gas.");
+      }
+
+      if (isSui && suiBalance * Number(MIST_PER_SUI) < costs.sui) {
+        showModal("❗️ Insufficient SUI balance.", 0);
+        throw new Error("Insufficient SUI balance.");
+      }
+
+      if (!isSui && sityBalance * 1000 < costs.sity) {
+        showModal("❗️ Insufficient SITY balance.", 0);
+        throw new Error("Insufficient SITY balance.");
+      }
+
+      return true;
+    },
+    [costs, suiBalance, sityBalance, showModal]
+  );
+
+
+  const upgradeCastle = useCallback(
+    async (useSui: boolean) => {
+
+      setIsProcessing(true); // Set processing state
+      console.log("Processing your upgrade...");
+
+      const costs = getUpgradeCosts(currentLevel);
+      try {
+        setIsProcessing(true);
+        checkUserBalanceCastle(useSui);
+
+        const transactionBlock = new Transaction();
+        transactionBlock.setSender(String(account?.address));
+
+        if (useSui) {
+          // Upgrade with SUI
+          transactionBlock.moveCall({
+            target: `${ADDRESSES.PACKAGE}::nft::upgrade_building_with_sui`,
+            arguments: [
+              transactionBlock.objectRef({
+                objectId: nft.objectId,
+                digest: nft.digest,
+                version: nft.version,
+              }),
+              transactionBlock.object(ADDRESSES.GAME),
+              transactionBlock.object(String(buildingType)),
+              coinWithBalance({ balance: costs.sui }),
+              transactionBlock.object(ADDRESSES.CLOCK),
+            ],
+          });
+        } else {
+          // Upgrade with SITY
+          transactionBlock.moveCall({
+            target: `${ADDRESSES.PACKAGE}::nft::upgrade_building_with_sity`,
+            arguments: [
+              transactionBlock.objectRef({
+                objectId: nft.objectId,
+                digest: nft.digest,
+                version: nft.version,
+              }),
+              transactionBlock.object(ADDRESSES.GAME),
+              transactionBlock.object(String(walletObject)),
+              transactionBlock.object(String(buildingType)),
+              transactionBlock.object(ADDRESSES.CLOCK),
+            ],
+          });
+        }
+
+        signAndExecute(
+          { transaction: transactionBlock },
+          {
+            onSuccess: () => {
+              showModal("✅ Upgrade successful!", 1);
+              onUpgradeSuccess();
+              setIsProcessing(false);
+              setCastleUpgradeClicked(false);
+            },
+            onError: (error) => {
+              showModal(`🚫 Error: ${error.message}`, 0);
+              setIsProcessing(false);
+              setCastleUpgradeClicked(false);
+              onError();
+            },
+          }
+        );
+      } catch (error) {
+        console.error("Upgrade Error:", error);
+        setIsProcessing(false);
+        onError();
+      }
+    },
+    [nft, buildingType, costs, account, signAndExecute, checkUserBalance, onUpgradeSuccess, onError, showModal]
+  );
+
+
   const handleClick = () => {
     if (isExpanded) {
       // Perform the upgrade logic only if the building is already expanded
@@ -281,26 +443,56 @@ const Upgrade = ({
     <div>
       {currentLevel < 7 ? (
         <>
-          <button
-            onClick={() => {
-              handleClick(); // Handle the upgrade logic
-            }}
-            disabled={isProcessing} // Disable button if processing
-          >
-            {isProcessing
-              ? "Processing..."
-              : !isExpanded // If not expanded, show only "Upgrade"
-                ? "Upgrade"
-                : costs.sui > 0
-                  ? `Upgrade for ${(costs.sui / Number(MIST_PER_SUI)).toFixed(2)} $SUI`
-                  : `Upgrade for ${(costs.sity / 1000).toFixed(2)} $SITY`}
-          </button>
+          {buildingType === 4 && !castleUpgradeClicked ? (
+            <>
+              <button
+                onClick={handleCastleClick}
+                disabled={isProcessing || !canUpgradeCastle}
+              >
+                {isProcessing ? "Processing..." : "Upgrade"}
+              </button>
+
+              {/* Display info when the upgrade is blocked */}
+              {!canUpgradeCastle && (
+                <p>
+                  You need to upgrade other buildings by a total of{" "}
+                  {requiredTotalLevels[castleLevel] - totalOtherBuildingsLevel}{" "}
+                  more levels to unlock the castle upgrade.
+                </p>
+              )}
+            </>
+          ) : buildingType === 4 && castleUpgradeClicked ? (
+            <>
+              <button onClick={() => upgradeCastle(true)} disabled={isProcessing}>
+                Upgrade for {(costs.sui / Number(MIST_PER_SUI)).toFixed(2)} SUI
+              </button>
+              <button onClick={() => upgradeCastle(false)} disabled={isProcessing}>
+                Upgrade for {formatBalance(costs.sity / 1000)} SITY
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => {
+                handleClick(); // Handle the upgrade logic
+              }}
+              disabled={isProcessing} // Disable button if processing
+            >
+              {isProcessing
+                ? "Processing..."
+                : !isExpanded // If not expanded, show only "Upgrade"
+                  ? "Upgrade"
+                  : costs.sui > 0
+                    ? `Upgrade for ${(costs.sui / Number(MIST_PER_SUI)).toFixed(2)} $SUI`
+                    : `Upgrade for ${formatBalance(costs.sity / 1000)} $SITY`}
+            </button>
+          )}
         </>
       ) : (
         <p>Max level reached 🎉</p> // Message when the level is maxed out
       )}
     </div>
   );
+
 };
 
 export default Upgrade;

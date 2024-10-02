@@ -10,6 +10,7 @@ const ClaimFactoryBonus = ({
   onError,
   showModal, // Add showModal as a prop
   suiBalance,
+  walletObject
 }: {
   nft: any;
   onClaimSuccess: () => void;
@@ -17,6 +18,7 @@ const ClaimFactoryBonus = ({
   onError: () => void;
   showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
   suiBalance: number;
+  walletObject: any;
 }) => {
   const suiClient = useSuiClient();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -57,6 +59,7 @@ const ClaimFactoryBonus = ({
             version: nft.version,
           }),
           transactionBlock.object(`${ADDRESSES.GAME}`),
+          transactionBlock.object(`${String(walletObject)}`),
           transactionBlock.object(`${ADDRESSES.CLOCK}`),
         ],
       });

@@ -23,12 +23,14 @@ const ClaimReward = ({
   mySignature, // Signature in hex format from the backend
   hashedMessage, // Hashed message in hex format from the backend
   amount, // Amount of SITY tokens to claim
+  walletObject,
 }: {
   showModal: (message: string, bgColor: 0 | 1 | 2) => void; // Define showModal prop type with message and bg
   onClaimSuccessful: () => void;
   mySignature: string; // Hex-encoded signature from the backend
-  hashedMessage: string; // Hex-encoded hashed message
+  hashedMessage: string | null; // Hex-encoded hashed message
   amount: number; // Amount of SITY to claim
+  walletObject: any;
 
 }) => {
 
@@ -44,6 +46,8 @@ const ClaimReward = ({
     if (hasNftInDb == false) {
       await claimReward(); // Proceed with the claim if no NFT in the database
     } else {
+      localStorage.removeItem("airdrop_signature");
+      localStorage.removeItem("total_airdrop");
       showModal("❌ You already claimed your airdrop!", 0); // Show error if NFT exists
     }
 
@@ -68,6 +72,10 @@ const ClaimReward = ({
       if (data.success) {
         console.log("data is: ", data);
         setHasNftInDb(data.hasNft); // Update the state based on the response
+        if (data.hasNft) {
+          localStorage.removeItem("airdrop_signature");
+          localStorage.removeItem("total_airdrop");
+        }
         setIsCheckingNft(false); // End loading state
       } else {
         console.error("Failed to check NFT status:", data.error);
@@ -105,16 +113,20 @@ const ClaimReward = ({
       // Convert the hex signature to Uint8Array
       const signatureArray = hexToUint8Array(mySignature);
 
+      console.log("Message is:", hashedMessage);
+
       const transactionBlock = new Transaction();
+
+
 
       // Add the Move function call for claim_reward
       transactionBlock.moveCall({
         target: `${ADDRESSES.PACKAGE}::nft::claim_reward`,
         arguments: [
           transactionBlock.object(`${ADDRESSES.GAME}`), // Game data object
+          transactionBlock.object(`${walletObject}`), // Wallet object
           transactionBlock.pure(bcs.vector(bcs.U8).serialize(signatureArray)), // Serialize Uint8Array for signature
-          transactionBlock.pure.string(hashedMessage), // Serialize Uint8Array for hashed message
-          transactionBlock.pure.u64(BigInt(amount * 1000)), // Amount as u64
+          transactionBlock.pure.string(String(hashedMessage)), // Serialize Uint8Array for hashed message
         ],
       });
 

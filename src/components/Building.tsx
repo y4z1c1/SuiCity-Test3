@@ -9,6 +9,7 @@ interface BuildingProps {
   factoryLevel: number; // Level of the factory
   houseLevel: number; // Level of the house
   enterLevel: number; // Level of the entertainment complex
+  castleLevel: number; // Level of the castle
   gameData: any; // Game data, including bonuses and accumulation speeds
   factoryBonusCountdown: number | null; // Countdown timer for factory bonus
   suiBalance: number; // User's SUI balance
@@ -24,6 +25,7 @@ interface BuildingProps {
   onClaimClick: () => void; // Callback for when a claim is clicked
   buildingIndex: number; // Index of the current building
   preloadedVideoUrl?: string; // Add this prop
+  walletObject: any; // Wallet object containing user's SUI and SITY balances
 
 }
 
@@ -34,6 +36,7 @@ const Building: React.FC<BuildingProps> = ({
   factoryLevel,
   houseLevel,
   enterLevel,
+  castleLevel,
   gameData,
   factoryBonusCountdown,
   suiBalance,
@@ -48,6 +51,7 @@ const Building: React.FC<BuildingProps> = ({
   onClaimClick,
   buildingIndex,
   preloadedVideoUrl,
+  walletObject,
 }) => {
   const [isUpgradeInfoExpanded, setIsUpgradeInfoExpanded] = useState(false);
   const buildingRef = useRef<HTMLDivElement>(null);
@@ -102,7 +106,9 @@ const Building: React.FC<BuildingProps> = ({
         ? Number(factoryLevel)
         : currentBuilding.type === "House"
           ? Number(houseLevel)
-          : Number(enterLevel);
+          : currentBuilding.type === "Entertainment Complex"
+            ? Number(enterLevel)
+            : Number(castleLevel);
 
 
 
@@ -410,7 +416,7 @@ const Building: React.FC<BuildingProps> = ({
                     className="benefit-value"
                     style={{ color: "lightgray", fontSize: "16px" }}
                   >
-                    {currentLevel}
+                    {Number(houseLevel) + Number(enterLevel)}
                   </p>
 
                   <p
@@ -430,7 +436,7 @@ const Building: React.FC<BuildingProps> = ({
                       fontWeight: "bold",
                     }}
                   >
-                    {Number(currentLevel) + 1}
+                    {Number(houseLevel) + Number(enterLevel) + 1}
                   </p>
 
                   <p className="info-text" >
@@ -460,7 +466,7 @@ const Building: React.FC<BuildingProps> = ({
                     className="benefit-value"
                     style={{ color: "lightgray", fontSize: "16px" }}
                   >
-                    {currentLevel}
+                    {Number(houseLevel) + Number(enterLevel)}
                   </p>
 
                   <p
@@ -480,7 +486,55 @@ const Building: React.FC<BuildingProps> = ({
                       fontWeight: "bold",
                     }}
                   >
-                    {Number(currentLevel) + 1}
+                    {Number(houseLevel) + Number(enterLevel) + 1}
+                  </p>
+
+                  <p className="info-text" >
+                    The Entertainment C. level affects Amenity points, impacting the frequency at which the player is required to claim rewards. Additionally, thanks to dNFT technology, upgrading your building will change the appearance, metadata, and rarity of your NFT.
+                  </p>
+
+                  <a
+                    target="_blank"
+                    className="details"
+                    href="https://docs.suicityp2e.com/buildings/entertainment-complex"
+                    style={{ color: "lightblue", fontSize: "14px", textDecoration: "underline" }}
+                  >
+                    more details
+                  </a>
+
+                </>
+              )}
+
+              {(currentBuilding.type === "Castle") && (
+                <>
+                  <p style={{ color: "lightgray", fontSize: "14px" }}>
+                    War Power:
+                  </p>
+                  <p
+                    className="benefit-value"
+                    style={{ color: "lightgray", fontSize: "16px" }}
+                  >
+                    {gameData.castle_powers[currentLevel]}
+                  </p>
+
+                  <p
+                    style={{
+                      color: "lightgreen",
+                      fontSize: "18px",
+                      marginTop: "10px",
+                    }}
+                  >
+                    War Power (Next Level):
+                  </p>
+                  <p
+                    className="benefit-value next-level"
+                    style={{
+                      color: "lightgreen",
+                      fontSize: "20px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {gameData.castle_powers[Number(currentLevel) + 1]}
                   </p>
 
                   <p className="info-text" >
@@ -523,6 +577,7 @@ const Building: React.FC<BuildingProps> = ({
                 onError={onClaimError}
                 showModal={showModal}
                 suiBalance={suiBalance}
+                walletObject={walletObject}
               />
             )}
           </div>
@@ -534,6 +589,7 @@ const Building: React.FC<BuildingProps> = ({
           factoryLevel={factoryLevel}
           houseLevel={houseLevel}
           enterLevel={enterLevel}
+          castleLevel={castleLevel}
           onUpgradeSuccess={handleUpgradeSuccess}
           onClick={handleUpgradeClick}
           onError={handleUpgradeError}
@@ -543,6 +599,7 @@ const Building: React.FC<BuildingProps> = ({
           sityBalance={sityBalance}
           isTouchDevice={isTouchDevice}
           isExpanded={isUpgradeInfoExpanded}
+          walletObject={walletObject}
         />
       </div>
       {/* Background video */}

@@ -8,9 +8,13 @@ import { useCurrentAccount } from "@mysten/dapp-kit";
 const AirdropCalculator = ({
     showModal,
     onAirdropCalculated,
+    onMessageGenerated,
+    onSignatureGenerated,
 }: {
     showModal: (message: string, bgColor: 0 | 1 | 2) => void;
     onAirdropCalculated: (totalAirdrop: number) => void;
+    onMessageGenerated: (message: string | null) => void;
+    onSignatureGenerated: (signature: string | null) => void;
 }) => {
     const currentAccount = useCurrentAccount(); // Get the current wallet address
     const [loadingAirdrop, setLoadingAirdrop] = useState<boolean>(false); // Show spinning loading icon
@@ -364,10 +368,11 @@ const AirdropCalculator = ({
 
         setAirdropBreakdown(breakdown);
         setTotalAirdrop(total);
-        localStorage.setItem("total_airdrop", String(total));
         setLoadingAirdrop(false);
         onAirdropCalculated(total);
-        setMessage(`${total} Airdrop reward claim for wallet ${currentAccount?.address}`);
+        const newMessage = `${parseInt(String(total * 1000))}:${currentAccount?.address}:0`;
+        setMessage(newMessage);
+        onMessageGenerated(newMessage);
     };
 
     const signMessage = async () => {
@@ -382,7 +387,7 @@ const AirdropCalculator = ({
             const data = await response.json();
             if (data.hexSign) {
                 setSignature(data.hexSign);
-                localStorage.setItem("airdrop_signature", data.hexSign);
+                onSignatureGenerated(data.hexSign);
             } else {
                 console.error("Error signing message");
             }

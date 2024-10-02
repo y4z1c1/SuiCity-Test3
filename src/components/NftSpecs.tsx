@@ -5,6 +5,7 @@ interface NftSpecsProps {
   factoryLevel: number; // Level of the factory
   houseLevel: number; // Level of the house
   enterLevel: number; // Level of the entertainment complex  gameData: any; // Game data, including bonuses and accumulation speeds
+  castleLevel: number; // Level of the castle
   gameData: any; // Game data, including bonuses and accumulation speeds
 }
 
@@ -13,6 +14,7 @@ const NftSpecs: React.FC<NftSpecsProps> = ({
   factoryLevel,
   houseLevel,
   enterLevel,
+  castleLevel,
   gameData,
 }) => {
   const accumulationSpeed =
@@ -21,6 +23,8 @@ const NftSpecs: React.FC<NftSpecsProps> = ({
   const factoryBonus = gameData.factory_bonuses[factoryLevel];
 
   const amenityPoints = Number(houseLevel) + Number(enterLevel);
+
+  const castlePowers = gameData.castle_powers[castleLevel];
 
   return (
     <div className="nft-specs">
@@ -67,6 +71,22 @@ const NftSpecs: React.FC<NftSpecsProps> = ({
           }}
         />
         {`${amenityPoints}`}
+      </h2>
+
+
+      <p>War Power:</p>
+      <h2>
+        <img
+          src="https://bafkreiflzltftnwnnetui2mmmj74vo4cuqwk3ryqi36sgrp3xhxhbx6v3u.ipfs.w3s.link/"
+          alt="sword-icon"
+          className="sword-icon"
+          style={{
+            width: "30px",
+            height: "30px",
+            marginRight: "5px",
+          }}
+        />
+        {`${castlePowers}`}
       </h2>
     </div>
   );
