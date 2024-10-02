@@ -664,6 +664,7 @@ const Game: React.FC = () => {
             body: JSON.stringify({
               walletAddress: account?.address, // The current wallet address
               nftData: filteredNft.objectId, // Add actual NFT data
+              walletId: walletObject,
             }),
           });
           const data = await response.json();
