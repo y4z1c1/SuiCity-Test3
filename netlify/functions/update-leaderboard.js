@@ -4,41 +4,38 @@ import { MongoClient } from "mongodb";
 const uri = process.env.MONGODB_URI;
 let client = null;
 
-if (!client) {
-  client = new MongoClient(uri, {
-    connectTimeoutMS: 30000,
-    socketTimeoutMS: 30000,
-  });
-}
+const getMongoClient = async () => {
+  if (!client) {
+    client = new MongoClient(uri, {
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 30000,
+    });
+    await client.connect(); // Ensure we only connect once
+  }
+  return client;
+};
 
 export default async (req, context) => {
   try {
-    // Connect to MongoDB
-    await client.connect();
+    const client = await getMongoClient();
     const database = client.db("twitter_bindings");
     const bindingsCollection = database.collection("bindings");
     const leaderboardCollection = database.collection("leaderboard");
 
-    // Fetch all users
-    const users = await bindingsCollection.find().toArray();
-
-    // Prepare users with population
-    const usersWithPopulation = users.map((user) => ({
-      ...user,
-      population: user.population || 0,
-    }));
-
-    // Sort users by population (descending)
-    usersWithPopulation.sort((a, b) => b.population - a.population);
+    // Fetch users and sort directly in MongoDB by population
+    const users = await bindingsCollection
+      .find()
+      .sort({ population: -1 })
+      .toArray();
 
     // Assign ranks to each user
-    usersWithPopulation.forEach((user, index) => {
+    users.forEach((user, index) => {
       user.rank = index + 1;
     });
 
-    // Upsert leaderboard data
+    // Upsert leaderboard data (clear and insert new leaderboard)
     await leaderboardCollection.deleteMany({}); // Clear old leaderboard
-    await leaderboardCollection.insertMany(usersWithPopulation); // Insert new leaderboard
+    await leaderboardCollection.insertMany(users); // Insert new leaderboard
 
     return {
       statusCode: 200,
