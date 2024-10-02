@@ -920,6 +920,7 @@ const Game: React.FC = () => {
           houseLevel={house}
           enterLevel={enter}
           currentNonce={currentNonce}
+          walletObject={walletObject}
           onClaimSuccessful={handleClaimSuccess} />
       </div>
 

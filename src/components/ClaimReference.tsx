@@ -21,12 +21,15 @@ const ClaimReference = ({
   onClaimSuccessful,
   showModal,
   nft, // New prop to accept NFT
-  currentNonce
+  currentNonce,
+  walletObject
+
 }: {
   currentAccount: { address: string }; // Define the shape of currentAccount
   showModal: (message: string, bgColor: 0 | 1 | 2) => void;
   onClaimSuccessful: () => void;
   currentNonce: number | null;
+  walletObject: any;
   nft: any;
 }) => {
   const [refNumber, setRefNumber] = useState<string>(""); // Reference number input by the user
@@ -128,6 +131,7 @@ const ClaimReference = ({
         arguments: [
           transactionBlock.object(`${ADDRESSES.GAME}`), // Game data object
           transactionBlock.object(`${nft.content.fields.id.id}`),
+          transactionBlock.object(`${walletObject}`),
           transactionBlock.object(`${refData.walletId}`),
           transactionBlock.object(`${refData.walletAddress}`),
           transactionBlock.pure(bcs.vector(bcs.U8).serialize(signatureArray)), // Serialize Uint8Array for signature

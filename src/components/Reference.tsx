@@ -9,12 +9,12 @@ interface ReferenceProps {
     factoryLevel: number;
     houseLevel: number;
     enterLevel: number;
-
+    walletObject: any;
     currentNonce: number | null;
     onClaimSuccessful: () => void;
 }
 
-const Reference = ({ nft, showModal, officeLevel, factoryLevel, houseLevel, enterLevel, currentNonce, onClaimSuccessful }: ReferenceProps) => {
+const Reference = ({ nft, showModal, officeLevel, factoryLevel, houseLevel, enterLevel, currentNonce, onClaimSuccessful, walletObject }: ReferenceProps) => {
     const currentAccount = useCurrentAccount(); // Get current wallet address
     const [refNumber, setRefNumber] = useState<number | null>(null); // State for reference number
     const [usedRefs, setUsedRefs] = useState<string[]>([]); // List of used references
@@ -145,6 +145,7 @@ const Reference = ({ nft, showModal, officeLevel, factoryLevel, houseLevel, ente
                     }}
                     showModal={showModal}
                     currentNonce={currentNonce}
+                    walletObject={walletObject}
                 />
             )}
 
