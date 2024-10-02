@@ -373,6 +373,7 @@ const AirdropCalculator = ({
         const newMessage = `${parseInt(String(total * 1000))}:${currentAccount?.address}:0`;
         setMessage(newMessage);
         onMessageGenerated(newMessage);
+
     };
 
     const signMessage = async () => {

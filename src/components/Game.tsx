@@ -1213,7 +1213,7 @@ const Game: React.FC = () => {
                       }
 
                       {/* Mint button */}
-                      {storedSignature && (
+                      {storedSignature != null && (
                         <>
                           <ClaimReward
                             mySignature={storedSignature}
