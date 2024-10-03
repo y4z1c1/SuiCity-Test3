@@ -102,7 +102,7 @@ const Burn = ({
                 [
                     coinWithBalance({
                         type: `${BURN.TOKEN_TYPE}`,
-                        balance: fetchedBalance * 1000,
+                        balance: Math.round(fetchedBalance * 1000), // Ensuring it's an integer
                     }),
                 ],
                 "0x0000000000000000000000000000000000000000000000000000000000000000",
