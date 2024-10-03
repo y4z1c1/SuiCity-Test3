@@ -28,6 +28,7 @@
   background-color: rgba(0, 0, 0, 0.2); /* Dark Black */
 }
 
+/* Modal content (now a button) */
 .modal-content {
   position: absolute;
   left: 50%;
@@ -36,7 +37,6 @@
   min-width: 20%;
 
   border-radius: 12px; /* Rounded corners */
-
   background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
   color: rgb(255, 255, 255);
 
@@ -45,7 +45,7 @@
     /* Outer shadow */ 5px 5px 10px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(5px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(5px); /* For Safari */
-  padding: 0.2% 0.4%;
+  padding: 0.5% 1%;
   box-sizing: border-box;
   display: flex;
   justify-content: space-evenly;
@@ -53,6 +53,8 @@
   opacity: 1;
   transition: opacity 1s ease-in-out, transform 1s ease-in-out; /* Smooth fade effect */
   z-index: 1000;
+  cursor: pointer; /* Make it look like a button */
+  border: none;
 }
 
 /* Fade-in class for modal */
@@ -67,29 +69,13 @@
   visibility: hidden;
 }
 
-/* Text and button styles */
-.modal-content p {
+/* Text styling */
+.modal-content h3 {
   font-family: "Kanit";
   font-weight: 300;
-  font-size: 120%;
+  font-size: 150%;
   text-align: left;
-}
-
-.modal-content button {
-  border: none;
-  background-color: #ffffff;
-  color: rgb(0, 0, 0);
-  border-radius: 5px;
-  cursor: pointer;
-  width: 25%;
-  height: 60%;
-  font-size: 90%;
-  padding: 1%;
-}
-
-.modal-content button:hover {
-  background-color: #6060609b;
-  transform: translateY(2px);
+  margin: 2%;
 }
 
 @media (max-width: 1620px) {

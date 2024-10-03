@@ -1,4 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+p {
+  font-size: 90%;
+}
+
+td {
+  font-size: 90%;
+}
 .game-container {
   background-color: white;
   color: rgb(0, 0, 0, 0.8);
@@ -94,7 +101,6 @@
 .leaderboard p {
   font-family: "Kanit", Helvetica;
   color: rgb(255, 255, 255);
-  font-size: 80%;
   text-align: justify; /* Center text within the div */
   margin: 0;
   margin-bottom: 12px;
@@ -198,7 +204,6 @@
 .nft-info p {
   font-family: "Kanit", Helvetica;
   color: rgb(195, 195, 195);
-  font-size: 80%;
   text-align: justify; /* Center text within the div */
   margin: 0;
   margin-bottom: 12px;
@@ -288,7 +293,6 @@
 
 .reference-system p {
   color: rgb(255, 255, 255);
-  font-size: 80%;
   text-align: center; /* Center text within the div */
   margin: 0;
   margin-bottom: 12px;
@@ -452,7 +456,6 @@
 }
 .nft-specs p {
   color: rgb(255, 255, 255);
-  font-size: 80%;
 
   text-align: justify; /* Center text within the div */
   margin: 0;
@@ -682,7 +685,7 @@
   transform: translateY(-50%);
   font-family: "Kanit", sans-serif;
   font-weight: 500;
-  font-size: 90%;
+  font-size: 80%;
   text-shadow: black 1px 1px 2px; /* Add a subtle shadow */
 }
 
@@ -905,7 +908,6 @@
 .buildingType p {
   color: white; /* White text color */
   margin: 0;
-  font-size: 80%;
   margin-bottom: 2%;
   margin-top: 1%;
   font-weight: 100;
@@ -1017,7 +1019,6 @@
 
 .accumulated p {
   color: white; /* White text color */
-  font-size: 150%;
   margin: 0;
   font-size: 80%;
   line-height: 1.3;
@@ -1086,7 +1087,6 @@
 
 .population p {
   color: white; /* White text color */
-  font-size: 150%;
   margin: 0;
   font-size: 80%;
   line-height: 1.3;
@@ -1524,6 +1524,13 @@ p,
 }
 
 @media (max-width: 1920px) {
+  p {
+    font-size: 70% !important;
+  }
+  td {
+    font-size: 70% !important;
+  }
+
   .task-button {
     width: 50%;
   }
@@ -1557,10 +1564,6 @@ p,
 
   .nft-specs h2 {
     font-size: 90%;
-  }
-
-  .nft-specs p {
-    font-size: 70%;
   }
 
   .nft-title {
@@ -1643,7 +1646,7 @@ p,
   }
 
   .balance-amount {
-    font-size: 80%;
+    font-size: 60%;
   }
 
   .population button {
@@ -1772,6 +1775,13 @@ p,
 }
 
 @media (max-width: 768px) {
+  p {
+    font-size: 70%;
+  }
+  td {
+    font-size: 70%;
+  }
+
   .ref input {
     font-size: 60%;
     padding: 1%;
@@ -2012,10 +2022,6 @@ p,
     font-size: 90%;
   }
 
-  .balance-amount {
-    font-size: 60%;
-  }
-
   .mint button {
     font-size: 100%;
   }
@@ -2118,10 +2124,10 @@ p,
 /* Adjust game container height if aspect ratio is less than 9:16 */
 @media (max-aspect-ratio: 10/16) {
   .game-container {
-    height: 50vh; /* Adjust height to 50vh */
+    height: 70vh; /* Adjust height to 50vh */
   }
 
   .info-container {
-    top: 60vh; /* Adjust top position to 50vh */
+    top: 85vh; /* Adjust top position to 50vh */
   }
 }
