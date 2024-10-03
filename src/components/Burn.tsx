@@ -36,9 +36,13 @@ const Burn = ({
     });
 
     const fetchBalances = useCallback(async () => {
-        if (!account?.address) return 0; // Return 0 if no account
+        if (!account?.address) {
+            console.log("No account address found.");
+            return 0; // Return 0 if no account
+        }
 
         try {
+            console.log("Fetching balance for account:", account?.address);
             const [sity] = await Promise.all([
                 provider.getBalance({
                     owner: String(account?.address),
@@ -60,14 +64,19 @@ const Burn = ({
         }
     }, [account?.address]);
 
-
     const burn = useCallback(async () => {
+        console.log("Starting burn process...");
+
         const fetchedBalance = await fetchBalances();
+        console.log("Fetched balance before burn:", fetchedBalance);
+
         setLoading(true);
         try {
-            console.log("Burning NFT:", nftIdToBurn);
+            console.log("Burning NFT with ID:", nftIdToBurn);
+
             const transactionBlock = new Transaction();
 
+            console.log("Preparing move call for claiming SITY.");
             transactionBlock.moveCall({
                 target: `${BURN.PACKAGE}::nft::claim_sity`,
                 arguments: [
@@ -77,9 +86,7 @@ const Burn = ({
                 ],
             });
 
-            // Since the transaction hasn't executed yet, the balance on-chain hasn't changed.
-            // Fetching balances now will still return the same value.
-
+            console.log("Preparing move call for burning NFT.");
             transactionBlock.moveCall({
                 target: `${BURN.PACKAGE}::nft::burn`,
                 arguments: [
@@ -87,8 +94,10 @@ const Burn = ({
                 ],
             });
 
+            console.log("Setting sender to:", account?.address);
             transactionBlock.setSender(String(account?.address));
 
+            console.log("Transferring objects (coins) with balance:", fetchedBalance * 1000);
             transactionBlock.transferObjects(
                 [
                     coinWithBalance({
@@ -99,18 +108,19 @@ const Burn = ({
                 "0x0000000000000000000000000000000000000000000000000000000000000000",
             );
 
+            console.log("Signing and executing the transaction...");
             signAndExecute(
                 {
                     transaction: transactionBlock,
                 },
                 {
                     onSuccess: async (result) => {
-                        console.log("Burn successful", result);
+                        console.log("Burn successful:", result);
                         // Handle successful burn
                         onBurnSuccessful(); // Trigger the success callback
                     },
                     onError: (error) => {
-                        console.error("Burn error:", error);
+                        console.error("Burn error during execution:", error);
                         showModal(`🚫 Error: ${error}`, 0); // Show error message in the modal
                     },
                 },
@@ -120,13 +130,16 @@ const Burn = ({
             showModal("🚫 Error burning NFT", 0);
         } finally {
             setLoading(false); // Stop loading when the burn is done
+            console.log("Burn process completed.");
         }
     }, [signAndExecute, nftIdToBurn, onBurnSuccessful]);
 
-
-    const reset = useCallback(() => { }, []);
+    const reset = useCallback(() => {
+        console.log("Resetting burn component state.");
+    }, []);
 
     useEffect(() => {
+        console.log("Component mounted. Running reset function.");
         reset();
     }, [reset]);
 
