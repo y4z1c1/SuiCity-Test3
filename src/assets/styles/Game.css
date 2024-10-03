@@ -1963,7 +1963,7 @@ p,
   }
 
   .nft-specs p {
-    font-size: 50%;
+    font-size: 50% !important;
   }
 
   .pleaseConnect h2 {
@@ -2074,10 +2074,6 @@ p,
   }
   .population h2 {
     font-size: 90%;
-  }
-
-  .nft-specs p {
-    font-size: 60%;
   }
 
   .buildingType button {
