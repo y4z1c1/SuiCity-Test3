@@ -127,7 +127,7 @@ const Burn = ({
             );
         } catch (error) {
             console.error("Burn Error:", error);
-            showModal("🚫 Error burning NFT", 0);
+            showModal(`🚫 Error: ${error}`, 0); // Show error message in the modal
         } finally {
             setLoading(false); // Stop loading when the burn is done
             console.log("Burn process completed.");
