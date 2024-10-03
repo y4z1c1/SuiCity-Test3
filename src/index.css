@@ -14,11 +14,29 @@ body {
     rgb(0, 0, 105) 100%
   );
   color: white;
-  transition: background-color 1s ease-in-out; /* Smooth transition on background-color */
+  transition: background-color 0.5s ease-in-out; /* Smooth transition on background-color */
 }
 
 /* Background when wallet is not connected */
 body.disconnected {
+  background-color: rgb(0, 4, 54); /* Transition to this color smoothly */
+  background-image: radial-gradient(
+    circle,
+    rgba(1, 6, 83, 1, 0) 50%,
+    rgb(0, 0, 62) 100%
+  );
+}
+
+body.success {
+  background-color: rgb(38, 146, 255); /* Transition to this color smoothly */
+  background-image: radial-gradient(
+    circle,
+    rgba(1, 6, 83, 1, 0) 50%,
+    rgb(0, 0, 62) 100%
+  );
+}
+
+body.error {
   background-color: rgb(0, 4, 54); /* Transition to this color smoothly */
   background-image: radial-gradient(
     circle,

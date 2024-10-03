@@ -319,6 +319,18 @@ const Game: React.FC = () => {
     setModalMessage(message);
     setIsModalOpen(true);
 
+    if (bgColor === 1) {
+      document.body.classList.add('success'); // Add success class
+      setTimeout(() => {
+        document.body.classList.remove('success'); // Remove success class after 5 seconds
+      }, 2000);
+    } else if (bgColor === 0) {
+      document.body.classList.add('error'); // Add error class
+      setTimeout(() => {
+        document.body.classList.remove('error'); // Remove error class after 5 seconds
+      }, 2000);
+    }
+
     // Automatically close the modal after 4 seconds
     setTimeout(() => {
       handleCloseModal();
