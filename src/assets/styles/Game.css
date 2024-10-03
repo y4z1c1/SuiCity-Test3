@@ -1939,27 +1939,31 @@ p,
   }
 
   .acc-icon {
-    width: 20px !important;
-    height: 20px !important;
+    width: 15px !important;
+    height: 15px !important;
   }
 
   .gear-icon {
-    width: 20px !important;
-    height: 20px !important;
+    width: 15px !important;
+    height: 15px !important;
   }
 
   .star-icon {
-    width: 20px !important;
-    height: 20px !important;
+    width: 15px !important;
+    height: 15px !important;
   }
 
   .sword-icon {
-    width: 20px !important;
-    height: 20px !important;
+    width: 15px !important;
+    height: 15px !important;
   }
 
   .nft-specs h2 {
-    font-size: 70%;
+    font-size: 60%;
+  }
+
+  .nft-specs p {
+    font-size: 50%;
   }
 
   .pleaseConnect h2 {
