@@ -331,7 +331,7 @@ const Game: React.FC = () => {
     // Automatically close the modal after 4 seconds
     setTimeout(() => {
       handleCloseModal();
-    }, 2500);
+    }, 2000);
 
     setBgColor(bgColor); // Set the background color based on the passed value
   };
