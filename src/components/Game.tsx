@@ -33,9 +33,6 @@ const Game: React.FC = () => {
   }, [connectionStatus]);
 
   const account = useCurrentAccount();
-
-
-
   const [filteredNft, setFilteredNft] = useState<any>(null); // Storing only a single filtered NFT
   const [accumulatedSity, setAccumulatedSity] = useState<number>(0);
   const [gameData, setGameData] = useState<any>(null);
@@ -1284,7 +1281,7 @@ const Game: React.FC = () => {
                       }
 
                       {/* Mint button */}
-                      {storedSignature != null && (
+                      {storedSignature != null && storedMessage?.includes(String(account?.address)) && (
                         <>
                           <ClaimReward
                             mySignature={storedSignature}
