@@ -6,6 +6,11 @@ p {
 td {
   font-size: 90%;
 }
+
+h4 {
+  margin: 0%;
+  font-family: "Kanit";
+}
 .game-container {
   background-color: white;
   color: rgb(0, 0, 0, 0.8);
@@ -809,6 +814,10 @@ td {
   -webkit-backdrop-filter: blur(15px); /* For Safari */
   max-height: 90%; /* Set max height for expanded state */
   min-height: 60%;
+}
+
+.buildingType.expanded h2 {
+  font-size: 140%;
 }
 
 .buildingType.collapsed {
@@ -1782,13 +1791,14 @@ p,
     font-size: 70%;
   }
 
+  .buildingType.expanded h2 {
+    font-size: 100%;
+  }
+
   .ref input {
     font-size: 60%;
     padding: 1%;
     width: 90%;
-  }
-  .buildingType.expanded h2 {
-    font-size: 100%;
   }
 
   .claim-reward {

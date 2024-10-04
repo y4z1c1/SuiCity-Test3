@@ -26,6 +26,8 @@ interface BuildingProps {
   buildingIndex: number; // Index of the current building
   preloadedVideoUrl?: string; // Add this prop
   walletObject: any; // Wallet object containing user's SUI and SITY balances
+  accumulatedSity: number; // Add this prop for accumulated SITY
+
 
 }
 
@@ -52,6 +54,8 @@ const Building: React.FC<BuildingProps> = ({
   buildingIndex,
   preloadedVideoUrl,
   walletObject,
+  accumulatedSity, // Include the accumulated SITY value here
+
 }) => {
   const [isUpgradeInfoExpanded, setIsUpgradeInfoExpanded] = useState(false);
   const buildingRef = useRef<HTMLDivElement>(null);
@@ -318,7 +322,7 @@ const Building: React.FC<BuildingProps> = ({
                       } $SITY/hour`}
                   </p>
 
-                  <p
+                  <h4
                     style={{
                       color: "lightgreen",
                       fontSize: "18px",
@@ -327,21 +331,20 @@ const Building: React.FC<BuildingProps> = ({
                     }}
                   >
                     Accumulation Speed (Next Level):
-                  </p>
-                  <p
+                  </h4>
+                  <h4
                     className="benefit-value next-level"
                     style={{
                       color: "lightgreen",
                       fontSize: "20px",
                       fontWeight: "bold",
-                      marginTop: "10px",
                       marginBottom: "0px",
                     }}
                   >
                     {`${gameData.accumulation_speeds[currentLevel + 1] / 1000
                       } $SITY/hour`}
 
-                  </p>
+                  </h4>
 
                   <p className="info-text" >
                     The Office level affects hourly $SITY earnings. Additionally, thanks to dNFT technology, upgrading your building will change the appearance, metadata, and rarity of your NFT.
@@ -371,7 +374,7 @@ const Building: React.FC<BuildingProps> = ({
                     {`${gameData.factory_bonuses[currentLevel]}%`}
                   </p>
 
-                  <p
+                  <h4
                     style={{
                       color: "lightgreen",
                       fontSize: "18px",
@@ -379,8 +382,8 @@ const Building: React.FC<BuildingProps> = ({
                     }}
                   >
                     Factory Bonus (Next Level):
-                  </p>
-                  <p
+                  </h4>
+                  <h4
                     className="benefit-value next-level"
                     style={{
                       color: "lightgreen",
@@ -389,7 +392,7 @@ const Building: React.FC<BuildingProps> = ({
                     }}
                   >
                     {`${gameData.factory_bonuses[currentLevel + 1]}%`}
-                  </p>
+                  </h4>
 
                   <p className="info-text" >
                     The Factory level affects percentage of daily revenue that can be collected. Additionally, thanks to dNFT technology, upgrading your building will change the appearance, metadata, and rarity of your NFT.
@@ -419,7 +422,7 @@ const Building: React.FC<BuildingProps> = ({
                     {Number(houseLevel) + Number(enterLevel)}
                   </p>
 
-                  <p
+                  <h4
                     style={{
                       color: "lightgreen",
                       fontSize: "18px",
@@ -427,8 +430,8 @@ const Building: React.FC<BuildingProps> = ({
                     }}
                   >
                     Amenity Points (Next Level):
-                  </p>
-                  <p
+                  </h4>
+                  <h4
                     className="benefit-value next-level"
                     style={{
                       color: "lightgreen",
@@ -437,7 +440,7 @@ const Building: React.FC<BuildingProps> = ({
                     }}
                   >
                     {Number(houseLevel) + Number(enterLevel) + 1}
-                  </p>
+                  </h4>
 
                   <p className="info-text" >
                     The House level affects Amenity points, impacting the frequency at which the player is required to claim rewards. Additionally, thanks to dNFT technology, upgrading your building will change the appearance, metadata, and rarity of your NFT.
@@ -469,7 +472,7 @@ const Building: React.FC<BuildingProps> = ({
                     {Number(houseLevel) + Number(enterLevel)}
                   </p>
 
-                  <p
+                  <h4
                     style={{
                       color: "lightgreen",
                       fontSize: "18px",
@@ -477,8 +480,8 @@ const Building: React.FC<BuildingProps> = ({
                     }}
                   >
                     Amenity Points (Next Level):
-                  </p>
-                  <p
+                  </h4>
+                  <h4
                     className="benefit-value next-level"
                     style={{
                       color: "lightgreen",
@@ -487,7 +490,7 @@ const Building: React.FC<BuildingProps> = ({
                     }}
                   >
                     {Number(houseLevel) + Number(enterLevel) + 1}
-                  </p>
+                  </h4>
 
                   <p className="info-text" >
                     The Entertainment C. level affects Amenity points, impacting the frequency at which the player is required to claim rewards. Additionally, thanks to dNFT technology, upgrading your building will change the appearance, metadata, and rarity of your NFT.
@@ -517,7 +520,7 @@ const Building: React.FC<BuildingProps> = ({
                     {gameData.castle_powers[currentLevel]}
                   </p>
 
-                  <p
+                  <h4
                     style={{
                       color: "lightgreen",
                       fontSize: "18px",
@@ -525,8 +528,8 @@ const Building: React.FC<BuildingProps> = ({
                     }}
                   >
                     War Power (Next Level):
-                  </p>
-                  <p
+                  </h4>
+                  <h4
                     className="benefit-value next-level"
                     style={{
                       color: "lightgreen",
@@ -535,7 +538,7 @@ const Building: React.FC<BuildingProps> = ({
                     }}
                   >
                     {gameData.castle_powers[Number(currentLevel) + 1]}
-                  </p>
+                  </h4>
 
                   <p className="info-text" >
                     As your Castle level increases, your probability of winning against your opponents increases. You will soon be able to battle with bots. ⚔️
@@ -578,6 +581,9 @@ const Building: React.FC<BuildingProps> = ({
                 showModal={showModal}
                 suiBalance={suiBalance}
                 walletObject={walletObject}
+                accumulatedSity={accumulatedSity}    // Assuming sityBalance is accumulated SITY
+                gameData={gameData}              // Pass gameData prop
+                factoryLevel={factoryLevel}      // Pass factoryLevel prop
               />
             )}
           </div>

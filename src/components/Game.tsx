@@ -1337,7 +1337,7 @@ const Game: React.FC = () => {
                         onClaimClick={handleClaimClick}
                         preloadedVideoUrl={preloadedVideoUrls[currentBuilding.type]} // Pass the preloaded video URL
                         walletObject={walletObject}
-
+                        accumulatedSity={accumulatedSity}
                       />
                     </>
                   )}
