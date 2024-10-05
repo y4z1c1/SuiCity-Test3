@@ -467,7 +467,7 @@ h4 {
 }
 
 .nft-specs h2 {
-  font-size: 120%;
+  font-size: 100%;
   color: rgb(255, 255, 255); /* White text color */
   text-shadow: black 1px 1px 2px; /* Add a subtle shadow */
   letter-spacing: 1px;
@@ -1572,7 +1572,7 @@ p,
   }
 
   .nft-specs h2 {
-    font-size: 90%;
+    font-size: 80%;
   }
 
   .nft-title {
