@@ -136,46 +136,46 @@ const Upgrade = ({
   const getUpgradeCosts = useCallback(
     (level: number) => {
       const officeHouseCosts = [
-        { sui: 0.8, sity: 0 },
-        { sui: 0, sity: 620 },
-        { sui: 4, sity: 0 },
-        { sui: 0, sity: 2900 },
-        { sui: 20, sity: 0 },
-        { sui: 0, sity: 9400 },
-        { sui: 75, sity: 0 },
+        { sui: 0.6, sity: 0 },
+        { sui: 0, sity: 680 },
+        { sui: 3, sity: 0 },
+        { sui: 0, sity: 3200 },
+        { sui: 15, sity: 0 },
+        { sui: 0, sity: 10300 },
+        { sui: 56, sity: 0 },
         { sui: 0, sity: 0 },
       ];
 
       const factoryCosts = [
-        { sui: 0, sity: 200 },
-        { sui: 0, sity: 620 },
-        { sui: 0, sity: 1400 },
-        { sui: 9.5, sity: 0 },
-        { sui: 0, sity: 6200 },
-        { sui: 35, sity: 0 },
-        { sui: 0, sity: 20000 },
+        { sui: 0, sity: 220 },
+        { sui: 0, sity: 680 },
+        { sui: 0, sity: 1540 },
+        { sui: 7, sity: 0 },
+        { sui: 0, sity: 6820 },
+        { sui: 26, sity: 0 },
+        { sui: 0, sity: 22000 },
         { sui: 0, sity: 0 },
       ];
 
       const enterCosts = [
-        { sui: 0, sity: 200 },
-        { sui: 1.8, sity: 0 },
-        { sui: 0, sity: 1400 },
-        { sui: 9.5, sity: 0 },
-        { sui: 0, sity: 6200 },
-        { sui: 35, sity: 0 },
-        { sui: 0, sity: 20000 },
+        { sui: 0.6, sity: 0 },
+        { sui: 0, sity: 682 },
+        { sui: 3, sity: 0 },
+        { sui: 0, sity: 3200 },
+        { sui: 15, sity: 0 },
+        { sui: 0, sity: 10300 },
+        { sui: 56, sity: 0 },
         { sui: 0, sity: 0 },
       ];
 
       const castleCosts = [
-        { sui: 1, sity: 5000 },
-        { sui: 2, sity: 12500 },
-        { sui: 4, sity: 32000 },
-        { sui: 8, sity: 80000 },
-        { sui: 16, sity: 200000 },
-        { sui: 32, sity: 500000 },
-        { sui: 64, sity: 1250000 },
+        { sui: 0.75, sity: 5500 },
+        { sui: 1.5, sity: 13750 },
+        { sui: 3, sity: 35200 },
+        { sui: 6, sity: 88000 },
+        { sui: 12, sity: 220000 },
+        { sui: 24, sity: 550000 },
+        { sui: 48, sity: 1375000 },
         { sui: 0, sity: 0 },
       ];
 
