@@ -159,7 +159,7 @@ const Upgrade = ({
 
       const enterCosts = [
         { sui: 0.6, sity: 0 },
-        { sui: 0, sity: 682 },
+        { sui: 0, sity: 680 },
         { sui: 3, sity: 0 },
         { sui: 0, sity: 3200 },
         { sui: 15, sity: 0 },
