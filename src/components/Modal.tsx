@@ -38,14 +38,15 @@ const Modal: React.FC<ModalProps> = ({ show, message, onClose, bgColor }) => {
     <div
       className={`modal-backdrop ${getBackgroundClass()} ${isFadingIn ? "fade-in" : "fade-out"
         }`}
-      onClick={onClose} // Handle close when clicking anywhere in the modal
     >
-      <button className={`modal-content ${isFadingIn ? "fade-in" : "fade-out"}`} onClick={onClose}>
+      <div className={`modal-content ${isFadingIn ? "fade-in" : "fade-out"}`}>
         <h3>{message}</h3>
-      </button>
+        <button className="modal-close-btn" onClick={onClose}>
+          &times; {/* The 'X' button */}
+        </button>
+      </div>
     </div>
   );
-
 };
 
 export default Modal;
