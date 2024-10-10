@@ -369,7 +369,7 @@ const AirdropCalculator = ({
         setAirdropBreakdown(breakdown);
         setTotalAirdrop(total * 3);
         setLoadingAirdrop(false);
-        onAirdropCalculated(total);
+        onAirdropCalculated(total * 3);
         const newMessage = `${parseInt(String(total * 3000))}:${currentAccount?.address}:0`;
         setMessage(newMessage);
         onMessageGenerated(newMessage);
