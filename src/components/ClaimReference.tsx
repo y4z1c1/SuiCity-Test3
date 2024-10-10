@@ -190,6 +190,13 @@ const ClaimReference = ({
 
   return (
     <div className="ref">
+
+      <div style={{ marginBottom: "2%", textAlign: "center" }}>
+        <span>Claim your <span className="golden-text">5000 $SITY</span> reward.</span>
+
+      </div>
+
+
       {/* Input for the reference number */}
       <input
         type="text"
