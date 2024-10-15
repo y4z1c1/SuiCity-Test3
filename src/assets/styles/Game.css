@@ -2041,7 +2041,7 @@ p,
   }
 
   .nft-info h2 {
-    font-size: 120%;
+    font-size: 100%;
   }
 
   .claim-ref-button {
@@ -2094,6 +2094,10 @@ p,
 }
 
 @media (max-width: 600px) {
+  .nft-info h2 {
+    font-size: 80%;
+  }
+
   .change-name {
     width: 80%;
   }
