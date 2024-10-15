@@ -44,6 +44,11 @@ const Population: React.FC<PopulationProps> = ({
     return balance.toFixed(2);
   };
 
+  const extractDomain = (nftName: string) => {
+    const match = nftName.match(/^(.*?)'s City$/);
+    return match ? match[1] : null;
+  };
+
   // Function to calculate population based on building levels
   const calculatePopulation = () => {
     const basePopulation = 20000;
@@ -61,20 +66,29 @@ const Population: React.FC<PopulationProps> = ({
     const factoryPopulation = calculateForBuilding(factoryLevel);
     const entertainmentPopulation = calculateForBuilding(enterLevel);
     const castlePopulation = calculateForBuilding(castleLevel);
+    // Check for suins domain and add population bonus
+    const nftName = filteredNft?.content?.fields?.name || "";
+    const domain = extractDomain(nftName);
+    let domainBonus = 0;
+    if (domain && domain.length === 3) {
+      domainBonus = 2000000; // Add 2 million if domain length is 3
+    } else if (domain && domain.length === 4) {
+      domainBonus = 1000000; // Add 1 million if domain length is 4
+    }
 
     return (
       residentialOfficePopulation +
       housePopulation +
       factoryPopulation +
       entertainmentPopulation +
-      castlePopulation
+      castlePopulation + domainBonus // Add domain bonus to total population
+
     );
   };
 
   // Memoize the population and totalPopulation calculation to prevent recalculations
   const population = useMemo(() => calculatePopulation(), [officeLevel, houseLevel, factoryLevel, enterLevel]);
-
-  const totalPopulation = useMemo(() => population + Number((accumulatedSity + sityBalance)), [population, accumulatedSity, sityBalance]);
+  const totalPopulation = useMemo(() => population + Number((accumulatedSity + sityBalance) + 100000 * filteredNft.content.fields.extra_data[0]), [population, accumulatedSity, sityBalance, filteredNft]);
 
   // Function to call the Netlify function to update the population in MongoDB
   const updatePopulation = async () => {

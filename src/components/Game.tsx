@@ -16,6 +16,7 @@ import WalletChecker from "./WalletChecker";
 import Leaderboard from "./Leaderboard";
 import Burn from "./Burn";
 import ClaimReward from "./ClaimReward";
+import ChangeName from "./ChangeName";
 
 
 const Game: React.FC = () => {
@@ -34,6 +35,9 @@ const Game: React.FC = () => {
 
   const account = useCurrentAccount();
   const [filteredNft, setFilteredNft] = useState<any>(null); // Storing only a single filtered NFT
+  const [domains, setDomains] = useState<any[]>([]);
+
+
   const [accumulatedSity, setAccumulatedSity] = useState<number>(0);
   const [gameData, setGameData] = useState<any>(null);
   const [sityBalance, setSityBalance] = useState<number>(0);
@@ -80,6 +84,7 @@ const Game: React.FC = () => {
   const [walletObject, setWalletObject] = useState<string | null>(null);
 
   const [oldNft, setOldNft] = useState<any>(null); // Storing only a single filtered NFT
+  const [isChangeNameActive, setIsChangeNameActive] = useState(false); // New state to track the "Change Name" section
 
   const handleMessageGenerated = (message: string | null) => {
     console.log("Message generated:", message);
@@ -90,6 +95,11 @@ const Game: React.FC = () => {
     console.log("Signature generated:", signature);
     setStoredSignature(signature);
   }
+
+  const handleShowChangeName = () => {
+    setIsChangeNameActive(!isChangeNameActive);
+  };
+
 
   const RPC_URLS = [
     "https://fullnode.mainnet.sui.io",
@@ -107,6 +117,8 @@ const Game: React.FC = () => {
 
 
   // Play the click sound
+
+
 
   const checkIfUserHasNft = useCallback(async () => {
     try {
@@ -341,7 +353,7 @@ const Game: React.FC = () => {
   );
 
   const handleBuildingClick = (index: number) => {
-    if (oldNft != null) {
+    if (oldNft != null || isChangeNameActive) {
       return;
     }
     setCurrentBuildingIndex(index); // Set the clicked building as the current one
@@ -623,6 +635,18 @@ const Game: React.FC = () => {
 
   };
 
+  const handleNameSuccess = () => {
+    setTimeout(() => {
+      setIsChangeNameActive(false);
+      refreshNft();
+      refreshSity();
+      fetchCurrentNonce();
+      setTransactionType(null);
+      setIsAwaitingBlockchain(true);
+      triggerBalanceRefresh(); // Trigger balance refresh
+      setTransactionInProgress(false);
+    }, 2000); // 2000 milliseconds = 2 seconds
+  };
   const handleClaimSuccess = () => {
     setTimeout(() => {
       refreshNft();
@@ -677,6 +701,13 @@ const Game: React.FC = () => {
     }, 2000); // 2000 milliseconds
   };
 
+  useEffect(() => {
+    if (domains.length > 0) {
+      console.log("User's domain data:", domains);
+      // Add your logic to use the domain data here
+    }
+  }, [domains]);
+
 
   const refreshNft = useCallback(async () => {
     console.log("Refreshing NFTs...");
@@ -724,6 +755,18 @@ const Game: React.FC = () => {
 
         console.log("NFT found:", nft?.data);
         setFilteredNft(nft?.data || null);
+
+
+        const domainObjects = allObjects.filter(
+          (obj) =>
+            String(obj.data?.type) ===
+            '0xd22b24490e0bae52676651b4f56660a5ff8022a2576e0089f79b3c88d44e08f0::suins_registration::SuinsRegistration'
+        );
+
+        console.log("Domains found:", domainObjects);
+        setDomains(domainObjects || []);
+
+
         if (nft?.data) {
           const fields = nft.data.content.fields;
           if (fields.buildings) {
@@ -947,6 +990,7 @@ const Game: React.FC = () => {
           houseLevel={house}
           enterLevel={enter}
           castleLevel={castle}
+          onShowChangeName={handleShowChangeName}
         />
 
         <Reference nft={filteredNft} showModal={showModal} officeLevel={office}
@@ -972,7 +1016,7 @@ const Game: React.FC = () => {
       </div>
 
       <div
-        className={`game-container`} // Add the 'blurred' class if NFT is not minted
+        className={`game-container ${isChangeNameActive ? 'disable-hover' : ''}`}
         ref={containerRef}
         style={{
           backgroundImage: isMapView // If mapUrl is set, use it as the background
@@ -1059,6 +1103,29 @@ const Game: React.FC = () => {
                     />
                   </div>
 
+
+                  {/* Add a darken overlay when "Change Name" is active */}
+                  {isChangeNameActive && (
+                    <div
+                      className="darken-overlay_name visible"
+                      onClick={handleShowChangeName} // Close the section when clicking outside
+                    ></div>
+                  )}
+
+                  {/* Render the Change Name component only when active */}
+                  {isChangeNameActive && (
+                    <ChangeName
+                      currentAccount={account as { address: string }}
+                      onChangeNameSuccessful={handleNameSuccess}
+                      showModal={showModal}
+                      nft={filteredNft}
+                      currentNonce={currentNonce}
+                      walletObject={walletObject}
+                      sityBalance={sityBalance}
+                      gameData={gameData}
+                      domains={domains}
+                    />
+                  )}
 
 
 
@@ -1293,6 +1360,8 @@ const Game: React.FC = () => {
                           />
                         </>
                       )}
+
+
 
 
                     </>

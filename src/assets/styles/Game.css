@@ -609,6 +609,203 @@ h4 {
   transform: translateY(3px);
 }
 
+/* Styles for the ChangeName component */
+
+.change-name h3 {
+  color: white;
+  font-weight: 700 !important;
+  font-size: 150%;
+}
+.change-name p {
+  color: white;
+}
+
+.change-name {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 100%;
+  width: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+  border-radius: 8px;
+  text-align: center; /* Center text within the div */
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
+  padding: 2%;
+  z-index: 1000;
+}
+
+/* Button styling */
+.change-name button {
+  background-color: rgb(0, 135, 245); /* Button background color */
+  backdrop-filter: blur(5px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+  cursor: pointer;
+  margin-top: auto; /* Push the button down */
+  border-radius: 2px;
+  border: none;
+  padding: 0.5%; /* Button padding */
+  font-weight: 500;
+  font-size: 120%;
+  box-shadow: 5px 5px 0px #000000, 5px 5px 10px rgba(0, 0, 0, 0.25); /* Slight 3D effect with a shadow */
+  transition: all 0.1s ease-in-out;
+  color: rgb(255, 255, 255); /* Button text color */
+  width: 100%;
+}
+
+.change-name button:hover {
+  cursor: pointer;
+  transform: translateY(3px); /* Button hover effect */
+}
+
+/* Search input styling */
+.change-name input[type="text"] {
+  width: 80%;
+  padding: 5px 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1rem;
+  text-align: center;
+  transition: border 0.2s ease-in-out;
+}
+
+.change-name input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-family: "Kanit", sans-serif;
+}
+
+.change-name input[type="text"]:focus {
+  border: 1px solid rgb(0, 135, 245);
+  outline: none;
+  font-family: "Kanit", sans-serif;
+}
+
+/* List styling */
+.change-name ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.change-name li {
+  padding: 10px;
+  color: #fff;
+}
+
+.change-name li button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  width: 40%;
+  text-align: center;
+  cursor: pointer;
+  padding: 5px;
+  transition: background 0.2s ease-in-out;
+}
+
+.change-name li button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.change-name li button.selected {
+  background-color: rgb(0, 135, 245);
+  font-weight: bold;
+  color: #fff;
+}
+
+.change-name span {
+  font-family: "Kanit", sans-serif;
+  font-weight: 800;
+}
+
+/* Pagination controls */
+.pagination-controls {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+/* Page number will always be centered */
+.pagination-controls span {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 1rem;
+  pointer-events: none; /* Make sure it doesn't interfere with button clicks */
+}
+
+.pagination-controls button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: none;
+  padding: 2px 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  font-size: 80%;
+  width: max-content;
+}
+
+.pagination-controls button:disabled {
+  background-color: rgba(255, 255, 255, 0.05);
+  cursor: not-allowed;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background-color: rgba(0, 135, 245, 0.8);
+}
+
+.pagination-controls span {
+  color: #fff;
+  font-size: 1rem;
+}
+
+.rainbow-glow {
+  margin-left: 10px;
+  cursor: pointer;
+  color: white;
+  animation: rainbowGlow 3s linear infinite;
+  text-shadow: 0 0 5px #ff8282, 0 0 10px #ffc48a, 0 0 15px #ffff8e,
+    0 0 20px #7fff7f, 0 0 25px #8a8aff, 0 0 30px #ce89ff, 0 0 35px #ca84ff;
+}
+
+@keyframes rainbowGlow {
+  0% {
+    text-shadow: 0 0 10px #ff9d9d;
+  }
+  16% {
+    text-shadow: 0 0 10px #ffcd9a;
+  }
+  33% {
+    text-shadow: 0 0 10px #ffff9f;
+  }
+  50% {
+    text-shadow: 0 0 10px #9fff9f;
+  }
+  66% {
+    text-shadow: 0 0 10px #9a9aff;
+  }
+  83% {
+    text-shadow: 0 0 10px #c676ff;
+  }
+  100% {
+    text-shadow: 0 0 10px #c67bff;
+  }
+}
+
+.rainbow-glow:hover {
+  transform: translateY(1.5px);
+}
+
 .burn {
   position: absolute;
   left: 50%;
@@ -1456,6 +1653,15 @@ p,
   filter: brightness(100%) drop-shadow(0 0 50px rgba(255, 255, 255, 0.4)); /* Increase brightness and apply feather effect */
   z-index: 3; /* Bring the hovered building to the top */
 }
+
+/* Disable hover effect when .disable-hover is active */
+.disable-hover .buildingPos:hover,
+.buildingPos {
+  transform: none; /* Remove the scaling effect */
+  transition: none; /* Disable transition */
+  z-index: 0; /* Bring the hovered building to the top */
+  cursor: default; /* Remove the cursor */
+}
 .castle-coming-soon-text {
   position: absolute;
   font-family: "Kanit", "Helvetica";
@@ -1497,6 +1703,24 @@ p,
 }
 
 .darken-overlay.visible {
+  opacity: 1; /* Fully visible when hovered */
+}
+
+.darken-overlay_name {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(2px); /* For Safari */
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.5s ease; /* Smooth transition */
+  z-index: 50;
+}
+
+.darken-overlay_name.visible {
   opacity: 1; /* Fully visible when hovered */
 }
 
@@ -1870,6 +2094,12 @@ p,
 }
 
 @media (max-width: 600px) {
+  .change-name {
+    width: 80%;
+  }
+  .change-name li button {
+    width: 80%;
+  }
   .claim-reward button {
     font-size: 150%;
   }

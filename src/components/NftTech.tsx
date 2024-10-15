@@ -7,20 +7,25 @@ interface NftSpecsProps {
   houseLevel: number;
   enterLevel: number;
   castleLevel: number;
+  onShowChangeName: () => void; // Add a callback to show the Change Name section
 }
 
-const NftSpecs: React.FC<NftSpecsProps> = ({ nft, officeLevel, factoryLevel, houseLevel, enterLevel, castleLevel }) => {
-
+const NftSpecs: React.FC<NftSpecsProps> = ({
+  nft,
+  officeLevel,
+  factoryLevel,
+  houseLevel,
+  enterLevel,
+  castleLevel,
+  onShowChangeName, // Add the callback here
+}) => {
   const formatLastClaimedDate = (timestamp: string | number) => {
-
-
     let parsedTimestamp = timestamp;
 
     // Check if timestamp is a string and needs to be converted
-    if (typeof timestamp === 'string') {
+    if (typeof timestamp === "string") {
       parsedTimestamp = parseInt(timestamp, 10); // Convert string to number
     }
-
 
     // If the parsed timestamp is not a valid number, return a fallback message
     if (isNaN(Number(parsedTimestamp))) {
@@ -44,11 +49,21 @@ const NftSpecs: React.FC<NftSpecsProps> = ({ nft, officeLevel, factoryLevel, hou
   return (
     <>
       <div className="nft-info">
-        {nft ? <h2>{nft.content.fields.name}</h2> : null}
+        {nft ? (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <h2>{nft.content.fields.name}</h2>
+            <span onClick={onShowChangeName} className="rainbow-glow">
+              ✍️
+            </span>
+          </div>
+        ) : null}
 
         {nft && nft.content.fields.last_claimed ? (
           <p>
-            Last Sity Claim: <strong>{formatLastClaimedDate(nft.content.fields.last_claimed)}</strong>
+            Last Sity Claim:{" "}
+            <strong>
+              {formatLastClaimedDate(nft.content.fields.last_claimed)}
+            </strong>
           </p>
         ) : (
           <p>Last Sity Claim: No data available</p>
@@ -56,17 +71,30 @@ const NftSpecs: React.FC<NftSpecsProps> = ({ nft, officeLevel, factoryLevel, hou
 
         {nft && nft.content.fields.last_claimed ? (
           <p>
-            Last Factory Bonus Claim: <strong>{formatLastClaimedDate(nft.content.fields.last_daily_bonus)}</strong>
+            Last Factory Bonus Claim:{" "}
+            <strong>
+              {formatLastClaimedDate(nft.content.fields.last_daily_bonus)}
+            </strong>
           </p>
         ) : (
           <p>Last Factory Bonus Claim: No data available</p>
         )}
 
-        <p>Residential Office Level: <strong>{officeLevel}</strong></p>
-        <p>Factory Level: <strong>{factoryLevel}</strong></p>
-        <p>House Level: <strong>{houseLevel}</strong></p>
-        <p>Entertainment Complex Level: <strong>{enterLevel}</strong></p>
-        <p>Castle Level: <strong>{castleLevel}</strong></p>
+        <p>
+          Residential Office Level: <strong>{officeLevel}</strong>
+        </p>
+        <p>
+          Factory Level: <strong>{factoryLevel}</strong>
+        </p>
+        <p>
+          House Level: <strong>{houseLevel}</strong>
+        </p>
+        <p>
+          Entertainment Complex Level: <strong>{enterLevel}</strong>
+        </p>
+        <p>
+          Castle Level: <strong>{castleLevel}</strong>
+        </p>
 
         {nft && nft.objectId ? (
           <a
@@ -74,13 +102,16 @@ const NftSpecs: React.FC<NftSpecsProps> = ({ nft, officeLevel, factoryLevel, hou
             target="_blank"
             rel="noopener noreferrer"
           >
-            Object ID: <strong>{nft.objectId.slice(0, 12)}...{nft.objectId.slice(-12)}</strong>
+            Object ID:{" "}
+            <strong>
+              {nft.objectId.slice(0, 12)}...
+              {nft.objectId.slice(-12)}
+            </strong>
           </a>
         ) : (
           <p>Object ID: No data available</p>
         )}
       </div>
-
     </>
   );
 };
