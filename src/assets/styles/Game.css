@@ -2338,6 +2338,13 @@ p,
     width: 100%;
     padding: 0%;
   }
+
+  .social-container {
+    box-shadow: 4px 8px 0px rgba(0, 0, 0, 0.4);
+  }
+  .info-container {
+    box-shadow: 4px 8px 0px rgba(0, 0, 0, 0.4);
+  }
 }
 
 @media (max-width: 425px) {
