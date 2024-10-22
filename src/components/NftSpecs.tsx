@@ -28,12 +28,6 @@ const NftSpecs: React.FC<NftSpecsProps> = ({
   return (
     <div className="nft-specs">
       {/* Header with arrow to toggle the content */}
-      <div
-        className="toggle-header"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span>{isOpen ? "▲" : "▼"}</span> {/* Arrow changes based on open/close */}
-      </div>
 
       {/* Conditional rendering of content with animation */}
       <div className={`content ${isOpen ? "open" : "closed"}`}>
@@ -96,6 +90,12 @@ const NftSpecs: React.FC<NftSpecsProps> = ({
           />
           {`${castlePowers}`}
         </h2>
+      </div>
+      <div
+        className="toggle-header"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span>{isOpen ? "▲" : "▼"}</span> {/* Arrow changes based on open/close */}
       </div>
     </div>
   );

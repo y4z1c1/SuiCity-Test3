@@ -671,9 +671,8 @@ const Game: React.FC = () => {
       showModal("✅ Mint successful!", 1); // Show success message in the modal
 
       // Prepare the data to send to the server
-      const walletAddress = "user_wallet_address"; // Replace this with the actual wallet address
-      const walletObject = "user_wallet_object"; // Replace this with the actual wallet object
-      const nftData = "nft_string_data"; // Replace this with the actual NFT data string
+      const walletAddress = account?.address; // Replace this with the actual wallet address
+      const nftData = filteredNft; // Replace this with the actual NFT data string
 
       try {
         const response = await fetch("/.netlify/functions/add-nft", {

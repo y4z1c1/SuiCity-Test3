@@ -17,6 +17,8 @@ export const handler = async (event, context) => {
       };
     }
 
+    const nftName = nftData?.content?.fields?.name || "Unnamed NFT";
+
     console.log("Connecting to MongoDB...");
     await client.connect();
     console.log("Successfully connected to MongoDB");
@@ -35,26 +37,29 @@ export const handler = async (event, context) => {
       };
     }
 
-    // Update MongoDB with new NFT string and walletObject stored in walletId field
+    // Update MongoDB with new NFT string, walletObject, and NFT name
     const updateResult = await collection.updateOne(
       { walletAddress },
-      { $set: { nft: nftData, walletId: walletObject } }
+      { $set: { nft: nftData, walletId: walletObject, nftName: nftName } }
     );
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
-        message: "NFT data and walletObject added successfully",
+        message: "NFT data, walletObject, and NFT name added successfully",
         updateResult,
       }),
     };
   } catch (error) {
-    console.error("Error updating NFT data and walletObject:", error);
+    console.error(
+      "Error updating NFT data, walletObject, and NFT name:",
+      error
+    );
     return {
       statusCode: 500,
       body: JSON.stringify({
-        error: "Failed to update NFT data and walletObject",
+        error: "Failed to update NFT data, walletObject, and NFT name",
       }),
     };
   } finally {
