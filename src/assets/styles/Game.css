@@ -1767,6 +1767,38 @@ p,
   font-family: "Kanit", "Helvetica", sans-serif;
 }
 
+.toggle-header {
+  display: flex;
+  justify-content: center; /* Center the arrow */
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.5rem;
+  padding: 2px;
+  user-select: none;
+}
+
+.content {
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+  max-height: 0; /* Start with collapsed content */
+}
+
+.content.open {
+  max-height: 500px; /* Enough height to show the content when expanded */
+}
+
+.content.closed {
+  max-height: 0;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.acc-icon,
+.gear-icon,
+.star-icon,
+.sword-icon {
+  margin-right: 10px;
+}
+
 @media (max-width: 1920px) {
   p {
     font-size: 70% !important;
