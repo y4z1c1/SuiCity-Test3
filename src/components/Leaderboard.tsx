@@ -6,8 +6,8 @@ interface LeaderboardItem {
     _id: string;
     walletAddress: string;
     population: number;
-    twitterId: string;
     nft: string;
+    nftName: string; // Add nftName to the interface
 }
 
 const Leaderboard: React.FC = () => {
@@ -27,6 +27,7 @@ const Leaderboard: React.FC = () => {
         }
         return balance.toFixed(2);
     };
+
     // Fetch the leaderboard data from the backend
     const fetchLeaderboard = async (walletAddress: string) => {
         try {
@@ -43,6 +44,8 @@ const Leaderboard: React.FC = () => {
             // Extract topUsers and currentUser from the response
             const { topUsers, currentUser } = data;
 
+            console.log(topUsers);
+
             // Set the leaderboard data and user's rank
             setLeaderboardData(topUsers);
             setRank(currentUser.rank);
@@ -58,6 +61,7 @@ const Leaderboard: React.FC = () => {
             setLoading(false);
         }
     };
+
     useEffect(() => {
         if (walletAddress) {
             fetchLeaderboard(walletAddress); // Only fetch leaderboard if walletAddress is available
@@ -66,8 +70,7 @@ const Leaderboard: React.FC = () => {
 
     // If loading, show a loading message
     if (loading) {
-        return <div className="spinner"></div>
-            ;
+        return <div className="spinner"></div>;
     }
 
     // If there's an error, display the error message
@@ -81,7 +84,7 @@ const Leaderboard: React.FC = () => {
                 <thead>
                     <tr>
                         <th>Rank</th>
-                        <th>Twitter ID</th>
+                        <th>NFT Name</th> {/* Changed from Twitter ID to NFT Name */}
                         <th>Population</th>
                     </tr>
                 </thead>
@@ -95,19 +98,17 @@ const Leaderboard: React.FC = () => {
                                 {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`}
                             </td>
                             <td style={user.walletAddress === currentUserData?.walletAddress ? { color: "black", fontWeight: "500" } : { color: "white", fontWeight: "300" }}>
-                                {user.twitterId}
+                                {user.nftName} {/* Display nftName instead of twitterId */}
                             </td>
                             <td>{formatBalance(user.population)}</td>
                         </tr>
                     ))}
 
-
-
                     {/* Render the current user below the top 50 if their rank is greater than 50 */}
                     {rank && rank > 50 && currentUserData && (
                         <tr className="highlight-row">
                             <td>{rank}.</td>
-                            <td>{currentUserData.twitterId}</td>
+                            <td>{currentUserData.nftName}</td> {/* Display current user's nftName */}
                             <td>{formatBalance(currentUserData.population)}</td>
                         </tr>
                     )}
@@ -120,11 +121,8 @@ const Leaderboard: React.FC = () => {
                     )}
                 </tbody>
             </table>
-
-
         </div>
     );
-
 };
 
 export default Leaderboard;
