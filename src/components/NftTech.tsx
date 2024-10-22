@@ -34,17 +34,22 @@ const NftSpecs: React.FC<NftSpecsProps> = ({
 
     const date = new Date(parsedTimestamp);
 
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    };
+    // Array of month abbreviations
+    const monthAbbreviations = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-    return date.toLocaleDateString(undefined, options);
+    // Manually format the date as Day MonthAbbreviation Year
+    const formattedDate = `${String(date.getDate()).padStart(2, "0")} ${monthAbbreviations[date.getMonth()]} ${String(date.getFullYear()).slice(-2)}`;
+
+    // Manually format the time as HH:MM
+    const formattedTime = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+
+    // Return the formatted date with a comma and then the formatted time
+    return `${formattedDate}, ${formattedTime}`;
   };
+
+
+
+
 
   return (
     <>
