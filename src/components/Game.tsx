@@ -438,6 +438,18 @@ const Game: React.FC = () => {
         const fields = nonceResponse.data.content.fields as { value: any };  // Assert the correct type
         console.log("Nonce data fetched successfully:", fields.value);
         setCurrentNonce(fields.value);
+
+        if (Number(fields.value) >= 1) {
+
+          console.log("Nonce is greater than 1, clearing stored data...");
+
+          localStorage.removeItem("signature");
+          localStorage.removeItem("message");
+          localStorage.removeItem("totalAirdrop");
+          setStoredSignature(null); // Remove signature from state
+          setAirdropAmount(0); // Set airdrop amount to 0
+          setStoredMessage(null); // Remove message from state
+        }
       }
 
     } catch (error) {
